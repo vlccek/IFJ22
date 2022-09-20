@@ -6,8 +6,8 @@
 
 #include "stack.h"
 
-stack_t *stack() {
-    make_var(stack, stack_t*, sizeof(stack_t))
+stack_type *stackInit() {
+    make_var(stack, stack_type*, sizeof(stack_type))
     stack->c = 0;
     stack->top = NULL;
     return stack;
@@ -15,8 +15,8 @@ stack_t *stack() {
 
 //
 
-int push(stack_t *s, typeOfStoredData nm) {
-    if (!s) {
+int push(stack_type *s, void *nm) {
+    if (!s || !nm) {
         //Stack is null
         return null_dereference;
     }
@@ -33,27 +33,25 @@ int push(stack_t *s, typeOfStoredData nm) {
 
 }
 
-void freeStackEl(typeOfStoredData *fe) {
-    if (fe)
-        free((stack_t *) fe);
-}
-
-typeOfStoredData pop(stack_t *s) {
+void *pop(stack_type *s) {
     if (!s->top) {
         // return NULL;
     }
-    typeOfStoredData *r = &s->top->data; // saves old top
+    void *r = s->top->data; // saves old top
     s->top = s->top->next;
-    return *r;
+    return r;
 }
 
-bool sIsEmpty(stack_t *st) {
+bool sIsEmpty(stack_type *st) {
     return st->top;
 }
 
-stackMem_t *stackBotton(stack_t *s, stackMem_t **pLast) {
+stackMem_t *stackBottom(stack_type *s, stackMem_t **pLast) {
     if (!s->top) {
         return NULL;
+    }
+    if (s->top->next == NULL) {
+        *pLast = NULL;
     }
     stackMem_t *i = s->top;
     while (i->next != NULL) {
@@ -66,20 +64,25 @@ stackMem_t *stackBotton(stack_t *s, stackMem_t **pLast) {
     return i;
 }
 
-typeOfStoredData popBack(stack_t *s) {
+void *popBack(stack_type *s) {
     stackMem_t *pLast;
-    stackMem_t *bottonEl = stackBotton(s, &pLast);
+    stackMem_t *bottomEl = stackBottom(s, &pLast);
 
-    typeOfStoredData *r = &bottonEl->data; // returned el
-    pLast->next = NULL;
-    return *r;
+
+    void *r = bottomEl->data; // returned el
+
+    // last memeber check
+    if (pLast == NULL) {
+        s->top = NULL;
+    } else {
+        pLast->next = NULL;
+    }
+
+    return r;
 }
 
-void printMember(typeOfStoredData *data) {
-    fprintf(stdout, "{%d %d}", data->a, data->b);
-}
 
-void printStack(stack_t *s, void (*printMem)(typeOfStoredData *)) {
+void printStack(stack_type *s, void (*printMem)(void *)) {
     fprintf(stdout, "Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
@@ -87,6 +90,6 @@ void printStack(stack_t *s, void (*printMem)(typeOfStoredData *)) {
         fprintf(stdout, " -> ");
         i = i->next;
     }
-    printMember(&i->data);
+    printMem(&i->data);
 }
 

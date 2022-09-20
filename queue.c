@@ -9,19 +9,19 @@ queue_t *queue() {
     return stack();
 }
 
-inline void enqueue(queue_t *queue, typeOfStoredData nm) {
+inline void enqueue(queue_t *queue, void *nm) {
     push(queue, nm);
 }
 
-inline typeOfStoredData dequeue(queue_t *queue) {
+inline void *dequeue(queue_t *queue) {
     return popBack(queue);
 };
 
-inline typeOfStoredData *peek(queue_t *queue) {
+inline void *peek(queue_t *queue) {
     return &stackBottom(queue, NULL)->data;
 }
 
-inline typeOfStoredData *front(queue_t *queue) {
+inline void *front(queue_t *queue) {
     return &queue->top->data;
 }
 

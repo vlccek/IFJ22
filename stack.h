@@ -6,11 +6,8 @@
 #include <stdbool.h>
 #include "helper.h"
 
-
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
-
-
 
 struct ints2 {
     int a;
@@ -21,7 +18,7 @@ typedef struct ints2 typeOfStoredData;
 
 struct stackMem;
 struct stackMem {
-    typeOfStoredData data;
+    void *data;
     struct stackMem *next;
 };
 
@@ -33,25 +30,22 @@ struct stack {
     stackMem_t *top;
 };
 
-typedef struct stack stack_t;
+typedef struct stack stack_type;
 
-stack_t *stack();
+stack_type *stackInit();
 
-int push(stack_t *s, typeOfStoredData nm);
+int push(stack_type *s, void *nm);
 
-void freeStackEl(typeOfStoredData *fe);
+void *pop(stack_type *s);
 
-typeOfStoredData pop(stack_t *s);
+bool sIsEmpty(stack_type *st);
 
-bool sIsEmpty(stack_t *st);
+stackMem_t *stackBottom(stack_type *s, stackMem_t **pLast);
 
-stackMem_t *stackBotton(stack_t *s, stackMem_t **pLast);
+void *popBack(stack_type *s);
 
-typeOfStoredData popBack(stack_t *s);
+void printMember(void *data);
 
-void printMember(typeOfStoredData *data);
-
-void printStack(stack_t *s, void (*printMem)(typeOfStoredData *));
-
+void printStack(stack_type *s, void (*printMem)(void *));
 
 #endif //STACK_STACK_H
