@@ -2,7 +2,7 @@
 // Created by jvlk on 20.9.22.
 //
 
-#include "queue.c"
+#include "stack.c"
 
 int main(int argc, char *argv[]) {
 
@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     struct ints2 b = {11, 20};
     struct ints2 c = {10, 21};
 
-    enqueue(st, a);
+    push(st, a);
     push(st, b);
     push(st, c);
     printStack(st, printMember);
