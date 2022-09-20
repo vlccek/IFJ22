@@ -1,9 +1,16 @@
 //
 // Created by jvlk on 20.9.22.
 //
+#include <malloc.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include "helper.h"
+
 
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
+
+
 
 struct ints2 {
     int a;

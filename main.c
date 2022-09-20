@@ -2,7 +2,7 @@
 // Created by jvlk on 20.9.22.
 //
 
-#include "stack.c"
+#include "stack.h"
 #include "helper.h"
 
 
@@ -23,8 +23,6 @@ int main(int argc, char *argv[]) {
     typeOfStoredData tmp = popBack(st);
     //  freeStackEl(tmp);
 
-
-    make_var(tvojemamas, int*, 100);
 
 
     return 0;
