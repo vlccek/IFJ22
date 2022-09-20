@@ -6,30 +6,8 @@
 #include <stdbool.h>
 #include "helper.h"
 
-#define stack_member_null -2
 
-struct ints2 {
-    int a;
-    int b;
-};
-
-typedef struct ints2 typeOfStoredData;
-
-struct stackMem;
-struct stackMem {
-    typeOfStoredData data;
-    struct stackMem *next;
-};
-
-typedef struct stackMem stackMem_t;
-
-//stack
-struct stack {
-    int c;
-    stackMem_t *top;
-};
-
-typedef struct stack stack_t;
+#include "stack.h"
 
 stack_t *stack() {
     make_var(stack, stack_t*, sizeof(stack_t))

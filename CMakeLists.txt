@@ -8,7 +8,8 @@ add_executable(main
         )
 
 add_library(stack
-        stack.c)
+        stack.c
+        stack.h)
 
 
 target_link_libraries(main
