@@ -3,6 +3,8 @@
 //
 
 #include "stack.c"
+#include "helper.h"
+
 
 int main(int argc, char *argv[]) {
 
@@ -20,6 +22,9 @@ int main(int argc, char *argv[]) {
 
     typeOfStoredData tmp = popBack(st);
     //  freeStackEl(tmp);
+
+
+    make_var(tvojemamas, int*, 100);
 
 
     return 0;

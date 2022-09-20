@@ -4,9 +4,8 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "helper.h"
 
-#define malloc_err -100
-#define stack_null -1
 #define stack_member_null -2
 
 struct ints2 {
@@ -33,10 +32,7 @@ struct stack {
 typedef struct stack stack_t;
 
 stack_t *stack() {
-    stack_t *stack = malloc(sizeof(stack_t));
-    if (!stack) {
-        exit(malloc_err);
-    }
+    make_var(stack, stack_t*, sizeof(stack_t))
     stack->c = 0;
     stack->top = NULL;
     return stack;
@@ -47,15 +43,12 @@ stack_t *stack() {
 int push(stack_t *s, typeOfStoredData nm) {
     if (!s) {
         //Stack is null
-        return stack_null;
+        return null_dereference;
     }
 
     stackMem_t *oldtop = s->top; // saves old top
 
-    stackMem_t *newtop = malloc(sizeof(stackMem_t));
-    if (!newtop) {
-        exit(malloc_err);
-    }
+    make_var(newtop, stackMem_t*, sizeof(stackMem_t))
     s->top = newtop;
 
     s->top->data = nm; // set data of new top
