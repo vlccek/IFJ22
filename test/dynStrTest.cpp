@@ -17,7 +17,7 @@ namespace ifj22 {
         };
 
         TEST(dstrTest, basicTest) {
-            dynStr_t *dstr = dynstrInit();
+            dynStr_t *dstr = dstrInit();
             char *tmp = "Tvojem mamam!";
 
             dstrAppend(dstr, tmp);

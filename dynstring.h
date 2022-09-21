@@ -33,7 +33,7 @@ typedef struct dynStr dynStr_t;
  * Inicalizaton
  * @return incalized string
  */
-dynStr_t *dynstrInit();
+dynStr_t *dstrInit();
 
 /**
  * Returns pointer to char
@@ -50,7 +50,7 @@ sizeOfStr *dstrSize(dynStr_t *dstr);
  * @return
  */
 
-void dstPrint(dynStr_t *dstr);
+void dstrPrint(dynStr_t *dstr);
 
 void dstrfprint(dynStr_t *dstr, FILE *fp);
 
@@ -60,7 +60,7 @@ static void dstrRealloc(dynStr_t *str, int necessarySize);
 
 void dstrAppend(dynStr_t *dstr, char *t);
 
-static inline dynStr_t *dynstrInitChar(char *text);
+static inline dynStr_t *dstrInitChar(char *text);
 
 void dstrPrepend(dynStr_t *dstr, char *newStr);
 
