@@ -9,6 +9,8 @@
 #define malloc_err 99
 #define null_dereference 100
 
+#define IE_pop_empty_stack 999
+
 // Macross
 
 /**
