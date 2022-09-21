@@ -28,10 +28,16 @@ add_library(queue
         queue.c
         queue.h)
 
+add_library(dstring
+        dynstring.c
+        dynstring.c)
+
+
 add_subdirectory(test)
 
 target_link_libraries(main
         stack
-        queue)
+        queue
+        dstring)
 
 

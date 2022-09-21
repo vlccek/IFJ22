@@ -4,12 +4,27 @@
 
 #include "stack.h"
 #include "helper.h"
+#include "dynstring.h"
 
 int main(int argc, char *argv[]) {
 
-  stack_type *st = stackInit();
+    dynStr_t *dstr = dynstrInit();
+    char *tmp = "Tvojem mamam!";
 
-  void *rnd = pop(st);
-  return 0;
+    dstrAppend(dstr, tmp);
+    dstrAppend(dstr, tmp);
+    dstrAppend(dstr, tmp);
+    dstrAppend(dstr, tmp);
+    dstrAppend(dstr, tmp);
+    dstrAppend(dstr, tmp);
+    dstrAppend(dstr, tmp);
+    dstrAppend(dstr, tmp);
+
+    char *a = dstrGet(dstr);
+
+    dstPrint(dstr);
+
+    dstrFree(dstr);
+    return 0;
 
 }
