@@ -39,11 +39,15 @@ void *pop(stack_type *s) {
     }
     void *r = s->top->data; // saves old top
     s->top = s->top->next;
+    s--;
     return r;
 }
 
 bool sIsEmpty(stack_type *st) {
-    return st->top;
+  if(st->top == NULL)
+    return true;
+  else
+    return false;
 }
 
 stackMem_t *stackBottom(stack_type *s, stackMem_t **pLast) {
@@ -77,6 +81,7 @@ void *popBack(stack_type *s) {
     } else {
         pLast->next = NULL;
     }
+    s->c--;
 
     return r;
 }
