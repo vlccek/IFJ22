@@ -31,5 +31,42 @@ namespace ifj22 {
                 ASSERT_EQ(array[i], *out);
             }
         }
+
+        TEST(stackTest, empty_after_init){
+            stack_type *stack = stackInit();
+
+            ASSERT_TRUE(sIsEmpty(stack));
+        }
+
+        TEST(stackTest, not_empty_after_push){
+            stack_type *stack = stackInit();
+            int x = 69;
+            push(stack, &x);
+
+            ASSERT_FALSE(sIsEmpty(stack));
+        }
+
+        TEST(stackTest, empty_push_pop){
+            stack_type *stack = stackInit();
+            int x = 69;
+            push(stack, &x);
+
+            ASSERT_FALSE(sIsEmpty(stack));
+            int y = *(int*)pop(stack);
+            ASSERT_TRUE(sIsEmpty(stack));
+        }
+
+        TEST(stackTest, int_push_pop_eq){
+            stack_type *stack = stackInit();
+            int x = 69;
+            push(stack, &x);
+            int y = *(int*)pop(stack);
+
+            ASSERT_EQ(x, y);
+        }
+
+        TEST(stackTest, pointer_not_changing_after_push){
+
+        }
     }
 }
