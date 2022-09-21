@@ -37,6 +37,11 @@ void *pop(stack_type *s) {
     if (!s->top) {
         // return NULL;
     }
+
+    if (s->top == NULL){
+      exit(IE_pop_empty_stack);
+    }
+
     void *r = s->top->data; // saves old top
     s->top = s->top->next;
     s--;
