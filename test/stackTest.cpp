@@ -32,13 +32,13 @@ namespace ifj22 {
             }
         }
 
-        TEST(stackTest, empty_after_init){
+        TEST(stackTest, empty_after_init) {
             stack_type *stack = stackInit();
 
             ASSERT_TRUE(sIsEmpty(stack));
         }
 
-        TEST(stackTest, not_empty_after_push){
+        TEST(stackTest, not_empty_after_push) {
             stack_type *stack = stackInit();
             int x = 69;
             push(stack, &x);
@@ -46,26 +46,26 @@ namespace ifj22 {
             ASSERT_FALSE(sIsEmpty(stack));
         }
 
-        TEST(stackTest, empty_push_pop){
+        TEST(stackTest, empty_push_pop) {
             stack_type *stack = stackInit();
             int x = 69;
             push(stack, &x);
 
             ASSERT_FALSE(sIsEmpty(stack));
-            int y = *(int*)pop(stack);
+            int y = *(int *) pop(stack);
             ASSERT_TRUE(sIsEmpty(stack));
         }
 
-        TEST(stackTest, int_push_pop_eq){
+        TEST(stackTest, int_push_pop_eq) {
             stack_type *stack = stackInit();
             int x = 69;
             push(stack, &x);
-            int y = *(int*)pop(stack);
+            int y = *(int *) pop(stack);
 
             ASSERT_EQ(x, y);
         }
 
-        TEST(stackTest, value_in_pointer_not_changing_after_push){
+        TEST(stackTest, value_in_pointer_not_changing_after_push) {
             stack_type *stack = stackInit();
             int array_not_push[] = {69, 70, 71};
             int array[] = {69, 70, 71};
@@ -78,16 +78,16 @@ namespace ifj22 {
             }
         }
 
-        TEST(stackTest, pop_on_empty_stack){
+        TEST(stackTest, pop_on_empty_stack) {
             stack_type *stack = stackInit();
             // Pop on empty should not crash with sigsegv
             // Instead print error and exit with (I guess) internal error code
             // 'You should use function emptyStack()' error
-            ASSERT_EXIT((pop(stack),exit(0)),::testing::ExitedWithCode(IE_pop_empty_stack),".*");
-            ASSERT_EXIT((popBack(stack),exit(0)),::testing::ExitedWithCode(IE_pop_empty_stack),".*");
+            ASSERT_EXIT((pop(stack), exit(0)), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+            ASSERT_EXIT((popBack(stack), exit(0)), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
         }
 
-        TEST(stackTest, push_stack_to_stack){
+        TEST(stackTest, push_stack_to_stack) {
             stack_type *inner_stack = stackInit();
             stack_type *stack = stackInit();
             int a = 1;
@@ -97,8 +97,8 @@ namespace ifj22 {
             push(inner_stack, &b);
             push(stack, inner_stack);
 
-            int *x = (int*)pop(inner_stack);
-            int *y = (int*)pop(inner_stack);
+            int *x = (int *) pop(inner_stack);
+            int *y = (int *) pop(inner_stack);
 
             ASSERT_EQ(b, *x);
             ASSERT_EQ(a, *y);
@@ -107,12 +107,12 @@ namespace ifj22 {
             ASSERT_FALSE(sIsEmpty(stack));
         }
 
-        TEST(stackTest, stack_name_not_stack_type){
+        TEST(stackTest, stack_name_not_stack_type) {
             ASSERT_TRUE(false);
             // unfortunately reflection in C is not possible
         }
 
-        TEST(stackTest, pop_back_empty){
+        TEST(stackTest, pop_back_empty) {
             stack_type *stack = stackInit();
             int x = 1;
             push(stack, &x);
@@ -121,7 +121,7 @@ namespace ifj22 {
             ASSERT_TRUE(sIsEmpty(stack));
         }
 
-        TEST(stackTest, pop_back_not_empty){
+        TEST(stackTest, pop_back_not_empty) {
             stack_type *stack = stackInit();
             int x = 1;
             push(stack, &x);
@@ -131,12 +131,12 @@ namespace ifj22 {
             ASSERT_FALSE(sIsEmpty(stack));
         }
 
-        TEST(stackTest, pop_back_int){
+        TEST(stackTest, pop_back_int) {
             stack_type *stack = stackInit();
             int x = 69;
 
             push(stack, &x);
-            int y = *(int*)pop(stack);
+            int y = *(int *) pop(stack);
 
             ASSERT_EQ(x, y);
         }

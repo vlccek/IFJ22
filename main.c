@@ -5,9 +5,11 @@
 #include "stack.h"
 #include "helper.h"
 
-
 int main(int argc, char *argv[]) {
 
-    return 0;
+  stack_type *st = stackInit();
+
+  void *rnd = pop(st);
+  return 0;
 
 }

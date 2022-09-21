@@ -7,7 +7,7 @@
 #include "stack.h"
 
 stack_type *stackInit() {
-    make_var(stack, stack_type*, sizeof(stack_type))
+    make_var(stack, stack_type *, sizeof(stack_type))
     stack->c = 0;
     stack->top = NULL;
     return stack;
@@ -23,7 +23,7 @@ int push(stack_type *s, void *nm) {
 
     stackMem_t *oldtop = s->top; // saves old top
 
-    make_var(newtop, stackMem_t*, sizeof(stackMem_t))
+    make_var(newtop, stackMem_t *, sizeof(stackMem_t))
     s->top = newtop;
 
     s->top->data = nm; // set data of new top
@@ -38,8 +38,8 @@ void *pop(stack_type *s) {
         // return NULL;
     }
 
-    if (s->top == NULL){
-      exit(IE_pop_empty_stack);
+    if (s->top == NULL) {
+        exit(IE_pop_empty_stack);
     }
 
     void *r = s->top->data; // saves old top
@@ -49,10 +49,10 @@ void *pop(stack_type *s) {
 }
 
 bool sIsEmpty(stack_type *st) {
-  if(st->top == NULL)
-    return true;
-  else
-    return false;
+    if (st->top == NULL)
+        return true;
+    else
+        return false;
 }
 
 stackMem_t *stackBottom(stack_type *s, stackMem_t **pLast) {
