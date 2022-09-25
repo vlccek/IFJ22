@@ -26,12 +26,6 @@ dynStr_t *dstrInit() {
     return str;
 }
 
-inline dynStr_t *dstrInitChar(char *text) {
-    dynStr_t *nstring = dstrInit();
-    dstrAppend(nstring, text);
-    return nstring;
-}
-
 // calculate new size of string (2x)
 static int newSize(int actualsize, int necessarySize) {
     int newstringsize = actualsize * 2;// expanding string size by 2
@@ -97,13 +91,8 @@ void dstrPrepend(dynStr_t *dstr, char *newStr) {
     free(tmpStr);
 }
 
-inline bool dstrCmp(dynStr_t *dstr, dynStr_t *dstr2) {
-    return strcmp(dstr->string, dstr2->string) == 0 ? true : false;
-}
 
-inline int dstrLen(dynStr_t *dstr) {
-    return dstr->size;
-}
+
 
 dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
     if (start > dstr->size) {

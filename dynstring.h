@@ -60,13 +60,21 @@ static void dstrRealloc(dynStr_t *str, int necessarySize);
 
 void dstrAppend(dynStr_t *dstr, char *t);
 
-static inline dynStr_t *dstrInitChar(char *text);
+inline dynStr_t *dstrInitChar(char *text) {
+    dynStr_t *nstring = dstrInit();
+    dstrAppend(nstring, text);
+    return nstring;
+}
 
 void dstrPrepend(dynStr_t *dstr, char *newStr);
 
-inline bool dstrCmp(dynStr_t *dstr, dynStr_t *dstr2);
+inline bool dstrCmp(dynStr_t *dstr, dynStr_t *dstr2) {
+    return strcmp(dstr->string, dstr2->string) == 0 ? true : false;
+}
 
-inline int dstrLen(dynStr_t *dstr);
+inline int dstrLen(dynStr_t *dstr) {
+    return dstr->size;
+}
 
 dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop);
 
