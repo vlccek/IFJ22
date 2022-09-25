@@ -2,7 +2,6 @@
 // Created by jvlk on 20.9.22.
 //
 #include "stack.h"
-#include <malloc.h>
 #include <stdlib.h>
 #include <stdbool.h>
 

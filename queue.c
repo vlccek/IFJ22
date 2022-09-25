@@ -6,7 +6,7 @@
 typedef stack_type queue_t;
 
 queue_t *queue() {
-    return stack();
+    return stackInit();
 }
 
 inline void enqueue(queue_t *queue, void *nm) {
