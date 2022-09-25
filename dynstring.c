@@ -7,6 +7,7 @@
 
 #include "dynstring.h"
 
+
 dynStr_t *dstrInit() {
     make_var(str, dynStr_t *, sizeof(dynStr_t));
     if (str == NULL) {
@@ -89,7 +90,11 @@ void dstrPrepend(dynStr_t *dstr, char *newStr) {
     free(tmpStr);
 }
 
-
+dynStr_t *dstrInitChar(char *text) {
+    dynStr_t *nstring = dstrInit();
+    dstrAppend(nstring, text);
+    return nstring;
+}
 
 
 dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {

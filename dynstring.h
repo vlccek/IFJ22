@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "helper.h"
 
@@ -57,12 +58,7 @@ static void dstrRealloc(dynStr_t *str, int necessarySize);
 
 void dstrAppend(dynStr_t *dstr, char *t);
 
-inline dynStr_t *dstrInitChar(char *text) {
-    dynStr_t *nstring = dstrInit();
-    dstrAppend(nstring, text);
-    return nstring;
-}
-
+dynStr_t *dstrInitChar(char *text) ;
 void dstrPrepend(dynStr_t *dstr, char *newStr);
 
 inline bool dstrCmp(dynStr_t *dstr, dynStr_t *dstr2) {

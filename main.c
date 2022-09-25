@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[]) {
 
-    dynStr_t *dstr = dynstrInit();
+    dynStr_t *dstr = dstrInit();
     char *tmp = "Tvojem mamam!";
 
     dstrAppend(dstr, tmp);
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
     char *a = dstrGet(dstr);
 
-    dstPrint(dstr);
+    dstrPrint(dstr);
 
     dstrFree(dstr);
     return 0;
