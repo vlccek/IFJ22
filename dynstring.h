@@ -4,17 +4,14 @@
  * @brief Jednoduchý dynamický string
  */
 
+#include <stdbool.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <string.h>
-#include "helper.h"
-#include "stdbool.h"
 
+#include "helper.h"
 
 #ifndef STACK_DYNSTRING_H
 #define STACK_DYNSTRING_H
-
-
 
 // errs
 #define default_str_size 64

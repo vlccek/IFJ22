@@ -6,8 +6,6 @@
 
 
 #include "dynstring.h"
-#include <stdbool.h>
-
 
 dynStr_t *dstrInit() {
     make_var(str, dynStr_t *, sizeof(dynStr_t));
