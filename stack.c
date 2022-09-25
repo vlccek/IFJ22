@@ -29,6 +29,7 @@ int push(stack_type *s, void *nm) {
     s->top->next = oldtop;// point from old top to new top
     ///////////////////////// could be null!!!!
     s->c++;// update counter
+    return 0;
 }
 
 void *pop(stack_type *s) {
