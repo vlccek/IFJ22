@@ -27,8 +27,21 @@ namespace ifj22 {
             for (int i = 0; i < strlen(tmp); i++) {
                 ASSERT_EQ(tmp[i], a[i]);
             }
-
-
         }
-    }// namespace stack
+
+        TEST(dstrTest, append_compare_test) {
+            dynStr_t *test = dstrInit();
+            dynStr_t *to_compare = dstrInit();
+
+            dstrAppend(test, "test");
+            dstrAppend(test, " test");
+
+            dstrAppend(to_compare, "test test");
+
+            ASSERT_TRUE(dstrCmp(test, to_compare));
+        }
+
+
+
+}// namespace stack
 }// namespace ifj22
