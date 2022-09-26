@@ -39,16 +39,15 @@ static int newSize(int actualsize, int necessarySize) {
 void dstrRealloc(dynStr_t *str, int necessarySize) {
     int newSz = newSize(str->maxSize, necessarySize);
     str->maxSize = newSz;
-    make_var(nstr, char *, newSz);
-
-    char *oldstr = str->string;
-    strcpy(nstr, oldstr);
-    str->string = nstr;
-    free(oldstr);
+    char *tmp = realloc(str->string, newSz);
+    if (tmp == NULL) {
+        exit(malloc_err);
+    }
+    str->string == tmp;
 }
 
 void dstrAppend(dynStr_t *dstr, char *t) {
-    if(t == NULL){
+    if (t == NULL) {
         return;
     }
     int appendStrSize = strlen(t);
@@ -101,7 +100,7 @@ dynStr_t *dstrInitChar(char *text) {
 
 
 dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
-    if (start < 0 && stop==0) {
+    if (start < 0 && stop == 0) {
         stop = strlen(dstr->string);
     }
 
