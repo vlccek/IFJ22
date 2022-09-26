@@ -105,7 +105,7 @@ dynStr_t *dstrInitChar(char *text) {
 
 dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
     if (start < 0 && stop == 0) {
-        stop = strlen(dstr->string);
+        stop = dstr->size;
     }
 
     if (start > dstr->size) {
