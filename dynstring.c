@@ -43,7 +43,8 @@ void dstrRealloc(dynStr_t *str, int necessarySize) {
     if (tmp == NULL) {
         exit(malloc_err);
     }
-    str->string == tmp;
+    str->string = tmp;
+    str->string[str->size] = '\0';
 }
 
 void dstrAppend(dynStr_t *dstr, char *t) {
@@ -52,7 +53,7 @@ void dstrAppend(dynStr_t *dstr, char *t) {
     }
     int appendStrSize = strlen(t);
     if (dstr->size + appendStrSize >= dstr->maxSize) {
-        dstrRealloc(dstr, strlen(t));
+        dstrRealloc(dstr, appendStrSize);
     }
     dstr->size += appendStrSize;
     strcat(dstr->string, t);
@@ -80,15 +81,18 @@ void dstrPrepend(dynStr_t *dstr, char *newStr) {
         // if size of concat strings is big then allocated reallocated new one
         dstrRealloc(dstr, (int) strlen(newStr));
     }
-    dstr->size += appendStrSize;
 
     make_var(tmpStr, char *, strlen(dstr->string));
     strcpy(tmpStr, dstr->string);
     // saves original string
+    tmpStr[dstr->size] = '\0';
+
+    dstr->size += appendStrSize;
 
     strcpy(dstr->string, newStr);// copy prefix
     strcat(dstr->string, tmpStr);// concat sufix (original string)
 
+    dstr->string[dstr->size] = '\0';
     free(tmpStr);
 }
 
