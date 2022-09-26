@@ -48,6 +48,9 @@ void dstrRealloc(dynStr_t *str, int necessarySize) {
 }
 
 void dstrAppend(dynStr_t *dstr, char *t) {
+    if(t == NULL){
+        return;
+    }
     int appendStrSize = strlen(t);
     if (dstr->size + appendStrSize >= dstr->maxSize) {
         dstrRealloc(dstr, strlen(t));
@@ -98,6 +101,10 @@ dynStr_t *dstrInitChar(char *text) {
 
 
 dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
+    if (start < 0 && stop==0) {
+        stop = strlen(dstr->string);
+    }
+
     if (start > dstr->size) {
         start = dstr->size;
     }
@@ -115,6 +122,8 @@ dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
     if (start >= stop || start < 0 || stop < 0) {
         return dstrInit();
     }
+
+
     make_var(tmp, char *, dstr->size);
     strncpy(tmp, dstr->string + start, stop - start);
     tmp[stop - start] = '\0';
