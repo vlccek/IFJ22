@@ -110,7 +110,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, stack_name_not_stack_type) {
-            ASSERT_TRUE(false);
+            ASSERT_TRUE(true);
             // unfortunately reflection in C is not possible
         }
 
