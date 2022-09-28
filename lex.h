@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "dynstring.h"
 
 #ifndef LUAINTERPRET_LEX_H
 #define LUAINTERPRET_LEX_H
