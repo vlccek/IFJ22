@@ -52,8 +52,8 @@ void dstrAppend(dynStr_t *dstr, char *t) {
         return;
     }
     int appendStrSize = strlen(t);
-    if (dstr->size + appendStrSize >= dstr->maxSize) {
-        dstrRealloc(dstr, appendStrSize);
+    if (dstr->size + appendStrSize + 1 >= dstr->maxSize) {
+        dstrRealloc(dstr, appendStrSize + 1); // \0 character +
     }
     dstr->size += appendStrSize;
     strcat(dstr->string, t);
@@ -77,9 +77,9 @@ void dstrfprint(dynStr_t *dstr, FILE *fp) {
 
 void dstrPrepend(dynStr_t *dstr, char *newStr) {
     int appendStrSize = (int) strlen(newStr);
-    if (dstr->size + appendStrSize >= dstr->maxSize) {
+    if (dstr->size + appendStrSize + 1 >= dstr->maxSize) {
         // if size of concat strings is big then allocated reallocated new one
-        dstrRealloc(dstr, (int) strlen(newStr));
+        dstrRealloc(dstr, appendStrSize + 1);
     }
 
     make_var(tmpStr, char *, strlen(dstr->string));
@@ -127,7 +127,7 @@ dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
     }
 
 
-    make_var(tmp, char *, dstr->size);
+    make_var(tmp, char *, stop - start + 1);
     strncpy(tmp, dstr->string + start, stop - start);
     tmp[stop - start] = '\0';
 
