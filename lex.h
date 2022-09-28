@@ -33,13 +33,12 @@ typedef enum
     // assignment
     equals,
     colon,
+    semiColon,
     comma,
 
     // operators
-    hashOp,
     multiplicationOp,
     divisionOp,
-    integerDivisionOp,
     plusOp,
     minusOp,
     concatenationOp,
@@ -47,8 +46,8 @@ typedef enum
     lesserEqOp,
     greaterThanOp,
     greaterEqOp,
-    doubleEqOp,
-    tildaEqOp,
+    eqOp,
+    notEqOp,
 
     // parentheses
     leftPar,
