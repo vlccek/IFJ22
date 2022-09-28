@@ -1,2 +1,2 @@
 lex: lex.c
-	gcc lex.c -o lex -Wall -Wextra - Werror -std=c99
+	gcc lex.c -o lex -std=c99
