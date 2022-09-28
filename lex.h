@@ -23,6 +23,11 @@ typedef enum
     voidKey,
     whileKey,
 
+    //function, and loops
+    curlyBraceRight,
+    curlyBraceLeft,
+
+
     // data types
     stringKey, // "'string' $hello"
     floatKey,
