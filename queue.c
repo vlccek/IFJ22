@@ -3,7 +3,7 @@
 //
 #include "queue.h"
 
-typedef stack_type queue_t;
+typedef genericStack queue_t;
 
 queue_t *queue() {
     return stackInit();

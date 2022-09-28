@@ -9,7 +9,7 @@
 #ifndef STACK_QUEUE_H
 #define STACK_QUEUE_H
 
-typedef stack_type queue_t;
+typedef genericStack queue_t;
 
 queue_t *queue();
 

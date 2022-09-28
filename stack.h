@@ -30,22 +30,22 @@ struct stack {
     stackMem_t *top;
 };
 
-typedef struct stack stack_type;
+typedef struct stack genericStack;
 
-stack_type *stackInit();
+genericStack *stackInit();
 
-int push(stack_type *s, void *nm);
+int push(genericStack *s, void *nm);
 
-void *pop(stack_type *s);
+void *pop(genericStack *s);
 
-bool sIsEmpty(stack_type *st);
+bool sIsEmpty(genericStack *st);
 
-stackMem_t *stackBottom(stack_type *s, stackMem_t **pLast);
+stackMem_t *stackBottom(genericStack *s, stackMem_t **pLast);
 
-void *popBack(stack_type *s);
+void *popBack(genericStack *s);
 
 void printMember(void *data);
 
-void printStack(stack_type *s, void (*printMem)(void *));
+void printStack(genericStack *s, void (*printMem)(void *));
 
 #endif //STACK_STACK_H

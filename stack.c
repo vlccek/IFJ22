@@ -5,8 +5,8 @@
 
 #include "stack.h"
 
-stack_type *stackInit() {
-    make_var(stack, stack_type *, sizeof(stack_type))
+genericStack *stackInit() {
+    make_var(stack, genericStack *, sizeof(genericStack))
             stack->c = 0;
     stack->top = NULL;
     return stack;
@@ -14,7 +14,7 @@ stack_type *stackInit() {
 
 //
 
-int push(stack_type *s, void *nm) {
+int push(genericStack *s, void *nm) {
     if (!s || !nm) {
         //Stack is null
         return null_dereference;
@@ -32,7 +32,7 @@ int push(stack_type *s, void *nm) {
     return 0;
 }
 
-void *pop(stack_type *s) {
+void *pop(genericStack *s) {
     if (!s->top) {
         // return NULL;
     }
@@ -47,14 +47,14 @@ void *pop(stack_type *s) {
     return r;
 }
 
-bool sIsEmpty(stack_type *st) {
+bool sIsEmpty(genericStack *st) {
     if (st->top == NULL)
         return true;
     else
         return false;
 }
 
-stackMem_t *stackBottom(stack_type *s, stackMem_t **pLast) {
+stackMem_t *stackBottom(genericStack *s, stackMem_t **pLast) {
     if (!s->top) {
         return NULL;
     }
@@ -72,7 +72,7 @@ stackMem_t *stackBottom(stack_type *s, stackMem_t **pLast) {
     return i;
 }
 
-void *popBack(stack_type *s) {
+void *popBack(genericStack *s) {
     stackMem_t *pLast;
     stackMem_t *bottomEl = stackBottom(s, &pLast);
 
@@ -91,7 +91,7 @@ void *popBack(stack_type *s) {
 }
 
 
-void printStack(stack_type *s, void (*printMem)(void *)) {
+void printStack(genericStack *s, void (*printMem)(void *)) {
     fprintf(stdout, "Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
