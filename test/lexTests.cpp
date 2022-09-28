@@ -29,6 +29,7 @@ namespace ifj22 {
 
             FILE *prerpareFile(const char *text) {
                 fprintf(fileForTest, "%s", text);
+                return fileForTest;
             }
         };
 
