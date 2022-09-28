@@ -20,7 +20,7 @@ namespace ifj22 {
         };
 
         TEST(stackTest, poptest) {
-            stack_type *st = stackInit();
+            genericStack *st = stackInit();
 
             int array[] = {10, 20, 30, 40, 50};
 
@@ -35,13 +35,13 @@ namespace ifj22 {
         }
 
         TEST(stackTest, empty_after_init) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
 
             ASSERT_TRUE(sIsEmpty(stack));
         }
 
         TEST(stackTest, not_empty_after_push) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             int x = 69;
             push(stack, &x);
 
@@ -49,7 +49,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, empty_push_pop) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             int x = 69;
             push(stack, &x);
 
@@ -59,7 +59,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, int_push_pop_eq) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             int x = 69;
             push(stack, &x);
             int y = *(int *) pop(stack);
@@ -68,7 +68,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, value_in_pointer_not_changing_after_push) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             int array_not_push[] = {69, 70, 71};
             int array[] = {69, 70, 71};
             for (int i = 0; i < std::size(array); i++) {
@@ -81,7 +81,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_on_empty_stack) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             // Pop on empty should not crash with sigsegv
             // Instead print error and exit with (I guess) internal error code
             // 'You should use function emptyStack()' error
@@ -90,8 +90,8 @@ namespace ifj22 {
         }
 
         TEST(stackTest, push_stack_to_stack) {
-            stack_type *inner_stack = stackInit();
-            stack_type *stack = stackInit();
+            genericStack *inner_stack = stackInit();
+            genericStack *stack = stackInit();
             int a = 1;
             int b = 2;
 
@@ -115,7 +115,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_back_empty) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             int x = 1;
             push(stack, &x);
             void *y = popBack(stack);
@@ -124,7 +124,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_back_not_empty) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             int x = 1;
             push(stack, &x);
             push(stack, &x);
@@ -134,7 +134,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_back_int) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
             int x = 69;
 
             push(stack, &x);
@@ -144,7 +144,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_back_many) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
 
             int array[] = {10, 20, 30, 40, 50};
 
@@ -159,7 +159,7 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_back_many_empty) {
-            stack_type *stack = stackInit();
+            genericStack *stack = stackInit();
 
             int array[] = {10, 20, 30, 40, 50};
 
