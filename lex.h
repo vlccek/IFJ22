@@ -2,7 +2,7 @@
  * @file lex.h
  * @author Jindřich Vodák (xvodak06@stud.fit.vutbr.cz)
  * @brief Hlavičkový soubor pro lexikální analyzátor
- * Implementace překladače imperativního jazyka IFJ21
+ * Implementace překladače jazyka IFJ22
  */
 
 #include <stdio.h>
@@ -77,25 +77,25 @@ typedef union
     char *valueString;
     int valueInteger;
     double valueNumber;
-} Data;
+} data_t;
 
 // represents the output
 typedef struct
 {
     lexType type;
-    Data data;
+    data_t data;
     int rowNumber;
     int rowPosNumber;
-} token;
+} token_t;
 
 // gets the next token and advances the pointer
-token getToken(FILE *stream);
+token_t getToken(FILE *stream);
 
 // TODO prints the content of a token
-void printTokenData(token input);
+void printTokenData(token_t input);
 
 // frees the token from memory
-void freeToken(token *input);
+void freeToken(token_t *input);
 
 /**
  * Resets row and rowPos counters.
