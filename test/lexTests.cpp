@@ -33,6 +33,45 @@ namespace ifj22 {
             }
         };
 
+        TEST_F(lexTest, prolog_unallowChars) {
+
+            char text[] = "randomcharejjeojeoeojejojeojeojeojeoejeoj"
+                          "<?php\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prerpareFile(text);
+
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+
+        }
+
+        TEST_F(lexTest, prolog_unallowChars2) {
+            char text[] = "<?phpjenej\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prerpareFile(text);
+
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+
+        }
+
+        TEST_F(lexTest, prolog_unallowChars3) {
+            char text[] = "<?php\n"
+                          "a = 10;"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prerpareFile(text);
+
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+
+        }
+
 
         TEST_F(lexTest, function_declare) {
 
