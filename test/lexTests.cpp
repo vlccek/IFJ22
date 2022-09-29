@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-
+#include <string>
 // Hide main
 #define TESTING
 // Hide the io function since this will segfault in testing
@@ -11,7 +11,6 @@ extern "C" {
 
 namespace ifj22 {
     namespace stack {
-
         class lexTest : public ::testing::Test {
 
         protected:
@@ -30,6 +29,13 @@ namespace ifj22 {
             FILE *prerpareFile(const char *text) {
                 fprintf(fileForTest, "%s", text);
                 return fileForTest;
+            }
+
+            static void runTest(const std::vector<lexType>& checkTokens){
+                for (auto i: checkTokens) {
+                    token_t t = getToken(fp);
+                    ASSERT_EQ(t.type, i);
+                }
             }
         };
 
@@ -110,10 +116,18 @@ namespace ifj22 {
                 token_t t = getToken(fp);
                 ASSERT_EQ(t.type, i);
             }
-
-
         }
 
 
+
+
+        TEST_F(lexTest, keywords_test) {
+            auto text = PhpPrologString("else float function if int null return"
+                                        "string void while");
+            FILE *fp = prerpareFile(text.get());
+
+            runTest({elseKey, floatDat, functionKey, ifKey, intDat, nullKey,
+                     returnKey, stringDat, voidKey, whileKey});
+        }
     }// namespace stack
 }// namespace ifj22
