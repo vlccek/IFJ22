@@ -24,20 +24,3 @@ void printTokenData(token_t input)
     return;
     }
 }
-
-int main()
-{
-    // testing
-    token_t token;
-    data_t data;
-
-    token.type = stringLiteral;
-    data.valueString = "Hello World";
-    token.data = data;
-    token.rowNumber = 1;
-    token.rowPosNumber = 1;
-
-    printTokenData(token);
-    
-    return 0;
-}
