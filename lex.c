@@ -86,5 +86,6 @@ void printTokenData(token_t input)
 token_t getToken(FILE *stream)
 {
     token_t token;
+    token.type = unknown;
     return token;
 }
