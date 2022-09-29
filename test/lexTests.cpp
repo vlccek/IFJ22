@@ -82,9 +82,9 @@ namespace ifj22 {
                           "}";
             FILE *fp = prerpareFile(text);
 
-            std::vector<lexType> tokens = {functionKey, identifierFce, leftPar, stringKey,
-                                           identifierVar, rightPar, colon, stringKey, curlyBraceRight,
-                                           returnKey, identifierFce, identifierVar, semiColon, curlyBraceLeft};
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat,
+                                           identifierVar, rightPar, colon, stringDat, curlyBraceRight,
+                                           returnKey, identifierFunc, identifierVar, semiColon, curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
                 ASSERT_EQ(t.type, i);
