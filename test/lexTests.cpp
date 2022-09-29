@@ -130,7 +130,7 @@ namespace ifj22 {
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringDat,
                                            curlyBraceRight,
-                                           returnKey, stringLiteral, semiColon,
+                                           returnKey, stringLiteral, semicolon,
                                            curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
@@ -164,7 +164,7 @@ namespace ifj22 {
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringDat,
                                            curlyBraceRight,
-                                           returnKey, stringLiteral, semiColon,
+                                           returnKey, stringLiteral, semicolon,
                                            curlyBraceLeft};
 
             for (auto i: tokens) {
@@ -184,7 +184,7 @@ namespace ifj22 {
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat,
                                            identifierVar, rightPar, colon, stringDat, curlyBraceRight,
-                                           returnKey, identifierFunc, identifierVar, semiColon, curlyBraceLeft};
+                                           returnKey, identifierFunc, identifierVar, semicolon, curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
                 ASSERT_EQ(t.type, i);
