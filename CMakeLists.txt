@@ -37,11 +37,16 @@ add_library(lex
         lex.h
         dynstring)
 
+add_library(common
+        common.c
+        common.h)
+
 add_subdirectory(test)
 
 target_link_libraries(main
         stack
         queue
-        dstring)
+        dstring
+        common)
 
 
