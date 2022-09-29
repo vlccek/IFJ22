@@ -33,6 +33,27 @@ namespace ifj22 {
             }
         };
 
+        class PhpPrologString {
+        private:
+            std::string value;
+
+            void prependProlog(){
+                value.insert(0, "<?php\n"
+                                "declare(strict_types=1);\n");
+            }
+
+        public:
+            PhpPrologString(const char *text){
+                value = std::string(text);
+                prependProlog();
+            }
+            const char *get(){
+                return value.c_str();
+            }
+
+        };
+
+
         TEST_F(lexTest, prolog_unallowChars) {
 
             char text[] = "randomcharejjeojeoeojejojeojeojeojeoejeoj"
