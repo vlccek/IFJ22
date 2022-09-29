@@ -65,7 +65,7 @@ typedef enum
     decimalLiteral,
 
     // identifiers
-    identifierFce,
+    identifierFunc,
     identifierVar,
 
     // unknown
@@ -79,7 +79,7 @@ typedef enum
 // represents the value of the token
 typedef union
 {
-    char *valueString;
+    dynStr_t *valueString;
     int valueInteger;
     double valueNumber;
 } data_t;

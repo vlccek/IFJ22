@@ -16,7 +16,7 @@ void printTokenData(token_t input)
     // literals
     case stringLiteral:
         fprintf(stderr, "lextype: stringLiteral\n");
-        fprintf(stderr, "value: %s\n", input.data.valueString);
+        fprintf(stderr, "value: %s\n", dstrGet(input.data.valueString));
         break;
     default:
         // TODO
