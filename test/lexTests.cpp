@@ -69,9 +69,9 @@ namespace ifj22 {
                           "function bar(string $param) : string {\n"
                           "return foo($param);\n"
                           "}";
-            FILE *fp = prepareFile(text);
+            FILE *fp = prepareFile(text);;
 
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
 
         }
 
@@ -83,7 +83,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
 
         }
 
@@ -96,7 +96,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
 
         }
 
@@ -150,7 +150,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text);
 
             getToken(fp); // function key
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
         }
 
         TEST_F(lexTest, function_declare_name_with_num) {
