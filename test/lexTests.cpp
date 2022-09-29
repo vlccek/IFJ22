@@ -31,9 +31,9 @@ namespace ifj22 {
                 return fileForTest;
             }
 
-            static void runTest(const std::vector<lexType> &checkTokens) {
+            void assertTokensEq(const std::vector<lexType>& checkTokens){
                 for (auto i: checkTokens) {
-                    token_t t = getToken(fp);
+                    token_t t = getToken(fileForTest);
                     ASSERT_EQ(t.type, i);
                 }
             }
@@ -192,13 +192,17 @@ namespace ifj22 {
         }
 
 
+
+
         TEST_F(lexTest, keywords_test) {
             auto text = PhpPrologString("else float function if int null return"
                                         "string void while");
-            FILE *fp = prerpareFile(text.get());
+            fileForTest = prepareFile(text.get());
 
-            runTest({elseKey, floatDat, functionKey, ifKey, intDat, nullKey,
-                     returnKey, stringDat, voidKey, whileKey});
+            assertTokensEq({elseKey, floatDat, functionKey, ifKey, intDat, nullKey,
+                            returnKey, stringDat, voidKey, whileKey});
         }
+
+
     }// namespace stack
 }// namespace ifj22
