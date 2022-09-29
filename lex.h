@@ -23,7 +23,7 @@ typedef enum
     voidKey,
     whileKey,
 
-    //function, and loops
+    //f curly braces
     curlyBraceRight,
     curlyBraceLeft,
 

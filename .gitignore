@@ -54,3 +54,7 @@ dkms.conf
 # custom
 /cmake-build-debug/
 /build/
+
+# testing
+/lexTest.c
+/lexTest

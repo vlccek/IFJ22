@@ -1,2 +1,2 @@
-lex: lex.c
-	gcc lex.c -o lex -std=c99
+lexTest: lex.c lexTest.c
+	gcc lexTest.c lex.c -o lexTest -std=c99
