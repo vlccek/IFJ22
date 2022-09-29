@@ -34,7 +34,8 @@ add_library(dstring
 
 add_library(lex
         lex.c
-        lex.h)
+        lex.h
+        dynstring)
 
 add_subdirectory(test)
 
