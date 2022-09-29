@@ -26,12 +26,12 @@ namespace ifj22 {
                 fclose(fopen("test.txt", "w"));
             }
 
-            FILE *prerpareFile(const char *text) {
+            FILE *prepareFile(const char *text) {
                 fprintf(fileForTest, "%s", text);
                 return fileForTest;
             }
 
-            static void runTest(const std::vector<lexType>& checkTokens){
+            static void runTest(const std::vector<lexType> &checkTokens) {
                 for (auto i: checkTokens) {
                     token_t t = getToken(fp);
                     ASSERT_EQ(t.type, i);
@@ -43,17 +43,18 @@ namespace ifj22 {
         private:
             std::string value;
 
-            void prependProlog(){
+            void prependProlog() {
                 value.insert(0, "<?php\n"
                                 "declare(strict_types=1);\n");
             }
 
         public:
-            PhpPrologString(const char *text){
+            PhpPrologString(const char *text) {
                 value = std::string(text);
                 prependProlog();
             }
-            const char *get(){
+
+            const char *get() {
                 return value.c_str();
             }
 
@@ -68,7 +69,7 @@ namespace ifj22 {
                           "function bar(string $param) : string {\n"
                           "return foo($param);\n"
                           "}";
-            FILE *fp = prerpareFile(text);
+            FILE *fp = prepareFile(text);
 
             EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
 
@@ -80,7 +81,7 @@ namespace ifj22 {
                           "function bar(string $param) : string {\n"
                           "return foo($param);\n"
                           "}";
-            FILE *fp = prerpareFile(text);
+            FILE *fp = prepareFile(text);
 
             EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
 
@@ -93,12 +94,84 @@ namespace ifj22 {
                           "function bar(string $param) : string {\n"
                           "return foo($param);\n"
                           "}";
-            FILE *fp = prerpareFile(text);
+            FILE *fp = prepareFile(text);
 
             EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
 
         }
 
+        TEST_F(lexTest, function_declare_more_args) {
+
+            char text[] = "<?php\n"
+                          "declare(strict_types=1);\n"
+                          "function concat(string $x, string $y): string {"
+                          "return $x . \" \" . $y;\n"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat, identifierVar, stringDat,
+                                           identifierVar, rightPar, colon, stringDat, curlyBraceRight,
+                                           returnKey, identifierVar, concatenationOp, stringLiteral, curlyBraceLeft};
+            for (auto i: tokens) {
+                token_t t = getToken(fp);
+                ASSERT_EQ(t.type, i);
+            }
+
+        }
+
+        TEST_F(lexTest, function_declare_empty_param) {
+
+            char text[] = "<?php\n"
+                          "declare(strict_types=1);\n"
+                          "function concat():string {"
+                          "return \" \" \n;"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringDat,
+                                           curlyBraceRight,
+                                           returnKey, stringLiteral, semiColon,
+                                           curlyBraceLeft};
+            for (auto i: tokens) {
+                token_t t = getToken(fp);
+                ASSERT_EQ(t.type, i);
+            }
+
+
+        }
+
+        TEST_F(lexTest, function_declare_name) {
+
+            char text[] = "<?php\n"
+                          "declare(strict_types=1);\n"
+                          "function 2concat():string {"
+                          "return \" \" \n;"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            getToken(fp); // function key
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+        }
+
+        TEST_F(lexTest, function_declare_name_with_num) {
+
+            char text[] = "<?php\n"
+                          "declare(strict_types=1);\n"
+                          "function concat2():string {"
+                          "return \" \" \n;"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringDat,
+                                           curlyBraceRight,
+                                           returnKey, stringLiteral, semiColon,
+                                           curlyBraceLeft};
+
+            for (auto i: tokens) {
+                token_t t = getToken(fp);
+                ASSERT_EQ(t.type, i);
+            }
+        }
 
         TEST_F(lexTest, function_declare) {
 
@@ -107,7 +180,7 @@ namespace ifj22 {
                           "function bar(string $param) : string {\n"
                           "return foo($param);\n"
                           "}";
-            FILE *fp = prerpareFile(text);
+            FILE *fp = prepareFile(text);
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat,
                                            identifierVar, rightPar, colon, stringDat, curlyBraceRight,
@@ -117,8 +190,6 @@ namespace ifj22 {
                 ASSERT_EQ(t.type, i);
             }
         }
-
-
 
 
         TEST_F(lexTest, keywords_test) {

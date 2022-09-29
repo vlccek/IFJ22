@@ -11,6 +11,8 @@
 
 #define IE_pop_empty_stack 27
 
+#define lexEr 1
+
 // Macross
 
 /**
