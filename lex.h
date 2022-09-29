@@ -23,18 +23,18 @@ typedef enum
     voidKey,
     whileKey,
 
-    //f curly braces
+    // curly braces
     curlyBraceRight,
     curlyBraceLeft,
 
 
     // data types
-    stringKey, // "'string' $hello"
-    floatKey,
-    intKey,
-    stringNullKey,
-    floatNullKey,
-    intNullKey,
+    stringDat, // "'string' $hello"
+    floatDat,
+    intDat,
+    stringNullDat,
+    floatNullDat,
+    intNullDat,
 
     // assignment
     equals,
@@ -96,7 +96,7 @@ typedef struct
 // gets the next token and advances the pointer
 token_t getToken(FILE *stream);
 
-// TODO prints the content of a token
+// prints the content of a token
 void printTokenData(token_t input);
 
 // frees the token from memory
