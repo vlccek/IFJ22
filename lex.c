@@ -75,10 +75,16 @@ void printTokenData(token_t input)
     default:
         fprintf(stderr, "lextype: unknown\n");
         break;
-    return;
     }
 
     fprintf(stderr, "row: %d\nrow position: %d\n\n", input.rowNumber, input.rowPosNumber);
 
     return;
+}
+
+// TODO
+token_t getToken(FILE *stream)
+{
+    token_t token;
+    return token;
 }
