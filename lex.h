@@ -39,7 +39,7 @@ typedef enum
     // assignment
     equals,
     colon,
-    semiColon,
+    semicolon,
     comma,
 
     // operators
