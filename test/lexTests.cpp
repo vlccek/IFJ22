@@ -119,6 +119,27 @@ namespace ifj22 {
         class LexTestTokenData : public lexTest {
         };
 
+        class PhpPrologString {
+        private:
+            std::string value;
+
+            void prependProlog() {
+                value.insert(0, "<?php\n"
+                                "declare(strict_types=1);\n");
+            }
+
+        public:
+            PhpPrologString(const char *text = "") {
+                value = std::string(text);
+                prependProlog();
+            }
+
+            const char *get() {
+                return value.c_str();
+            }
+
+        };
+
 
         TEST_F(LexTestAdvanced, prolog_unallowChars) {
 
@@ -267,6 +288,124 @@ namespace ifj22 {
             assertTokensEq(fp, {ifKey, leftPar, integerLiteral, rightPar,
                                 curlyBraceLeft, intDat, semicolon, curlyBraceRight,
                                 elseKey, curlyBraceLeft, intDat, semicolon, curlyBraceRight});
+        }
+
+        // literál je tvořen celou a desetinnou částí,
+        TEST_F(LexTestSimple, floatTest) {
+            auto text = PhpPrologString("0.0 00000.0000 1.0005 61561615.15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+        // nebo celou částí a exponen-tem,
+        TEST_F(LexTestSimple, floatTestExponents1) {
+            auto text = PhpPrologString("0.e0 00000.e0000 1.e0005 61561615.e15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+
+        TEST_F(LexTestSimple, floatTestExponents2) {
+            auto text = PhpPrologString("0.e+0 00000.e+0000 1.e+0005 61561615.e+15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+
+        TEST_F(LexTestSimple, floatTestExponents3) {
+            auto text = PhpPrologString("0.e-0 00000.e-0000 1.e-0005 61561615.e-15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+
+        TEST_F(LexTestSimple, floatTestExponents4) {
+            auto text = PhpPrologString("0.E0 00000.E0000 1.E0005 61561615.E15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+
+        TEST_F(LexTestSimple, floatTestExponents5) {
+            auto text = PhpPrologString("0.E+0 00000.E+0000 1.E+0005 61561615.E+15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+
+        TEST_F(LexTestSimple, floatTestExponents6) {
+            auto text = PhpPrologString("0.E-0 00000.E-0000 1.E-0005 61561615.E-15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+        // nebo celou a desetinnou částí a exponentem.
+        TEST_F(LexTestSimple, floatTestDecimalExponents1) {
+
+            auto text = PhpPrologString("0.0e0 00000.15e0000 1.8498e0005 61561615.0000e15161561 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+        }
+
+        TEST_F(LexTestSimple, floatTestDecimalExponents2) {
+
+            auto text = PhpPrologString("0.0e0 0.0E0 0.0e-1 "
+                                        "0.0e+1 0.0E+1 0.0E-1 ");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, floatDat, floatDat,
+                                floatDat, floatDat, floatDat,});
+        }
+
+        TEST_F(LexTestEdgeCase, floatFail1) {
+            // desetinna cast nesmi byt pradna
+            auto text = PhpPrologString("0.e44");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, floatFail2) {
+            // desetinna cast nesmi byt pradna
+            auto text = PhpPrologString("0.e44");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+
+        }
+
+        TEST_F(LexTestEdgeCase, floatFail3) {
+            // cela cast nesmi byt pradna
+            auto text = PhpPrologString(".5e44");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, floatFail4) {
+            // +- nelze
+            auto text = PhpPrologString("0.0e+-44");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+
+        TEST_F(LexTestEdgeCase, floatFail5) {
+            // -+ nelze
+            auto text = PhpPrologString("0.0e-+44");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, floatFail6) {
+            // expo cast nesmí byt pradna
+            auto text = std::string(PhpPrologString().get()) + std::to_string(INTMAX_MAX);
+            FILE *fp = prepareFile(text.c_str());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
 
