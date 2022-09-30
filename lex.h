@@ -28,10 +28,6 @@ typedef enum
     curlyBraceRight,
     curlyBraceLeft,
 
-<<<<<<< HEAD
-=======
-
->>>>>>> f4393abd91b907a02aac3468f6eabafe9dbda171
     // data types
     stringDat, // "'string' $hello"
     floatDat,
