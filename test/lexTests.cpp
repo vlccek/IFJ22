@@ -80,16 +80,33 @@ namespace ifj22 {
 
         }
 
-        TEST_F(LexTestSimple, function_cal) {
+        TEST_F(LexTestSimple, function_names) {
             auto text = PhpPrologString(
                     "hovno() hovnokodjesuper() hocnoko55d() hovnokod556655() jehovnokodsuper_skeropes() "
-                    "6hovno() skeropes_() ");
+                    "6hovno() skeropes_()");
             FILE *fp = prepareFile(text.get());
             assertTokensEq(fp,
                            {identifierFunc, identifierFunc, identifierFunc, identifierFunc, identifierFunc});
 
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+
+        }
+
+        TEST_F(LexTestSimple, function_param) {
+            auto text = PhpPrologString(
+                    "hovno(string $a) hovno(int $a) hovno(float $a) "
+                    "hovno(string $a, float $a) hovno(string $a, int $a, float $a)"
+            );
+            FILE *fp = prepareFile(text.get());
+            assertTokensEq(fp,
+                           {identifierFunc, leftPar, stringDat, identifierVar, rightPar,
+                            identifierFunc, leftPar, intDat, identifierVar, rightPar,
+                            identifierFunc, leftPar, floatDat, identifierVar, rightPar,
+                            identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar, rightPar,
+                            identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar, floatDat, // \n
+                            identifierVar, rightPar
+                           });
 
         }
 
