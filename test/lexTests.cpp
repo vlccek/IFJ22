@@ -10,6 +10,28 @@ extern "C" {
 #include <stdio.h>
 };
 
+class PhpPrologString {
+private:
+    std::string value;
+
+    void prependProlog() {
+        value.insert(0, "<?php\n"
+                        "declare(strict_types=1);\n");
+    }
+
+public:
+    PhpPrologString(const char *text) {
+        value = std::string(text);
+        prependProlog();
+    }
+
+    const char *get() {
+        return value.c_str();
+    }
+
+};
+
+
 namespace ifj22 {
     namespace stack {
         class lexTest : public ::testing::Test {
@@ -41,7 +63,35 @@ namespace ifj22 {
         };
 
         class LexTestSimple : public lexTest {
+
         };
+
+        TEST_F(LexTestSimple, variable) {
+            auto text = PhpPrologString(
+                    "$hovno $hPvnpS $HOVNO $HOVNO $HOVNO6 $HO999VNO $hovno_kod $hovnokod_$6HOVNO $6hovno");
+            FILE *fp = prepareFile(text.get());
+            assertTokensEq(fp,
+                           {identifierVar, identifierVar, identifierVar, identifierVar, identifierVar, identifierVar,
+                            identifierVar,});
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+
+        }
+
+        TEST_F(LexTestSimple, function_cal) {
+            auto text = PhpPrologString(
+                    "hovno() hovnokodjesuper() hocnoko55d() hovnokod556655() jehovnokodsuper_skeropes() "
+                    "6hovno() skeropes_() ");
+            FILE *fp = prepareFile(text.get());
+            assertTokensEq(fp,
+                           {identifierFunc, identifierFunc, identifierFunc, identifierFunc, identifierFunc});
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+
+        }
 
         class LexTestAdvanced : public lexTest {
         };
@@ -50,27 +100,6 @@ namespace ifj22 {
         };
 
         class LexTestTokenData : public lexTest {
-        };
-
-        class PhpPrologString {
-        private:
-            std::string value;
-
-            void prependProlog() {
-                value.insert(0, "<?php\n"
-                                "declare(strict_types=1);\n");
-            }
-
-        public:
-            PhpPrologString(const char *text) {
-                value = std::string(text);
-                prependProlog();
-            }
-
-            const char *get() {
-                return value.c_str();
-            }
-
         };
 
 
