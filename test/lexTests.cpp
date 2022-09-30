@@ -32,12 +32,24 @@ namespace ifj22 {
                 return fileForTest;
             }
 
-            void assertTokensEq(FILE* fp, const std::vector<lexType>& checkTokens){
+            void assertTokensEq(FILE *fp, const std::vector<lexType> &checkTokens) {
                 for (auto i: checkTokens) {
                     token_t t = getToken(fp);
                     ASSERT_STREQ(getTerminalName(t.type), getTerminalName(i));
                 }
             }
+        };
+
+        class LexTestSimple : public lexTest {
+        };
+
+        class LexTestAdvanced : public lexTest {
+        };
+
+        class LexTestEdgeCase : public lexTest {
+        };
+
+        class LexTestTokenData : public lexTest {
         };
 
         class PhpPrologString {
@@ -62,7 +74,7 @@ namespace ifj22 {
         };
 
 
-        TEST_F(lexTest, prolog_unallowChars) {
+        TEST_F(LexTestAdvanced, prolog_unallowChars) {
 
             char text[] = "randomcharejjeojeoeojejojeojeojeojeoejeoj"
                           "<?php\n"
@@ -76,7 +88,7 @@ namespace ifj22 {
 
         }
 
-        TEST_F(lexTest, prolog_unallowChars2) {
+        TEST_F(LexTestAdvanced, prolog_unallowChars2) {
             char text[] = "<?phpjenej\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
@@ -88,7 +100,7 @@ namespace ifj22 {
 
         }
 
-        TEST_F(lexTest, prolog_unallowChars3) {
+        TEST_F(LexTestAdvanced, prolog_unallowChars3) {
             char text[] = "<?php\n"
                           "a = 10;"
                           "declare(strict_types=1);"
@@ -101,7 +113,7 @@ namespace ifj22 {
 
         }
 
-        TEST_F(lexTest, function_declare_more_args) {
+        TEST_F(LexTestAdvanced, function_declare_more_args) {
 
             char text[] = "<?php\n"
                           "declare(strict_types=1);\n"
@@ -120,7 +132,7 @@ namespace ifj22 {
 
         }
 
-        TEST_F(lexTest, function_declare_empty_param) {
+        TEST_F(LexTestAdvanced, function_declare_empty_param) {
 
             char text[] = "<?php\n"
                           "declare(strict_types=1);\n"
@@ -141,7 +153,7 @@ namespace ifj22 {
 
         }
 
-        TEST_F(lexTest, function_declare_name) {
+        TEST_F(LexTestAdvanced, function_declare_name) {
 
             char text[] = "<?php\n"
                           "declare(strict_types=1);\n"
@@ -154,7 +166,7 @@ namespace ifj22 {
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
         }
 
-        TEST_F(lexTest, function_declare_name_with_num) {
+        TEST_F(LexTestAdvanced, function_declare_name_with_num) {
 
             char text[] = "<?php\n"
                           "declare(strict_types=1);\n"
@@ -174,7 +186,7 @@ namespace ifj22 {
             }
         }
 
-        TEST_F(lexTest, function_declare) {
+        TEST_F(LexTestAdvanced, function_declare) {
 
             char text[] = "<?php\n"
                           "declare(strict_types=1);"
@@ -193,17 +205,23 @@ namespace ifj22 {
         }
 
 
-
-
-        TEST_F(lexTest, keywords_test) {
+        TEST_F(LexTestSimple, keywords_test) {
             auto text = PhpPrologString("else float function if int null return"
                                         "string void while");
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {elseKey, floatDat, functionKey, ifKey, intDat, nullKey,
-                            returnKey, stringDat, voidKey, whileKey});
+                                returnKey, stringDat, voidKey, whileKey});
         }
 
+        TEST_F(LexTestSimple, condition) {
+            auto text = PhpPrologString("if (1) { 1; } else { 7; }");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {ifKey, leftPar, integerLiteral, rightPar,
+                                curlyBraceLeft, intDat, semicolon, curlyBraceRight,
+                                elseKey, curlyBraceLeft, intDat, semicolon, curlyBraceRight});
+        }
 
 
     }// namespace stack
