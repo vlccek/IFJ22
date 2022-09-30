@@ -85,8 +85,9 @@ namespace ifj22 {
             // Pop on empty should not crash with sigsegv
             // Instead print error and exit with (I guess) internal error code
             // 'You should use function emptyStack()' error
-            ASSERT_EXIT((pop(stack), exit(0)), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
-            ASSERT_EXIT((popBack(stack), exit(0)), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+
+            ASSERT_EXIT(pop(stack), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+            ASSERT_EXIT(popBack(stack), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
         }
 
         TEST(stackTest, push_stack_to_stack) {

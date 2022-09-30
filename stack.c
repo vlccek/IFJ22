@@ -76,6 +76,9 @@ void *popBack(genericStack *s) {
     stackMem_t *pLast;
     stackMem_t *bottomEl = stackBottom(s, &pLast);
 
+    if (s->top == NULL){
+        exit(IE_pop_empty_stack);
+    }
 
     void *r = bottomEl->data;// returned el
 

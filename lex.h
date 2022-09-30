@@ -11,6 +11,7 @@
 
 #ifndef LUAINTERPRET_LEX_H
 #define LUAINTERPRET_LEX_H
+
 // represents the type of lexical item
 typedef enum
 {
@@ -26,7 +27,6 @@ typedef enum
     // curly braces
     curlyBraceRight,
     curlyBraceLeft,
-
 
     // data types
     stringDat, // "'string' $hello"
@@ -75,6 +75,33 @@ typedef enum
     ending,
     lexTypeCount
 } lexType;
+
+// FSM states
+typedef enum
+{
+    // initial state
+    init_s,
+
+    // literal states
+    string_lit_s,
+    string_lit_f_s,
+    integer_lit_f_s,
+    number_lit_dot_s,
+    number_lit_e_s,
+    number_lit_sign_s,
+    number_lit_exp_f_s,
+    number_lit_f_s,
+
+    // identifier states
+    identifier_func_f_s,
+    identifier_var_dollar_s,
+    identifier_var_f_s,
+
+    // TODO
+
+    // unknown state
+    unknown_f_s
+} state;
 
 // represents the value of the token
 typedef union
