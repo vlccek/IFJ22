@@ -96,16 +96,22 @@ namespace ifj22 {
         TEST_F(LexTestSimple, function_param) {
             auto text = PhpPrologString(
                     "hovno(string $a) hovno(int $a) hovno(float $a) "
+                    "hovno(string? $a) hovno(int? $a) hovno(float? $a) "
                     "hovno(string $a, float $a) hovno(string $a, int $a, float $a)"
             );
             FILE *fp = prepareFile(text.get());
             assertTokensEq(fp,
-                           {identifierFunc, leftPar, stringDat, identifierVar, rightPar,
-                            identifierFunc, leftPar, intDat, identifierVar, rightPar,
-                            identifierFunc, leftPar, floatDat, identifierVar, rightPar,
-                            identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar, rightPar,
-                            identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar, floatDat, // \n
-                            identifierVar, rightPar
+                           {
+                                   identifierFunc, leftPar, stringDat, identifierVar, rightPar,
+                                   identifierFunc, leftPar, intDat, identifierVar, rightPar,
+                                   identifierFunc, leftPar, floatDat, identifierVar, rightPar,
+                                   identifierFunc, leftPar, stringNullDat, identifierVar, rightPar,
+                                   identifierFunc, leftPar, intNullDat, identifierVar, rightPar,
+                                   identifierFunc, leftPar, floatNullDat, identifierVar, rightPar,
+                                   identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar, rightPar,
+                                   identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar,
+                                   floatDat, // \n
+                                   identifierVar, rightPar
                            });
 
         }
