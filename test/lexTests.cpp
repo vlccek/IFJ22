@@ -68,11 +68,11 @@ namespace ifj22 {
 
         TEST_F(LexTestSimple, variable) {
             auto text = PhpPrologString(
-                    "$hovno $hPvnpS $HOVNO $HOVNO $HOVNO6 $HO999VNO $hovno_kod $hovnokod_$6HOVNO $6hovno");
+                    "$hovno $hPvnpS $HOVNO $HOVNO $HOVNO6 $HO999VNO $hovno_kod $hovnokod_ $_hovno $6HOVNO $6hovno");
             FILE *fp = prepareFile(text.get());
             assertTokensEq(fp,
                            {identifierVar, identifierVar, identifierVar, identifierVar, identifierVar, identifierVar,
-                            identifierVar,});
+                            identifierVar, identifierVar,});
 
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
@@ -82,12 +82,24 @@ namespace ifj22 {
 
         TEST_F(LexTestSimple, function_names) {
             auto text = PhpPrologString(
-                    "hovno() hovnokodjesuper() hocnoko55d() hovnokod556655() jehovnokodsuper_skeropes() "
-                    "6hovno() skeropes_()");
+                    "hovno() hovnokodjesuper() hocnoko55d() hovnokod556655() jehovnokodsuper_skeropes() _hovno()"
+                    "6hovno() skeropes_() else() float() function() if() int() null() return() string()"
+                    "void(), while()");
             FILE *fp = prepareFile(text.get());
             assertTokensEq(fp,
-                           {identifierFunc, identifierFunc, identifierFunc, identifierFunc, identifierFunc});
+                           {identifierFunc, identifierFunc, identifierFunc, identifierFunc, identifierFunc,
+                            identifierFunc});
 
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
 
@@ -115,6 +127,29 @@ namespace ifj22 {
                            });
 
         }
+
+        TEST_F(LexTestSimple, string_lit) {
+            auto text = PhpPrologString(
+                    R"("Hovnodkod" "" "\n \t \034" "Ahoj\n\"Sve'te \\\034 \x00")");
+            FILE *fp = prepareFile(text.get());
+            assertTokensEq(fp,
+                           {stringLiteral, stringLiteral, stringLiteral});
+        }
+
+        TEST_F(LexTestSimple, comment) {
+            // jestli ti neprojde tak gl :)
+            auto text = PhpPrologString(
+                    "//skeropes"
+                    "int "
+                    "// int $a \n"
+                    "// */ \t \t                                              //hovno \n"
+                    "\t \t \t                                                "
+                    "/*hovnokod******************je///////////* super tvl*/ int ");
+            FILE *fp = prepareFile(text.get());
+            assertTokensEq(fp,
+                           {intDat, intDat});
+        }
+
 
         class LexTestAdvanced : public lexTest {
         };
@@ -195,9 +230,11 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat, identifierVar, stringDat,
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat, identifierVar,
+                                           stringDat,
                                            identifierVar, rightPar, colon, stringDat, curlyBraceRight,
-                                           returnKey, identifierVar, concatenationOp, stringLiteral, curlyBraceLeft};
+                                           returnKey, identifierVar, concatenationOp, stringLiteral,
+                                           curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
                 ASSERT_EQ(t.type, i);
