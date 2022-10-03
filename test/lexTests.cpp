@@ -6,6 +6,7 @@
 extern "C" {
 #include "../lex.h"
 #include "../common.h"
+#include "../dynstring.h"
 
 #include <stdio.h>
 };
@@ -159,6 +160,142 @@ namespace ifj22 {
 
         class LexTestTokenData : public lexTest {
         };
+        //region LexTestTokenData_stringLit
+        TEST_F(LexTestTokenData, string_data) {
+            std::string str = "\"Uplne jednoduchy ale delsi text\"";
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+
+        }
+
+        TEST_F(LexTestTokenData, string_data_long_newline_tabs) {
+            std::string str = "\"Uplne jednoduchy ale delsi text \n\n\n\n\n\n\n\n\n\n\n\n\n ktery pokracuje na dalsi radek a jsou v nem i taby \"";
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+        }
+
+        TEST_F(LexTestTokenData, string_long_tabs) {
+            std::string str = "\"Uplne  ale delsi text ktery pokracuje na dalsi radek \t\t\t\t\t\t\t\t a jsou v nem i taby \t \"";
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+        }
+
+        TEST_F(LexTestTokenData, string_verry_long) {
+            std::string str = "\"Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby "
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\"";
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+        }
+
+        TEST_F(LexTestTokenData, string_verry_long_newLine) {
+            std::string str = "\""
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby \n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "\"";
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+        }
+
+        TEST_F(LexTestTokenData, string_verry_long_newLine_comment) {
+            std::string str = "\""
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby \n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n // commmmmm"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                              "\"";
+            std::string rstr = "\""
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby \n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
+                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby"
+                               "\"";
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            ASSERT_STREQ(dstrGet(token.data.valueString), rstr.c_str());
+        }
+
+        TEST_F(LexTestTokenData, string_escape) {
+            std::string str = R"("Ahoj\n\"Sve'te \\\034 \x00")";
+            std::string rstr = "Ahoj\n" // ze zadání
+                               "\"Sve'te \\\"";
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            ASSERT_STREQ(dstrGet(token.data.valueString), rstr.c_str());
+        }
+        // endregion
+
 
         class PhpPrologString {
         private:
