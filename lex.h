@@ -29,12 +29,12 @@ typedef enum
 
 
     // data types
-    stringDat, // "'string' $hello"
-    floatDat,
-    intDat,
-    stringNullDat,
-    floatNullDat,
-    intNullDat,
+    stringKey, // "'string' $hello"
+    floatKey,
+    intKey,
+    stringNullKey,
+    floatNullKey,
+    intNullKey,
 
     // assignment
     equals,
@@ -62,7 +62,7 @@ typedef enum
     // literals
     stringLiteral, // "hello"
     integerLiteral,
-    decimalLiteral,
+    floatLiteral,
 
     // identifiers
     identifierFunc,

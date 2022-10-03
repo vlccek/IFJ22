@@ -23,8 +23,8 @@ void printTokenData(token_t input)
         fprintf(stderr, "lextype: integerLiteral\n");
         fprintf(stderr, "value: %d\n", input.data.valueInteger);
         break;
-    case decimalLiteral:
-        fprintf(stderr, "lextype: decimalLiteral\n");
+    case floatLiteral:
+        fprintf(stderr, "lextype: floatLiteral\n");
         fprintf(stderr, "value: %lf\n", input.data.valueNumber);
         break;
     // keywords
@@ -57,23 +57,23 @@ void printTokenData(token_t input)
         fprintf(stderr, "lextype: curlyBraceLeft\n");
         break;
     // data types
-    case stringDat:
-        fprintf(stderr, "lextype: stringDat\n");
+    case stringKey:
+        fprintf(stderr, "lextype: stringKey\n");
         break;
-    case floatDat:
-        fprintf(stderr, "lextype: floatDat\n");
+    case floatKey:
+        fprintf(stderr, "lextype: floatKey\n");
         break;
-    case intDat:
-        fprintf(stderr, "lextype: intDat\n");
+    case intKey:
+        fprintf(stderr, "lextype: intKey\n");
         break;
-    case stringNullDat:
-        fprintf(stderr, "lextype: stringNullDat\n");
+    case stringNullKey:
+        fprintf(stderr, "lextype: stringNullKey\n");
         break;
-    case floatNullDat:
-        fprintf(stderr, "lextype: floatNullDat\n");
+    case floatNullKey:
+        fprintf(stderr, "lextype: floatNullKey\n");
         break;
-    case intNullDat:
-        fprintf(stderr, "lextype: intNullDat\n");
+    case intNullKey:
+        fprintf(stderr, "lextype: intNullKey\n");
         break;
     // assignment
     case equals:

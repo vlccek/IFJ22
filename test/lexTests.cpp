@@ -115,15 +115,15 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
             assertTokensEq(fp,
                            {
-                                   identifierFunc, leftPar, stringDat, identifierVar, rightPar,
-                                   identifierFunc, leftPar, intDat, identifierVar, rightPar,
-                                   identifierFunc, leftPar, floatDat, identifierVar, rightPar,
-                                   identifierFunc, leftPar, stringNullDat, identifierVar, rightPar,
-                                   identifierFunc, leftPar, intNullDat, identifierVar, rightPar,
-                                   identifierFunc, leftPar, floatNullDat, identifierVar, rightPar,
-                                   identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar, rightPar,
-                                   identifierFunc, leftPar, stringDat, identifierVar, floatDat, identifierVar,
-                                   floatDat, // \n
+                                   identifierFunc, leftPar, stringKey, identifierVar, rightPar,
+                                   identifierFunc, leftPar, intKey, identifierVar, rightPar,
+                                   identifierFunc, leftPar, floatKey, identifierVar, rightPar,
+                                   identifierFunc, leftPar, stringNullKey, identifierVar, rightPar,
+                                   identifierFunc, leftPar, intNullKey, identifierVar, rightPar,
+                                   identifierFunc, leftPar, floatNullKey, identifierVar, rightPar,
+                                   identifierFunc, leftPar, stringKey, identifierVar, floatKey, identifierVar, rightPar,
+                                   identifierFunc, leftPar, stringKey, identifierVar, floatKey, identifierVar,
+                                   floatKey, // \n
                                    identifierVar, rightPar
                            });
 
@@ -148,7 +148,7 @@ namespace ifj22 {
                     "/*hovnokod******************je///////////* super tvl*/ int ");
             FILE *fp = prepareFile(text.get());
             assertTokensEq(fp,
-                           {intDat, intDat});
+                           {intKey, intKey});
         }
 
 
@@ -455,9 +455,9 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat, identifierVar,
-                                           stringDat,
-                                           identifierVar, rightPar, colon, stringDat, curlyBraceRight,
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringKey, identifierVar,
+                                           stringKey,
+                                           identifierVar, rightPar, colon, stringKey, curlyBraceRight,
                                            returnKey, identifierVar, concatenationOp, stringLiteral,
                                            curlyBraceLeft};
             for (auto i: tokens) {
@@ -476,7 +476,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringDat,
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringKey,
                                            curlyBraceRight,
                                            returnKey, stringLiteral, semicolon,
                                            curlyBraceLeft};
@@ -510,7 +510,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringDat,
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringKey,
                                            curlyBraceRight,
                                            returnKey, stringLiteral, semicolon,
                                            curlyBraceLeft};
@@ -530,8 +530,8 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringDat,
-                                           identifierVar, rightPar, colon, stringDat, curlyBraceRight,
+            std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringKey,
+                                           identifierVar, rightPar, colon, stringKey, curlyBraceRight,
                                            returnKey, identifierFunc, identifierVar, semicolon, curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
@@ -545,8 +545,8 @@ namespace ifj22 {
                                         "string void while");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {elseKey, floatDat, functionKey, ifKey, intDat, nullKey,
-                                returnKey, stringDat, voidKey, whileKey});
+            assertTokensEq(fp, {elseKey, floatKey, functionKey, ifKey, intKey, nullKey,
+                                returnKey, stringKey, voidKey, whileKey});
         }
 
         TEST_F(LexTestSimple, condition) {
@@ -554,8 +554,8 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {ifKey, leftPar, integerLiteral, rightPar,
-                                curlyBraceLeft, intDat, semicolon, curlyBraceRight,
-                                elseKey, curlyBraceLeft, intDat, semicolon, curlyBraceRight});
+                                curlyBraceLeft, intKey, semicolon, curlyBraceRight,
+                                elseKey, curlyBraceLeft, intKey, semicolon, curlyBraceRight});
         }
 
         // literál je tvořen celou a desetinnou částí,
@@ -563,49 +563,49 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0 00000.0000 1.0005 61561615.15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
         // nebo celou částí a exponen-tem,
         TEST_F(LexTestSimple, floatTestExponents1) {
             auto text = PhpPrologString("0.e0 00000.e0000 1.e0005 61561615.e15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
 
         TEST_F(LexTestSimple, floatTestExponents2) {
             auto text = PhpPrologString("0.e+0 00000.e+0000 1.e+0005 61561615.e+15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
 
         TEST_F(LexTestSimple, floatTestExponents3) {
             auto text = PhpPrologString("0.e-0 00000.e-0000 1.e-0005 61561615.e-15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
 
         TEST_F(LexTestSimple, floatTestExponents4) {
             auto text = PhpPrologString("0.E0 00000.E0000 1.E0005 61561615.E15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
 
         TEST_F(LexTestSimple, floatTestExponents5) {
             auto text = PhpPrologString("0.E+0 00000.E+0000 1.E+0005 61561615.E+15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
 
         TEST_F(LexTestSimple, floatTestExponents6) {
             auto text = PhpPrologString("0.E-0 00000.E-0000 1.E-0005 61561615.E-15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
         // nebo celou a desetinnou částí a exponentem.
         TEST_F(LexTestSimple, floatTestDecimalExponents1) {
@@ -613,7 +613,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0e0 00000.15e0000 1.8498e0005 61561615.0000e15161561 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey, floatKey,});
         }
 
         TEST_F(LexTestSimple, floatTestDecimalExponents2) {
@@ -622,8 +622,8 @@ namespace ifj22 {
                                         "0.0e+1 0.0E+1 0.0E-1 ");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, floatDat, floatDat,
-                                floatDat, floatDat, floatDat,});
+            assertTokensEq(fp, {floatKey, floatKey, floatKey,
+                                floatKey, floatKey, floatKey,});
         }
 
         TEST_F(LexTestEdgeCase, floatFail1) {
@@ -673,7 +673,7 @@ namespace ifj22 {
             auto text = std::string(PhpPrologString().get()) + std::to_string(INTMAX_MAX) + std::string(".69");
             FILE *fp = prepareFile(text.c_str());
 
-            assertTokensEq(fp, {floatDat,});
+            assertTokensEq(fp, {floatKey,});
         }
 
         TEST_F(LexTestEdgeCase, floatFail7) {
@@ -729,16 +729,16 @@ namespace ifj22 {
                                         "?float ?int ?string");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, intDat, stringDat,
-                                floatNullDat, intNullDat, stringNullDat});
+            assertTokensEq(fp, {floatKey, intKey, stringKey,
+                                floatNullKey, intNullKey, stringNullKey});
         }
 
         TEST_F(LexTestSimple, functionParams) {
             auto text = PhpPrologString("function bar(string $param) : string {\n");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {floatDat, intDat, stringDat,
-                                floatNullDat, intNullDat, stringNullDat});
+            assertTokensEq(fp, {floatKey, intKey, stringKey,
+                                floatNullKey, intNullKey, stringNullKey});
         }
 
         TEST_F(LexTestSimple, functionReturnValue1) {
@@ -746,7 +746,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, stringDat, curlyBraceLeft});
+                                , colon, stringKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionReturnValue2) {
@@ -754,7 +754,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, stringNullDat, curlyBraceLeft});
+                                , colon, stringNullKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionReturnValue3) {
@@ -762,7 +762,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, intDat, curlyBraceLeft});
+                                , colon, intKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionReturnValue4) {
@@ -770,7 +770,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, intNullDat, curlyBraceLeft});
+                                , colon, intNullKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionReturnValue5) {
@@ -778,7 +778,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, floatDat, curlyBraceLeft});
+                                , colon, floatKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionReturnValue6) {
@@ -786,7 +786,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, floatNullDat, curlyBraceLeft});
+                                , colon, floatNullKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionIdentifier0) {
@@ -794,7 +794,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, intDat, curlyBraceLeft});
+                                , colon, intKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionIdentifier1) {
@@ -802,7 +802,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, intDat, curlyBraceLeft});
+                                , colon, intKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionIdentifier2) {
@@ -810,7 +810,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, intDat, curlyBraceLeft});
+                                , colon, intKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionIdentifier3) {
@@ -818,7 +818,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
-                                , colon, intDat, curlyBraceLeft});
+                                , colon, intKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestEdgeCase, functionIdentifier4) {
@@ -842,7 +842,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar,
-                                colon, intDat, curlyBraceLeft});
+                                colon, intKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, expressionsSimple0) {
@@ -900,9 +900,9 @@ namespace ifj22 {
             auto text = PhpPrologString(R"(15.159e69*0.0e69+        6969699.698E99/)");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {decimalLiteral, multiplicationOp,
-                                decimalLiteral, plusOp,
-                                decimalLiteral, divisionOp});
+            assertTokensEq(fp, {floatLiteral, multiplicationOp,
+                                floatLiteral, plusOp,
+                                floatLiteral, divisionOp});
         }
 
         TEST_F(LexTestSimple, expressionsSimple7) {
@@ -1052,21 +1052,21 @@ namespace ifj22 {
             auto text = PhpPrologString(R"(?int ?float ?string ?>)");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, { intNullDat, floatNullDat, stringNullDat, ending});
+            assertTokensEq(fp, {intNullKey, floatNullKey, stringNullKey, ending});
         }
 
         TEST_F(LexTestSimple, prologAtTheEndIsNotEnd) {
             auto text = PhpPrologString(R"(?int ?float ?string ?>)");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, { intNullDat, floatNullDat, stringNullDat, ending});
+            assertTokensEq(fp, {intNullKey, floatNullKey, stringNullKey, ending});
         }
 
         TEST_F(LexTestSimple, prologAtTheEndIsNotEnd1) {
             auto text = PhpPrologString(R"("kok" 45 56.5 ?>)");
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, {stringLiteral, integerLiteral, decimalLiteral,});
+            assertTokensEq(fp, {stringLiteral, integerLiteral, floatLiteral,});
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd) {

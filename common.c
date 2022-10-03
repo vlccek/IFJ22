@@ -59,7 +59,7 @@ char *allTerminalNames[] = {
         // literals
         "stringLiteral", // "hello"
         "integerLiteral",
-        "decimalLiteral",
+        "floatLiteral",
 
         // identifiers
         "identifierFce",
