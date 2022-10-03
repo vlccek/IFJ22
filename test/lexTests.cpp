@@ -1196,7 +1196,7 @@ namespace ifj22 {
 
             FILE *fp = prepareFile(text.get());
 
-            assertTokensEq(fp, { ending });
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces10) {
@@ -1207,10 +1207,90 @@ namespace ifj22 {
             assertTokensEq(fp, { stringLiteral });
         }
 
+        TEST_F(LexTestEdgeCase, noWhiteSpaces1) {
+            auto text = PhpPrologString(R"(75 -/*kkt*/66)");
 
-        // Mby testovat keywords v definici funkci
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { integerLiteral, minusOp, integerLiteral });
+        }
+
+        TEST_F(LexTestEdgeCase, noWhiteSpaces2) {
+            auto text = PhpPrologString(R"(;}$kks="huh";)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { semicolon, curlyBraceRight, identifierVar,
+                                 stringLiteral, stringLiteral});
+        }
+
+        TEST_F(LexTestEdgeCase, noWhiteSpaces3) {
+            auto text = PhpPrologString(R"(();6.6e9())");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { leftPar, rightPar,
+                                 semicolon, floatLiteral,
+                                 leftPar, rightPar,});
+        }
+
+        TEST_F(LexTestEdgeCase, noWhiteSpaces4) {
+            auto text = PhpPrologString(R"($huh=$bruh*{}-;)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { identifierVar, eqOp,identifierVar,
+                                 multiplicationOp, curlyBraceLeft, curlyBraceRight,
+                                 minusOp, semicolon});
+        }
+
+        TEST_F(LexTestEdgeCase, noWhiteSpaces5) {
+            auto text = PhpPrologString(R"($kks=0;$kks-$kks;)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { identifierVar, eqOp, integerLiteral, semicolon,
+                                 identifierVar, minusOp, identifierVar, semicolon});
+        }
+
+        TEST_F(LexTestEdgeCase, noWhiteSpaces6) {
+            auto text = PhpPrologString(R"(return"sracka";)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { returnKey, stringLiteral, semicolon});
+        }
+
+        TEST_F(LexTestEdgeCase, noWhiteSpaces7) {
+            auto text = PhpPrologString(R"(return($kks);)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { returnKey, leftPar, identifierVar, rightPar, semicolon});
+        }
+
+        TEST_F(LexTestEdgeCase, noWhiteSpaces8) {
+            auto text = PhpPrologString(R"(return$bruh;)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { returnKey,  identifierVar, semicolon});
+        }
+
+        TEST_F(LexTestEdgeCase, oneStateChars) {
+            // these chars should yield to token immediately
+            auto text = PhpPrologString(R"({};()+-*/=<>:,)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { curlyBraceLeft, curlyBraceRight, semicolon,
+                                 leftPar, rightPar, plusOp, minusOp, multiplicationOp,
+                                 divisionOp, eqOp, lesserThanOp, greaterThanOp,
+                                 colon, comma, });
+        }
+
+
+
         // Asi by to chtelo slozite funkce
-        // string literal testy
-        //
     }// namespace stack
 }// namespace ifj22
