@@ -297,6 +297,94 @@ namespace ifj22 {
         // endregion
 
 
+        TEST_F(LexTestTokenData, int_data) {
+            std::vector<int> nums = {10, 20, 30, 500, 555, 99999, 4567, std::numeric_limits<int>::max()};
+            std::string str;
+            for (auto i: nums) {
+                str += std::to_string(i);
+                str += std::string("\n");
+            }
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            for (auto i: nums)
+                ASSERT_EQ(token.data.valueInteger, i);
+        }
+
+        TEST_F(LexTestTokenData, int_data_comments) {
+            std::vector<int> nums = {10, 20, 30, 500, 555, 99999, 4567, std::numeric_limits<int>::max()};
+            std::string str;
+            for (auto i: nums) {
+                str += std::to_string(i);
+                str += std::string("//komentar \n");
+                str += std::string("/*aji blokovy\n a tady\n taky\n a tam\n je nkonec_!*/");
+            }
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            for (auto i: nums)
+                ASSERT_EQ(token.data.valueInteger, i);
+        }
+
+        TEST_F(LexTestTokenData, float_data_exponencial) {
+            auto text = PhpPrologString("0.0e0 00000.15e0000 1.8498e0005 61561615.0000e15161561 ");
+            std::vector<float> nums = {0, 0.15, 1.8498e0/*q*/, 005,};
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            for (auto i: nums)
+                ASSERT_EQ(token.data.valueNumber, i);
+        }
+
+        TEST_F(LexTestTokenData, float_data_basic_comments) {
+            std::vector<float> nums = {10, 20, 30, 500, 555, 99999, 4567, std::numeric_limits<float>::max()};
+            std::string str;
+            for (auto i: nums) {
+                str += std::to_string(i);
+                str += std::string("//komentar \n");
+                str += std::string("/*aji blokovy\n a tady\n taky\n a tam\n je konec_!*/");
+            }
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            for (auto i: nums)
+                ASSERT_EQ(token.data.valueInteger, i);
+        }
+
+        TEST_F(LexTestTokenData, float_data_basic) {
+            std::vector<float> nums = {10, 20, 30, 500, 555, 99999, 4567, std::numeric_limits<float>::max()};
+            std::string str;
+            for (auto i: nums) {
+                str += std::to_string(i);
+                str += std::string("//komentar \n");
+                str += std::string("/*aji blokovy\n a tady\n taky\n a tam\n je nkonec_!*/");
+            }
+
+            auto text = PhpPrologString(str.c_str());
+
+            FILE *fp = prepareFile(text.get());
+
+            auto token = getToken(fp);
+
+            for (auto i: nums)
+                ASSERT_EQ(token.data.valueInteger, i);
+        }
+
+
         class PhpPrologString {
         private:
             std::string value;
