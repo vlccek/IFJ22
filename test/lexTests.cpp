@@ -695,6 +695,248 @@ namespace ifj22 {
 
             assertTokensEq(fp, { stringLiteral, divisionOp, divisionOp, stringLiteral });
         }
+        TEST_F(LexTestEdgeCase, expression) {
+            // Two operands in exp
+            auto text = PhpPrologString("/*");
+            FILE *fp = prepareFile(text.get());
 
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, expression1) {
+            // Two operands in exp
+            auto text = PhpPrologString("/+");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, expression2) {
+            // More operands in exp
+            auto text = PhpPrologString("+/*-");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, expression3) {
+            auto text = PhpPrologString(R"($cookie + 998 / "bruhie" *-)");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, expression4) {
+            auto text = PhpPrologString(R"($cookie * $bruh/// This should not return divisionOp)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { identifierVar, multiplicationOp, identifierVar});
+        }
+
+        TEST_F(LexTestEdgeCase, expression5) {
+            auto text = PhpPrologString(R"(/* this is comment*/ / / /)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {divisionOp, divisionOp, divisionOp, });
+        }
+
+        TEST_F(LexTestSimple, prologAtTheEnd1) {
+            auto text = PhpPrologString(R"(1 ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { intDat});
+        }
+
+        TEST_F(LexTestSimple, prologAtTheEnd2) {
+            auto text = PhpPrologString(R"(1 ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { intDat});
+        }
+
+        TEST_F(LexTestSimple, prologAtTheEnd3) {
+            auto text = PhpPrologString(R"(1 ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { intDat});
+        }
+
+        TEST_F(LexTestSimple, prologAtTheEnd4) {
+            auto text = PhpPrologString(R"(//msg @Fado if you read this \n 1 ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { intDat});
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEnd5) {
+            auto text = PhpPrologString(R"(//how much wood would a woodchuck chuck \n\n\n ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { ending});
+        }
+
+        TEST_F(LexTestSimple, prologAtTheEnd6) {
+            auto text = PhpPrologString(R"(?int ?float ?string ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { intNullDat, floatNullDat, stringNullDat, ending});
+        }
+
+        TEST_F(LexTestSimple, prologAtTheEndIsNotEnd) {
+            auto text = PhpPrologString(R"(?int ?float ?string ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { intNullDat, floatNullDat, stringNullDat, ending});
+        }
+
+        TEST_F(LexTestSimple, prologAtTheEndIsNotEnd1) {
+            auto text = PhpPrologString(R"("kok" 45 56.5 ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {stringLiteral, decimalLiteral, floa});
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd) {
+            auto text = PhpPrologString(R"(?int ?float ?string ?> ?int ?float ?string)");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd1) {
+            auto text = PhpPrologString(R"(?int ?float ?string ?> ?int ?float ?string)");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd2) {
+            auto text = PhpPrologString(R"(?int ?float ?string ?>>)");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd3) {
+            auto text = PhpPrologString(R"(?int ?float ?string ?> /* not even comment is legit here*/ )");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd4) {
+            auto text = PhpPrologString(R"(//how dare you ?> ">>>> hehe <<<<<")");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd5) {
+            auto text = PhpPrologString(R"(?int ?float ?string ?> ?>)");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd6) {
+            auto text = PhpPrologString(R"(int float $nothing_interesting ?>\t)");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd7) {
+            auto text = PhpPrologString(R"(int float $nothing_interesting ?>\n)");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd8) {
+            auto text = PhpPrologString(R"(int float $nothing_interesting ?> )");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces1) {
+            auto text = PhpPrologString(R"(\t\t\n65\n67\t67)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { integerLiteral, integerLiteral, integerLiteral});
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces2) {
+            auto text = PhpPrologString(R"(\nn)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {identifierFunc, ending});
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces3) {
+            auto text = PhpPrologString(R"(\nn)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {identifierFunc, ending});
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces4) {
+            auto text = PhpPrologString(R"(\tn)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {identifierFunc, ending});
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces5) {
+            auto text = PhpPrologString(R"( n)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {identifierFunc, ending});
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces6) {
+            auto text = PhpPrologString(R"(\n\t    \t\n\n\n huhu)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {identifierFunc, ending});
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces7) {
+            auto text = PhpPrologString(R"(\n\t    \t\n\n\n  )");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { ending });
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces8) {
+            auto text = PhpPrologString(R"(\nn\tt t)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { identifierFunc, identifierFunc, identifierFunc, });
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces9) {
+            auto text = PhpPrologString(R"(\   n)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { ending });
+        }
+
+        TEST_F(LexTestEdgeCase, whiteSpaces10) {
+            auto text = PhpPrologString(R"("\n\t\t\n  \t\n"?>)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { stringLiteral });
+        }
+
+
+        // Mby testovat keywords v definici funkci
+        // Asi by to chtelo slozite funkce
+        // string literal testy
+        //
     }// namespace stack
 }// namespace ifj22
