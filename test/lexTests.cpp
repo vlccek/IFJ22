@@ -248,7 +248,7 @@ namespace ifj22 {
             std::string str = "\""
                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby \n"
                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
-                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n // commmmmm"
+                              "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n // commmmmm  \n "
                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
                               "Uplne  ale delsi text ktery pokracuje na dalsi radek a jsou v nem i taby\n"
