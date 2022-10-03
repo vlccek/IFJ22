@@ -7,7 +7,23 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "lex.h"
+#include "common.h"
+
+// row and row position counters
+int row = 1;
+int rowPos = 1;
+
+// represents current position in current row
+unsigned long position = 0;
+
+// resets counters for row and row position
+void resetCounters()
+{
+    row = 1;
+    rowPos = 1;
+}
 
 // prints the content of a token
 void printTokenData(token_t input)
@@ -154,11 +170,95 @@ void printTokenData(token_t input)
     return;
 }
 
-// TODO
+// frees the token from memory
+void freeToken(token_t *input)
+{
+    switch (input->type)
+    {
+    case stringLiteral:
+    case identifierFunc:
+    case identifierVar:
+        dstrFree(input->data.valueString);
+        break;
+    case floatLiteral:
+        input->data.valueFloat = 0;
+        break;
+    case integerLiteral:
+        input->data.valueInteger = 0;
+        break;
+    default:
+        break;
+    }
+    return;
+}
+
+// sets the file pointer one token back
+void ungetToken(FILE *stream)
+{
+    fseek(stream, position, SEEK_SET);
+}
+
+// gets the next token and advances the pointer TODO
 token_t getToken(FILE *stream)
 {
-    // for testing purposes
-    token_t token;
-    token.type = unknown;
-    return token;
+    // initial declarations
+    state currentState = init_s;
+    token_t outputToken;
+
+    outputToken.rowNumber = row;
+    outputToken.rowPosNumber = rowPos;
+
+    fflush(stream);
+    position = ftell(stream);
+
+    int charCounter = 0; // or 1? TODO
+    int currentChar = getc(stream);
+
+    int bufferLevel = 1;
+    bool stop = false;
+    int commentCounter = 0;
+
+    // sets up a buffer for saving chars inside a literal or identifier names
+    char *buffer = malloc(sizeof(char) * 100 * bufferLevel);
+    if (buffer == NULL)
+    {
+        InternalError("Memory allocation failed.");
+    }
+
+    // EOF token
+    if (currentChar == EOF)
+    {
+        outputToken.type = ending;
+        return outputToken;
+    }
+
+    // parsing loop and FSM
+    while ((currentChar != EOF) && (stop != true))
+    {
+        switch (currentChar)
+        {
+            // the alphabet
+            // TODO e for float literal
+            case 'a' ... 'z':
+            case 'A' ... 'Z':
+                switch (currentState)
+                {
+                    case init_s:
+                    case identifier_func_f_s:
+                        currentState = identifier_func_f_s;
+                        break;
+                    case identifier_var_dollar_s:
+                    case identifier_var_f_s:
+                        currentState = identifier_var_f_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+        }
+    }
+
+    // returns the output token
+    return outputToken;
 }
