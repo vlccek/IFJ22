@@ -23,18 +23,16 @@ typedef enum
     returnKey,
     voidKey,
     whileKey,
+    stringKey,
+    floatKey,
+    intKey,
+    stringNullKey,
+    floatNullKey,
+    intNullKey,
 
     // curly braces
     curlyBraceRight,
     curlyBraceLeft,
-
-    // data types
-    stringDat, // "'string' $hello"
-    floatDat,
-    intDat,
-    stringNullDat,
-    floatNullDat,
-    intNullDat,
 
     // assignment
     equals,
@@ -62,7 +60,7 @@ typedef enum
     // literals
     stringLiteral, // "hello"
     integerLiteral,
-    decimalLiteral,
+    floatLiteral,
 
     // identifiers
     identifierFunc,
@@ -86,11 +84,11 @@ typedef enum
     string_lit_s,
     string_lit_f_s,
     integer_lit_f_s,
-    number_lit_dot_s,
-    number_lit_e_s,
-    number_lit_sign_s,
-    number_lit_exp_f_s,
-    number_lit_f_s,
+    float_lit_dot_s,
+    float_lit_e_s,
+    float_lit_sign_s,
+    float_lit_exp_f_s,
+    float_lit_f_s,
 
     // identifier states
     identifier_func_f_s,
@@ -108,7 +106,7 @@ typedef union
 {
     dynStr_t *valueString;
     int valueInteger;
-    double valueNumber;
+    double valueFloat;
 } data_t;
 
 // represents the output
