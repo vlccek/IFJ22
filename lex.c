@@ -160,5 +160,6 @@ token_t getToken(FILE *stream)
     // for testing purposes
     token_t token;
     token.type = unknown;
+    token.data.valueString = dstrInit();
     return token;
 }
