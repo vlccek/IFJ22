@@ -451,6 +451,250 @@ namespace ifj22 {
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
+        TEST_F(LexTestSimple, varTypeKeywords) {
+            auto text = PhpPrologString("float int string"
+                                        "?float ?int ?string");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, intDat, stringDat,
+                                floatNullDat, intNullDat, stringNullDat});
+        }
+
+        TEST_F(LexTestSimple, functionParams) {
+            auto text = PhpPrologString("function bar(string $param) : string {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, intDat, stringDat,
+                                floatNullDat, intNullDat, stringNullDat});
+        }
+
+        TEST_F(LexTestSimple, functionReturnValue1) {
+            auto text = PhpPrologString("function bar() : string {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, stringDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionReturnValue2) {
+            auto text = PhpPrologString("function asfasflasflasdnflasdnf() : ?string {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, stringNullDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionReturnValue3) {
+            auto text = PhpPrologString("function afdsf___ds() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, intDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionReturnValue4) {
+            auto text = PhpPrologString("function bar() : ?int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, intNullDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionReturnValue5) {
+            auto text = PhpPrologString("function bar() : float {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, floatDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionReturnValue6) {
+            auto text = PhpPrologString("function bar() : ?float {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, floatNullDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionIdentifier0) {
+            auto text = PhpPrologString("function bar() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, intDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionIdentifier1) {
+            auto text = PhpPrologString("function __4554() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, intDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionIdentifier2) {
+            auto text = PhpPrologString("function _ASDF48() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, intDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, functionIdentifier3) {
+            auto text = PhpPrologString("function _ASDF48() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                                , colon, intDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestEdgeCase, functionIdentifier4) {
+            // identifier cannot start with digits
+            auto text = PhpPrologString("function 48sadf_ds() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestEdgeCase, functionIdentifier5) {
+            // identifier cannot start with digits
+            auto text = PhpPrologString("function 6_6() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestSimple, functionIdentifier6) {
+            auto text = PhpPrologString("function AZaz__xy() : int {\n");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, rightPar
+                    , colon, intDat, curlyBraceLeft});
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple0) {
+            auto text = PhpPrologString(R"("susenky" + 14)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {stringDat, plusOp, intDat});
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple1) {
+            auto text = PhpPrologString(R"((15 + 36) * "susenky")");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, intDat, plusOp, leftPar,
+                                multiplicationOp, stringDat});
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple2) {
+            auto text = PhpPrologString(R"((((14+69))))");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, leftPar, leftPar,
+                                intDat, plusOp, intDat,
+                                rightPar, rightPar, rightPar, });
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple3) {
+            auto text = PhpPrologString(R"((((14+69))))");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, leftPar, leftPar,
+                                intDat, plusOp, intDat,
+                                rightPar, rightPar, rightPar, });
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple4) {
+            auto text = PhpPrologString(R"(((("696996"/"696969"))))");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, leftPar, leftPar,
+                                stringDat, divisionOp, stringDat,
+                                rightPar, rightPar, rightPar, });
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple5) {
+            auto text = PhpPrologString(R"(((("696996"/"696969"))))");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, leftPar, leftPar,
+                                stringDat, divisionOp, stringDat,
+                                rightPar, rightPar, rightPar, });
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple6) {
+            auto text = PhpPrologString(R"(15.159e69*0.0e69+        6969699.698E99/)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {floatDat, multiplicationOp,
+                                floatDat, plusOp,
+                                floatDat, divisionOp});
+        }
+
+        TEST_F(LexTestSimple, expressionsSimple7) {
+            auto text = PhpPrologString(R"("69696"* /* jak se mas */ / "6969" \n * "6969"/)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {stringDat, multiplicationOp, divisionOp,
+                                stringDat, multiplicationOp,
+                                stringDat, divisionOp});
+        }
+
+        TEST_F(LexTestSimple, expressionsVariable4) {
+            auto text = PhpPrologString(R"(($_67/$cookie*$bruh+$____fuuuh-$huh)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {identifierVar, divisionOp,
+                                identifierVar, multiplicationOp,
+                                identifierVar, plusOp,
+                                identifierVar, minusOp});
+        }
+
+        TEST_F(LexTestSimple, expressionsVariable2) {
+            auto text = PhpPrologString(R"(($_67/$cookie*$bruh+$____fuuuh-$huh)");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {identifierVar, divisionOp,
+                                identifierVar, multiplicationOp,
+                                identifierVar, plusOp,
+                                identifierVar, minusOp});
+        }
+
+        TEST_F(LexTestSimple, expressionsVariable3) {
+            auto text = PhpPrologString(R"(((($howyoudoin))))");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, leftPar, leftPar,
+                                identifierVar,
+                                rightPar, rightPar, rightPar, });
+        }
+
+        TEST_F(LexTestAdvanced, expressionsExtended) {
+            auto text = PhpPrologString(R"(($_69 + 69 /(0) * ($ABCD * $bruh)))");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, identifierVar, plusOp, intDat,
+                                divisionOp, leftPar, intDat, rightPar,
+                                multiplicationOp, leftPar, identifierVar, multiplicationOp,
+                                identifierVar, rightPar, rightPar});
+        }
+
+        TEST_F(LexTestAdvanced, expressionsExtended1) {
+            auto text = PhpPrologString(R"((("kokos")) + 67 * (($cookie)))");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, {leftPar, leftPar, stringDat, rightPar, rightPar,
+                                plusOp, intDat, multiplicationOp,
+                                leftPar, leftPar, identifierVar, rightPar, rightPar});
+        }
+
+        TEST_F(LexTestEdgeCase, weirdStringWithComments) {
+            auto text = PhpPrologString(R"("\"\"\"\"\"susenky\"\"\"\"\multiplicationOp"" / /*Huh how r u**// "\"\"huhu\"\"")");
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { stringLiteral, divisionOp, divisionOp, stringLiteral });
+        }
 
     }// namespace stack
 }// namespace ifj22
