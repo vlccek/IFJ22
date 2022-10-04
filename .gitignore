@@ -58,3 +58,4 @@ dkms.conf
 # testing
 /lexTest.c
 /lexTest
+/test1

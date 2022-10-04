@@ -165,7 +165,7 @@ void printTokenData(token_t input)
         break;
     }
 
-    fprintf(stderr, "row: %d\nrow position: %d\n\n", input.rowNumber, input.rowPosNumber);
+    fprintf(stderr, "row: %d\nrow position: %d\n", input.rowNumber, input.rowPosNumber);
 
     return;
 }
@@ -190,6 +190,45 @@ void freeToken(token_t *input)
         break;
     }
     return;
+}
+
+// TODO edge cases, finish the function
+void incrementCounters(char c)
+{
+    switch (c)
+    {
+        // the alphabet
+        case 'a' ... 'z':
+        case 'A' ... 'Z':
+            rowPos++;
+            break;
+        // whitespace characters
+        case ' ':
+            rowPos++;
+            break;
+        case '\n':
+            row++;
+            rowPos = 1;
+            break;
+        case '\t':
+        case '\r':
+        case '\v':
+        case '\f':
+            break;
+        // default
+        default:
+            rowPos++;
+            break;
+    }
+    return;
+}
+
+// TODO do we need it? finish the function
+// TODO custom ungetc
+void setBack(FILE *stream, int symbol)
+{
+    ungetc(symbol, stream);
+    rowPos--;
 }
 
 // sets the file pointer one token back
@@ -235,6 +274,7 @@ token_t getToken(FILE *stream)
     // parsing loop and FSM
     while ((currentChar != EOF) && (stop != true))
     {
+        // FSM
         switch (currentChar)
         {
             // the alphabet
@@ -256,7 +296,42 @@ token_t getToken(FILE *stream)
                         break;
                 }
                 break;
+            // TODO
+            case ' ':
+                switch (currentState)
+                {
+                    case init_s:
+                        outputToken.rowPosNumber++;
+                        currentState = init_s;
+                    break;
+                    // TODO
+                    default:
+                        stop = true;
+                        break;
+                }
+            case '\n':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = init_s;
+                        break;
+                    // TODO
+                    default:
+                        stop = true;
+                        break;
+                }
+            case '\t':
+            case '\r':
+            case '\v':
+            case '\f':
+                break;
         }
+        // increments the position
+        //fprintf(stderr, "current char %c: incrementing from %d to %d\n", currentChar, rowPos, rowPos + 1); // TODO testing
+        fprintf(stderr, "current char = %c\n", currentChar); // TODO testing
+        incrementCounters(currentChar);
+        currentChar = getc(stream);
+
     }
 
     // returns the output token
