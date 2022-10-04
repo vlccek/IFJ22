@@ -95,6 +95,24 @@ typedef enum
     identifier_var_dollar_s,
     identifier_var_f_s,
 
+    // operator states
+    multiplication_f_s,
+    division_f_s,
+    plus_f_s,
+    minus_f_s,
+    dot_f_s,
+    concatenation_f_s,
+    lesser_than_f_s,
+    lesser_eq_f_s,
+    greater_than_f_s,
+    greater_eq_f_s,
+    eq_1_s,
+    eq_2_s,
+    eq_f_s,
+    not_eq_1_s,
+    not_eq_2_s,
+    not_eq_f_s,
+
     // TODO
 
     // unknown state

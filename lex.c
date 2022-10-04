@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "lex.h"
 #include "common.h"
 
@@ -342,38 +343,137 @@ token_t getToken(FILE *stream)
                     case identifier_var_dollar_s:
                         currentState = identifier_var_f_s;
                         break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
                 }
                 break;
-            // TODO
+            // numbers
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                switch (currentState)
+                {
+                    case init_s:
+                    case integer_lit_f_s:
+                        bufferOn = true;
+                        currentState = integer_lit_f_s;
+                        break;
+                    case float_lit_dot_s:
+                    case float_lit_f_s:
+                        bufferOn = true;
+                        currentState = float_lit_f_s;
+                    case float_lit_e_s:
+                    case float_lit_exp_f_s:
+                    case float_lit_sign_s:
+                        bufferOn = true;
+                        currentState = float_lit_exp_f_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case identifier_func_f_s:
+                        bufferOn = true;
+                        currentState = identifier_func_f_s;
+                        break;
+                    case identifier_var_f_s:
+                        bufferOn = true;
+                        currentState = identifier_var_f_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            // TODO special characters
+            case '\"':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = string_lit_s;
+                        break;
+                    case string_lit_s:
+                        currentState = string_lit_f_s;
+                        stop = true;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case '.':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = dot_f_s;
+                        stop = true;
+                        break;
+                    case integer_lit_f_s:
+                        bufferOn = true;
+                        currentState = float_lit_dot_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            // TODO whitespaces
             case ' ':
                 switch (currentState)
                 {
                     case init_s:
                         currentState = init_s;
-                    break;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     // TODO
                     default:
                         stop = true;
                         break;
                 }
+                break;
             case '\n':
                 switch (currentState)
                 {
                     case init_s:
                         currentState = init_s;
                         break;
+                    case string_lit_s:
+                        printf("testing!\n");
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     // TODO
                     default:
                         stop = true;
                         break;
                 }
+                break;
             case '\t':
             case '\r':
             case '\v':
             case '\f':
+                break;
+            default:
+                currentState = unknown_f_s;
                 break;
         }
         // if current state changed from init_s to something else, sets token position
@@ -397,6 +497,84 @@ token_t getToken(FILE *stream)
     // TODO assigns correct lexType to the output token
     switch (currentState)
     {
+        // literal states TODO
+        case integer_lit_f_s:
+            outputToken.data.valueInteger = atoi(buffer);
+            outputToken.type = integerLiteral;
+            break;
+        case float_lit_f_s:
+        case float_lit_exp_f_s:
+            outputToken.data.valueFloat = strtod(buffer, NULL);
+            outputToken.type = floatLiteral;
+            break;
+        case string_lit_f_s:
+            outputToken.data.valueString = dstrInitChar(buffer);
+            outputToken.type = stringLiteral;
+            break;
+        // identifier states
+        case identifier_func_f_s:
+            outputToken.data.valueString = dstrInitChar(buffer);
+            if (strcmp(buffer, "else") == 0)
+            {
+                outputToken.type = elseKey;
+            }
+            else if (strcmp(buffer, "function") == 0)
+            {
+                outputToken.type = functionKey;
+            }
+            else if (strcmp(buffer, "if") == 0)
+            {
+                outputToken.type = ifKey;
+            }
+            else if (strcmp(buffer, "null") == 0)
+            {
+                outputToken.type = nullKey;
+            }
+            else if (strcmp(buffer, "return") == 0)
+            {
+                outputToken.type = returnKey;
+            }
+            else if (strcmp(buffer, "void") == 0)
+            {
+                outputToken.type = voidKey;
+            }
+            else if (strcmp(buffer, "while") == 0)
+            {
+                outputToken.type = whileKey;
+            }
+            else if (strcmp(buffer, "string") == 0)
+            {
+                outputToken.type = stringKey;
+            }
+            else if (strcmp(buffer, "float") == 0)
+            {
+                outputToken.type = floatKey;
+            }
+            else if (strcmp(buffer, "int") == 0)
+            {
+                outputToken.type = intKey;
+            }
+            else if (strcmp(buffer, "?string") == 0)
+            {
+                outputToken.type = stringNullKey;
+            }
+            else if (strcmp(buffer, "?float") == 0)
+            {
+                outputToken.type = floatNullKey;
+            }
+            else if (strcmp(buffer, "?int") == 0)
+            {
+                outputToken.type = intNullKey;
+            }                                                                                                                        
+            else
+            {
+                outputToken.type = identifierFunc;
+            }
+            break;
+        case identifier_var_f_s:
+            outputToken.data.valueString = dstrInitChar(buffer);
+            outputToken.type = identifierVar;
+            break;
         // unknown state and default
         case unknown_f_s:
         default:
@@ -404,7 +582,7 @@ token_t getToken(FILE *stream)
             break;
     }
 
-    fprintf(stderr, "buffer: \"%s\"\n", buffer);    // TODO testing
+    //fprintf(stderr, "buffer: \"%s\"\n", buffer);    // TODO testing
     // returns the output token
     return outputToken;
 }
