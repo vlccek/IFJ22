@@ -1,0 +1,79 @@
+## S - init stav
+ManyCommands ::= FceDefine ManyCommands
+ManyCommands ::= Command ManyCommands
+ManyCommands ::= ''
+
+## Command
+Command ::= FceCall
+Command ::= Ass
+Command ::= Condition
+Command ::= While
+Command ::= Return
+
+
+## Definice funkcí
+FceDefine ::= FceHeader leftCurlyBrace Body rightCurlyBrace
+FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar FuncReturnColonType
+FunctionDeclareParams ::= ''
+FunctionDeclareParams ::= DeclareParam  CommaOrEpsParams
+CommaOrEpsParams ::= ''
+CommaOrEpsParams ::= comma DeclareParam  CommaOrEpsParams
+DeclareParam ::= DataType identifier
+
+## FuncReturnType
+FuncReturnColonType ::= colon DataType
+FuncReturnColonType ::= colon voidKey
+
+## Function call
+FceCall ::= identifierFunc leftPar FceParams rightPar
+FceParams ::= ''
+FceParams ::= Exp CommaOrEps
+CommaOrEps ::= ''
+CommaOrEps ::= comma Exp CommaOrEps
+
+## Exp
+Exp ::= identifierVar
+Exp ::= FceCall
+Exp ::= floatLiteral
+Exp ::= stringLiteral
+Exp ::= integerLiteral
+Exp ::= nullKey
+Exp ::= Exp minusOp Exp
+Exp ::= Exp plusOp Exp
+Exp ::= Exp divisionOp Exp
+Exp ::= Exp multiplicationOp Exp
+Exp ::= Exp integerDivisionOp Exp
+Exp ::= Exp concatenationOp Exp
+Exp ::= leftPar Exp rightPar
+
+
+## Data types DataType
+DataType ::= stringNullKey
+DataType ::= floatNullKey
+DataType ::= intNullKey
+DataType ::= stringKey
+DataType ::= floatKey
+DataType ::= intKey
+
+
+## Definice proměné
+DefVar ::=  identifierVar DefVarAss
+DefVarAss ::= equals Exp semiColon
+DefVarAss ::= semiColon
+
+## Podmínky
+Condition ::= ifKey leftPar Exp rightPar leftCurlyBrace Body rightCurlyBrace ElseCond
+ElseCond ::= elsekey leftCurlyBrace Body rightCurlyBrace
+ElseCond ::= ‘’
+
+## While
+While ::= whileKey leftPar Exp rightPar leftCurlyBrace Body rightCurlyBrace
+
+## Return
+Return ::= returnKey ReturnExp semiColon
+ReturnExp ::= Exp
+ReturnExp ::= ''
+
+## Vnítřek funkce
+Body ::= Command Body
+Body ::= ''
