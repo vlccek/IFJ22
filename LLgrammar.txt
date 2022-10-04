@@ -4,12 +4,12 @@ ProgramBody ::= Command ProgramBody
 ProgramBody ::= ''
 
 ## Command
-Command ::= FceCall
+Command ::= FceCall semiColon
 Command ::= DeclareVariable
 Command ::= Condition
 Command ::= While
 Command ::= Return
-Command ::= Exp
+Command ::= Exp semiColon
 
 ## Definice funkcí
 FceDefine ::= FceHeader leftCurlyBrace FunctionBody rightCurlyBrace
