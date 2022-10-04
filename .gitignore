@@ -55,6 +55,9 @@ dkms.conf
 /cmake-build-debug/
 /build/
 
+# VSCode
+/.vscode
+
 # testing
 /lexTest.c
 /lexTest

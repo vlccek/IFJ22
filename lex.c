@@ -13,17 +13,10 @@
 
 // row and row position counters
 int row = 1;
-int rowPos = 1;
+int rowPos = 0;
 
 // represents current position in current row
 unsigned long position = 0;
-
-// resets counters for row and row position
-void resetCounters()
-{
-    row = 1;
-    rowPos = 1;
-}
 
 // prints the content of a token
 void printTokenData(token_t input)
@@ -208,7 +201,7 @@ void incrementCounters(char c)
             break;
         case '\n':
             row++;
-            rowPos = 1;
+            rowPos = 0;
             break;
         case '\t':
         case '\r':
@@ -244,8 +237,8 @@ token_t getToken(FILE *stream)
     state currentState = init_s;
     token_t outputToken;
 
-    outputToken.rowNumber = row;
-    outputToken.rowPosNumber = rowPos;
+    outputToken.rowNumber = 0;
+    outputToken.rowPosNumber = 0;
 
     fflush(stream);
     position = ftell(stream);
@@ -270,10 +263,33 @@ token_t getToken(FILE *stream)
         outputToken.type = ending;
         return outputToken;
     }
+    else
+    {
+        ungetc(currentChar, stream);
+    }
 
     // parsing loop and FSM
-    while ((currentChar != EOF) && (stop != true))
+    while (stop != true)
     {
+        currentChar = getc(stream);
+        incrementCounters(currentChar);
+
+        // checking for EOF
+        if (currentChar == EOF)
+        {
+            break;
+        }
+
+        // checking if the current state is the initial state
+        // (row position of token is set when transitioning from init_s to a different state)
+        bool isInit = false;
+        if (currentState == init_s)
+        {
+            isInit = true;
+        }
+
+        //fprintf(stderr, "current char = \"%c\"\n", currentChar); // TODO testing
+
         // FSM
         switch (currentChar)
         {
@@ -326,12 +342,14 @@ token_t getToken(FILE *stream)
             case '\f':
                 break;
         }
-        // increments the position
-        //fprintf(stderr, "current char %c: incrementing from %d to %d\n", currentChar, rowPos, rowPos + 1); // TODO testing
-        fprintf(stderr, "current char = %c\n", currentChar); // TODO testing
-        incrementCounters(currentChar);
-        currentChar = getc(stream);
-
+        if (isInit)
+        {
+            if (currentState != init_s)
+            {
+                outputToken.rowNumber = row;
+                outputToken.rowPosNumber = rowPos;
+            }
+        }
     }
 
     // returns the output token
