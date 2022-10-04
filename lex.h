@@ -115,6 +115,9 @@ typedef enum
 
     // TODO
 
+    // nullable type state
+    null_f_s,
+
     // unknown state
     unknown_f_s
 } state;
