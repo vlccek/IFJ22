@@ -347,6 +347,18 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
+                    case integer_lit_f_s:
+                    case float_lit_f_s:
+                        if ((currentChar == 'e') || (currentChar == 'E'))
+                        {
+                            bufferOn = true;
+                            currentState = float_lit_e_s;
+                        }
+                        else
+                        {
+                            currentState = unknown_f_s;
+                        }
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -374,6 +386,7 @@ token_t getToken(FILE *stream)
                     case float_lit_f_s:
                         bufferOn = true;
                         currentState = float_lit_f_s;
+                        break;
                     case float_lit_e_s:
                     case float_lit_exp_f_s:
                     case float_lit_sign_s:
@@ -433,6 +446,27 @@ token_t getToken(FILE *stream)
                         break;
                 }
                 break;
+            case '+':
+            case '-':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = plus_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case float_lit_e_s:
+                        bufferOn = true;
+                        currentState = float_lit_sign_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
             // TODO whitespaces
             case ' ':
                 switch (currentState)
@@ -457,7 +491,6 @@ token_t getToken(FILE *stream)
                         currentState = init_s;
                         break;
                     case string_lit_s:
-                        printf("testing!\n");
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
@@ -473,7 +506,16 @@ token_t getToken(FILE *stream)
             case '\f':
                 break;
             default:
-                currentState = unknown_f_s;
+                switch (currentState)
+                {
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
                 break;
         }
         // if current state changed from init_s to something else, sets token position
