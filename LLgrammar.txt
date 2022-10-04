@@ -5,12 +5,12 @@ ProgramBody ::= ''
 
 ## Command
 Command ::= FceCall
-Command ::= Ass
+Command ::= DeclareVariable
 Command ::= Condition
 Command ::= While
-Command ::= return
+Command ::= Return
+Command ::= Exp
 
-sdf
 ## Definice funkcí
 FceDefine ::= FceHeader leftCurlyBrace FunctionBody rightCurlyBrace
 FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar FuncReturnColonType
@@ -57,7 +57,7 @@ DataType ::= intKey
 
 
 ## Definice proměné
-DefVar ::=  identifierVar DefVarAss
+DeclareVariable ::=  identifierVar DefVarAss
 DefVarAss ::= equals Exp semiColon
 DefVarAss ::= semiColon
 
