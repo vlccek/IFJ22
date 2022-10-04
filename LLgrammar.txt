@@ -25,11 +25,11 @@ FuncReturnColonType ::= colon DataType
 FuncReturnColonType ::= colon voidKey
 
 ## Function call
-FceCall ::= identifierFunc leftPar FceParams rightPar
-FceParams ::= ''
-FceParams ::= Exp CommaOrEps
-CommaOrEps ::= ''
-CommaOrEps ::= comma Exp CommaOrEps
+FceCall ::= identifierFunc leftPar FirstFceParam rightPar
+FirstFceParam ::= ''
+FirstFceParam ::= Exp CommaOrEpsParam
+CommaOrEpsParam ::= ''
+CommaOrEpsParam ::= comma Exp CommaOrEps
 
 ## Exp
 Exp ::= identifierVar
