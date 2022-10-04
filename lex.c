@@ -16,6 +16,10 @@
 int row = 1;
 int rowPos = 0;
 
+// header conditions
+bool php = false;
+bool declare = false;
+
 // represents current position in current row
 unsigned long position = 0;
 
@@ -259,9 +263,36 @@ void writeToBuffer(int *charCounter, int *bufferLevel, char *buffer, int current
     return;
 }
 
+// checks if the "<?php" part of the header is present and correct
+void phpCheck(FILE *stream)
+{
+    if (php == true)
+    {
+        return;
+    }
+    else
+    {
+        char buffer[100];
+        fgets(buffer, 100, stream);
+        if ((strcmp(buffer, "<?php\n") == 0) || (strcmp(buffer, "<?php\r\n") == 0))
+        {
+            php = true;
+            row++;
+        }
+        else
+        {
+            fprintf(stderr, "Syntax error: incorrect header!\n");
+            exit(2);
+        }
+    }
+}
+
 // gets the next token and advances the pointer TODO
 token_t getToken(FILE *stream)
 {
+    // header check, first part
+    phpCheck(stream);
+
     // initial declarations
     state currentState = init_s;
     token_t outputToken;
@@ -272,7 +303,7 @@ token_t getToken(FILE *stream)
     fflush(stream);
     position = ftell(stream);
 
-    int charCounter = 0; // or 1? TODO
+    int charCounter = 0;
     int currentChar = getc(stream);
 
     int bufferLevel = 1;
@@ -320,8 +351,6 @@ token_t getToken(FILE *stream)
             isInit = true;
         }
 
-        //fprintf(stderr, "current char = \"%c\"\n", currentChar); // TODO testing
-
         // FSM
         switch (currentChar)
         {
@@ -337,8 +366,8 @@ token_t getToken(FILE *stream)
                         currentState = identifier_func_f_s;
                         break;
                     case identifier_var_f_s:
-                        bufferOn = true;
                     case identifier_var_dollar_s:
+                        bufferOn = true;
                         currentState = identifier_var_f_s;
                         break;
                     case string_lit_s:
@@ -413,6 +442,46 @@ token_t getToken(FILE *stream)
                 }
                 break;
             // TODO special characters
+            case '$':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = identifier_var_dollar_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case '_':
+                switch (currentState)
+                {
+                    case init_s:
+                        bufferOn = true;
+                        currentState = identifier_func_f_s;
+                        break;
+                    case identifier_var_dollar_s:
+                    case identifier_var_f_s:
+                        bufferOn = true;
+                        currentState = identifier_var_f_s;
+                        break;
+                    case identifier_func_f_s:
+                        bufferOn = true;
+                        currentState = identifier_func_f_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
             case '?':
                 switch (currentState)
                 {
@@ -556,7 +625,7 @@ token_t getToken(FILE *stream)
     // TODO assigns correct lexType to the output token
     switch (currentState)
     {
-        // literal states TODO
+        // literal states
         case integer_lit_f_s:
             outputToken.data.valueInteger = atoi(buffer);
             outputToken.type = integerLiteral;
@@ -649,7 +718,6 @@ token_t getToken(FILE *stream)
             break;
     }
 
-    //fprintf(stderr, "buffer: \"%s\"\n", buffer);    // TODO testing
     // returns the output token
     return outputToken;
 }
