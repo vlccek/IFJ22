@@ -4,7 +4,6 @@ ProgramBody ::= Command ProgramBody
 ProgramBody ::= ''
 
 ## Command
-Command ::= FceCall semiColon
 Command ::= DeclareVariable
 Command ::= Condition
 Command ::= While
