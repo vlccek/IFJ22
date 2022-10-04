@@ -216,18 +216,48 @@ void incrementCounters(char c)
     return;
 }
 
-// TODO do we need it? finish the function
-// TODO custom ungetc
-void setBack(FILE *stream, int symbol)
+// gets next char and automatically increments counters
+int getNextChar(FILE *stream)
 {
-    ungetc(symbol, stream);
-    rowPos--;
+    int outputChar = getc(stream);
+    incrementCounters(outputChar);
+    return outputChar;
 }
 
-// sets the file pointer one token back
+// sets the file pointer one token back TODO testing! could potentially cause problems due to different position calculating
 void ungetToken(FILE *stream)
 {
     fseek(stream, position, SEEK_SET);
+}
+
+// reallocs the buffer if needed and then writes in the buffer
+void writeToBuffer(int *charCounter, int *bufferLevel, char *buffer, int currentChar)
+{
+    // temporary variables
+    int charCounterTemp = *charCounter;
+    int bufferLevelTemp = *bufferLevel;
+
+    // reallocs the buffer if needed
+    if (charCounterTemp > ((100 * bufferLevelTemp) - 1))
+    {
+        char *newBuffer = realloc(buffer, sizeof(char) * 100 * ++bufferLevelTemp);
+        free(buffer);
+        buffer = newBuffer;
+        if (buffer == NULL)
+        {
+            InternalError("Memory allocation failed.");
+        }
+    }
+
+    // writes to the buffer
+    buffer[charCounterTemp] = currentChar;
+    charCounterTemp++;
+
+    // updates values pointed at by pointers
+    *charCounter = charCounterTemp;
+    *bufferLevel = bufferLevelTemp;
+
+    return;
 }
 
 // gets the next token and advances the pointer TODO
@@ -271,8 +301,11 @@ token_t getToken(FILE *stream)
     // parsing loop and FSM
     while (stop != true)
     {
-        currentChar = getc(stream);
-        incrementCounters(currentChar);
+        // gets next char and increments counters
+        currentChar = getNextChar(stream);
+
+        // buffer switch
+        bool bufferOn = false;
 
         // checking for EOF
         if (currentChar == EOF)
@@ -301,10 +334,12 @@ token_t getToken(FILE *stream)
                 {
                     case init_s:
                     case identifier_func_f_s:
+                        bufferOn = true;
                         currentState = identifier_func_f_s;
                         break;
-                    case identifier_var_dollar_s:
                     case identifier_var_f_s:
+                        bufferOn = true;
+                    case identifier_var_dollar_s:
                         currentState = identifier_var_f_s;
                         break;
                     default:
@@ -317,7 +352,6 @@ token_t getToken(FILE *stream)
                 switch (currentState)
                 {
                     case init_s:
-                        outputToken.rowPosNumber++;
                         currentState = init_s;
                     break;
                     // TODO
@@ -342,16 +376,35 @@ token_t getToken(FILE *stream)
             case '\f':
                 break;
         }
+        // if current state changed from init_s to something else, sets token position
         if (isInit)
         {
             if (currentState != init_s)
             {
+                // sets the position
                 outputToken.rowNumber = row;
                 outputToken.rowPosNumber = rowPos;
             }
         }
+
+        // writes to buffer if the buffer switch is on
+        if (bufferOn)
+        {
+            writeToBuffer(&charCounter, &bufferLevel, buffer, currentChar);
+        }
     }
 
+    // TODO assigns correct lexType to the output token
+    switch (currentState)
+    {
+        // unknown state and default
+        case unknown_f_s:
+        default:
+            outputToken.type = unknown;
+            break;
+    }
+
+    fprintf(stderr, "buffer: \"%s\"\n", buffer);    // TODO testing
     // returns the output token
     return outputToken;
 }
