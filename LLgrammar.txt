@@ -12,7 +12,7 @@ Command ::= Exp semiColon
 
 ## Definice funkcí
 FceDefine ::= FceHeader leftCurlyBrace FunctionBody rightCurlyBrace
-FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar FuncReturnColonType
+FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType
 FunctionDeclareParams ::= ''
 FunctionDeclareParams ::= DeclareParam  CommaOrEpsParams
 CommaOrEpsParams ::= ''
@@ -20,8 +20,8 @@ CommaOrEpsParams ::= comma DeclareParam  CommaOrEpsParams
 DeclareParam ::= DataType identifier
 
 ## FuncReturnType
-FuncReturnColonType ::= colon DataType
-FuncReturnColonType ::= colon voidKey
+FuncReturnColonType ::= DataType
+FuncReturnColonType ::= voidKey
 
 ## Function call
 FceCall ::= identifierFunc leftPar FirstFceParam rightPar
