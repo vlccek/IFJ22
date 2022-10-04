@@ -70,8 +70,7 @@ typedef enum
     unknown,
 
     // EOF type
-    ending,
-    lexTypeCount
+    ending
 } lexType;
 
 // FSM states

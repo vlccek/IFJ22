@@ -714,7 +714,8 @@ token_t getToken(FILE *stream)
         // unknown state and default
         case unknown_f_s:
         default:
-            outputToken.type = unknown;
+            fprintf(stderr, "Lexical error on ln %d, col %d!\n", outputToken.rowNumber, outputToken.rowPosNumber);
+            exit(1);
             break;
     }
 
