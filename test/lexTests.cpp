@@ -454,6 +454,61 @@ namespace ifj22 {
             ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
+        TEST_F(LexTestAdvanced, prolog_unallowChars_comments1) {
+            char text[] = "/*kks*/<<?php\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestAdvanced, prolog_unallowChars_comments2) {
+            char text[] = "//kks\n<?php\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestAdvanced, prolog_unallowChars5) {
+            char text[] = "\t<?php\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestAdvanced, prolog_unallowChars6) {
+            char text[] = "\n<?php\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
+        TEST_F(LexTestAdvanced, prolog_unallowChars7) {
+            char text[] = " <?php\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
+
         TEST_F(LexTestAdvanced, function_declare_more_args) {
 
             char text[] = "<?php\n"
