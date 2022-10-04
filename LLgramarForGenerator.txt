@@ -56,80 +56,79 @@
     ending
 %%
 // S - init stav
-  ProgramBody : FceDefine ProgramBody;
-  ProgramBody : Command ProgramBody;
-  ProgramBody : /*eps*/;
+ProgramBody : FceDefine ProgramBody;
+ProgramBody : Command ProgramBody;
+ProgramBody : /*eps*/;
 
-  // Command
-  Command : DeclareVariable;
-  Command : Condition;
-  Command : While;
-  Command : Return;
-  Command : Exp semiColon;
+// Command
+Command : DeclareVariable;
+Command : Condition;
+Command : While;
+Command : Return;
+Command : Exp semicolon;
 
-  // Definice funkcí
-  FceDefine : FceHeader leftCurlyBrace FunctionBody rightCurlyBrace;
-  FceHeader : functionKey identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType;
-  FunctionDeclareParams : /*eps*/;
-  FunctionDeclareParams : DeclareParam  CommaOrEpsParams;
-  CommaOrEpsParams : /*eps*/;
-  CommaOrEpsParams : comma DeclareParam  CommaOrEpsParams;
-  DeclareParam : DataType identifier;
+// Definice funkcí
+FceDefine : FceHeader curlyBraceLeft FunctionBody curlyBraceRight;
+FceHeader : functionKey identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType;
+FunctionDeclareParams : /*eps*/;
+FunctionDeclareParams : DeclareParam  CommaOrEpsParams;
+CommaOrEpsParams : /*eps*/;
+CommaOrEpsParams : comma DeclareParam  CommaOrEpsParams;
+DeclareParam : DataType identifierVar;
 
-  // FuncReturnType
-  FuncReturnColonType : DataType;
-  FuncReturnColonType : voidKey;
+// FuncReturnType
+FuncReturnColonType : DataType;
+FuncReturnColonType : voidKey;
 
-  // Function call
-  FceCall : identifierFunc leftPar FirstFceParam rightPar;
-  FirstFceParam : /*eps*/;
-  FirstFceParam : Exp CommaOrEpsParam;
-  CommaOrEpsParam : /*eps*/;
-  CommaOrEpsParam : comma Exp CommaOrEps;
+// Function call
+FceCall : identifierFunc leftPar FirstFceParam rightPar;
+FirstFceParam : /*eps*/;
+FirstFceParam : Exp CommaOrEpsParam;
+CommaOrEpsParam : /*eps*/;
+CommaOrEpsParam : comma Exp CommaOrEpsParam;
 
-  // Exp
-  Exp : identifierVar;
-  Exp : FceCall;
-  Exp : floatLiteral;
-  Exp : stringLiteral;
-  Exp : integerLiteral;
-  Exp : nullKey;
-  Exp : Exp minusOp Exp;
-  Exp : Exp plusOp Exp;
-  Exp : Exp divisionOp Exp;
-  Exp : Exp multiplicationOp Exp;
-  Exp : Exp integerDivisionOp Exp;
-  Exp : Exp concatenationOp Exp;
-  Exp : leftPar Exp rightPar;
-
-
-  // Data types DataType
-  DataType : stringNullKey;
-  DataType : floatNullKey;
-  DataType : intNullKey;
-  DataType : stringKey;
-  DataType : floatKey;
-  DataType : intKey;
+// Exp
+Exp : identifierVar;
+Exp : FceCall;
+Exp : floatLiteral;
+Exp : stringLiteral;
+Exp : integerLiteral;
+Exp : nullKey;
+Exp : Exp minusOp Exp;
+Exp : Exp plusOp Exp;
+Exp : Exp divisionOp Exp;
+Exp : Exp multiplicationOp Exp;
+Exp : Exp concatenationOp Exp;
+Exp : leftPar Exp rightPar;
 
 
-  // Definice proměné
-  DeclareVariable :  identifierVar DefVarAss;
-  DefVarAss : equals Exp semiColon;
-  DefVarAss : semiColon;
+// Data types DataType
+DataType : stringNullKey;
+DataType : floatNullKey;
+DataType : intNullKey;
+DataType : stringKey;
+DataType : floatKey;
+DataType : intKey;
 
-  // Podmínky
-  Condition : ifKey leftPar Exp rightPar leftCurlyBrace FunctionBody rightCurlyBrace ElseCond;
-  ElseCond : elseKey leftCurlyBrace FunctionBody rightCurlyBrace;
-  ElseCond : /*eps*/;
 
-  // While
-  While : whileKey leftPar Exp rightPar leftCurlyBrace FunctionBody rightCurlyBrace;
+// Definice proměné
+DeclareVariable :  identifierVar DefVarAss;
+DefVarAss : equals Exp semicolon;
+DefVarAss : semicolon;
 
-  // Return
-  Return : returnKey ReturnExp semiColon;
-  ReturnExp : Exp;
-  ReturnExp : /*eps*/;
+// Podmínky
+Condition : ifKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight ElseCond;
+ElseCond : elseKey curlyBraceLeft FunctionBody curlyBraceRight;
+ElseCond : /*eps*/;
 
-  // Vnítřek funkce
-  FunctionBody : Command FunctionBody;
-  FunctionBody : /*eps*/;
+// While
+While : whileKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight;
+
+// Return
+Return : returnKey ReturnExp semicolon;
+ReturnExp : Exp;
+ReturnExp : /*eps*/;
+
+// Vnítřek funkce
+FunctionBody : Command FunctionBody;
+FunctionBody : /*eps*/;

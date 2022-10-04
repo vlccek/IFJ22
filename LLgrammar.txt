@@ -8,16 +8,16 @@ Command : DeclareVariable;
 Command : Condition;
 Command : While;
 Command : Return;
-Command : Exp semiColon;
+Command : Exp semicolon;
 
 // Definice funkcí
-FceDefine : FceHeader leftCurlyBrace FunctionBody rightCurlyBrace;
+FceDefine : FceHeader curlyBraceLeft FunctionBody curlyBraceRight;
 FceHeader : functionKey identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType;
 FunctionDeclareParams : /*eps*/;
 FunctionDeclareParams : DeclareParam  CommaOrEpsParams;
 CommaOrEpsParams : /*eps*/;
 CommaOrEpsParams : comma DeclareParam  CommaOrEpsParams;
-DeclareParam : DataType identifier;
+DeclareParam : DataType identifierVar;
 
 // FuncReturnType
 FuncReturnColonType : DataType;
@@ -28,7 +28,7 @@ FceCall : identifierFunc leftPar FirstFceParam rightPar;
 FirstFceParam : /*eps*/;
 FirstFceParam : Exp CommaOrEpsParam;
 CommaOrEpsParam : /*eps*/;
-CommaOrEpsParam : comma Exp CommaOrEps;
+CommaOrEpsParam : comma Exp CommaOrEpsParam;
 
 // Exp
 Exp : identifierVar;
@@ -41,7 +41,6 @@ Exp : Exp minusOp Exp;
 Exp : Exp plusOp Exp;
 Exp : Exp divisionOp Exp;
 Exp : Exp multiplicationOp Exp;
-Exp : Exp integerDivisionOp Exp;
 Exp : Exp concatenationOp Exp;
 Exp : leftPar Exp rightPar;
 
@@ -57,19 +56,19 @@ DataType : intKey;
 
 // Definice proměné
 DeclareVariable :  identifierVar DefVarAss;
-DefVarAss : equals Exp semiColon;
-DefVarAss : semiColon;
+DefVarAss : equals Exp semicolon;
+DefVarAss : semicolon;
 
 // Podmínky
-Condition : ifKey leftPar Exp rightPar leftCurlyBrace FunctionBody rightCurlyBrace ElseCond;
-ElseCond : elseKey leftCurlyBrace FunctionBody rightCurlyBrace;
+Condition : ifKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight ElseCond;
+ElseCond : elseKey curlyBraceLeft FunctionBody curlyBraceRight;
 ElseCond : /*eps*/;
 
 // While
-While : whileKey leftPar Exp rightPar leftCurlyBrace FunctionBody rightCurlyBrace;
+While : whileKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight;
 
 // Return
-Return : returnKey ReturnExp semiColon;
+Return : returnKey ReturnExp semicolon;
 ReturnExp : Exp;
 ReturnExp : /*eps*/;
 
