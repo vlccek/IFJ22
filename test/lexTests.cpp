@@ -417,8 +417,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);;
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
-
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars2) {
@@ -429,8 +428,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
-
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars3) {
@@ -442,8 +440,18 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+        }
 
+        TEST_F(LexTestAdvanced, prolog_unallowChars4) {
+            char text[] = "<<?php\n"
+                          "declare(strict_types=1);"
+                          "function bar(string $param) : string {\n"
+                          "return foo($param);\n"
+                          "}";
+            FILE *fp = prepareFile(text);
+
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, function_declare_more_args) {
@@ -464,7 +472,6 @@ namespace ifj22 {
                 token_t t = getToken(fp);
                 ASSERT_EQ(t.type, i);
             }
-
         }
 
         TEST_F(LexTestAdvanced, function_declare_empty_param) {
@@ -484,8 +491,6 @@ namespace ifj22 {
                 token_t t = getToken(fp);
                 ASSERT_EQ(t.type, i);
             }
-
-
         }
 
         TEST_F(LexTestAdvanced, function_declare_name) {
@@ -1275,6 +1280,18 @@ namespace ifj22 {
             FILE *fp = prepareFile(text.get());
 
             assertTokensEq(fp, { returnKey,  identifierVar, semicolon});
+        }
+
+        TEST_F(LexTestEdgeCase, oneStateChars) {
+            // these chars should yield to token immediately
+            auto text = PhpPrologString(R"({};()+-*/=<>:,)");
+
+            FILE *fp = prepareFile(text.get());
+
+            assertTokensEq(fp, { curlyBraceLeft, curlyBraceRight, semicolon,
+                                 leftPar, rightPar, plusOp, minusOp, multiplicationOp,
+                                 divisionOp, eqOp, lesserThanOp, greaterThanOp,
+                                 colon, comma, });
         }
 
         TEST_F(LexTestEdgeCase, oneStateChars) {
