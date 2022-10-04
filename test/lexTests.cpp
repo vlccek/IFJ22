@@ -1349,7 +1349,7 @@ namespace ifj22 {
                                  colon, comma, });
         }
 
-        TEST_F(LexTestEdgeCase, oneStateChars) {
+        TEST_F(LexTestEdgeCase, oneStateChars1) {
             // these chars should yield to token immediately
             auto text = PhpPrologString(R"({};()+-*/=<>:,)");
 
