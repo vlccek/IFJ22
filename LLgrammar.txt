@@ -1,18 +1,18 @@
 ## S - init stav
-ManyCommands ::= FceDefine ManyCommands
-ManyCommands ::= Command ManyCommands
-ManyCommands ::= ''
+ProgramBody ::= FceDefine ProgramBody
+ProgramBody ::= Command ProgramBody
+ProgramBody ::= ''
 
 ## Command
 Command ::= FceCall
 Command ::= Ass
 Command ::= Condition
 Command ::= While
-Command ::= Return
+Command ::= return
 
-
+sdf
 ## Definice funkcí
-FceDefine ::= FceHeader leftCurlyBrace Body rightCurlyBrace
+FceDefine ::= FceHeader leftCurlyBrace FunctionBody rightCurlyBrace
 FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar FuncReturnColonType
 FunctionDeclareParams ::= ''
 FunctionDeclareParams ::= DeclareParam  CommaOrEpsParams
@@ -62,12 +62,12 @@ DefVarAss ::= equals Exp semiColon
 DefVarAss ::= semiColon
 
 ## Podmínky
-Condition ::= ifKey leftPar Exp rightPar leftCurlyBrace Body rightCurlyBrace ElseCond
-ElseCond ::= elsekey leftCurlyBrace Body rightCurlyBrace
+Condition ::= ifKey leftPar Exp rightPar leftCurlyBrace FunctionBody rightCurlyBrace ElseCond
+ElseCond ::= elseKey leftCurlyBrace FunctionBody rightCurlyBrace
 ElseCond ::= ‘’
 
 ## While
-While ::= whileKey leftPar Exp rightPar leftCurlyBrace Body rightCurlyBrace
+While ::= whileKey leftPar Exp rightPar leftCurlyBrace FunctionBody rightCurlyBrace
 
 ## Return
 Return ::= returnKey ReturnExp semiColon
@@ -75,5 +75,5 @@ ReturnExp ::= Exp
 ReturnExp ::= ''
 
 ## Vnítřek funkce
-Body ::= Command Body
-Body ::= ''
+FunctionBody ::= Command FunctionBody
+FunctionBody ::= ''
