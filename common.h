@@ -18,15 +18,14 @@
 
 // exit cody
 #define ERR_LEX 1 // 1 - chyba v programu v rámci lexikální analýzy (chybná struktura aktuálního lexému).
-#define ERR_SYNTAX  2 // 2 - chyba v programu v rámci syntaktické analýzy (chybná syntaxe programu).
-#define ERR_IDENTIFIER_NAME 3 // 3 - sémantická chyba v programu – nedefinovaná funkce/proměnná, pokus o redefinici proměnné, atp.
-#define ERR_TYPES_ASS_COMPATIBILITY 4// 4 - sémantická chyba v příkazu přiřazení (typová nekompatibilita).
-#define ERR_FUNCTION_RET_OR_PARAM 5  // 5 - sémantická chyba v programu – špatný počet/typ parametrů či návratových hodnot
-#define ERR_TYPES 6  //6 - sémantická chyba typové kompatibility v aritmetických, řetězcových a relačních
-#define ERR_SEM_OTHER 7 // • 7 - ostatní sémantické chyby.
-#define ERR_NILL 8 // 8 - běhová chyba při práci s neočekávanou hodnotou nil.
-#define ERR_ZERO_DIV 9 //9 běhová chyba celočíselného dělení nulovou konstantou.
-#define ERR_RUNTIME 99 // interní chyba přek
+#define ERR_SYNTAX  2 // 2 - chyba v programu v rámci syntaktické analýzy (chybná syntaxe programu, chybějící hlavička, atp.).
+#define ERR_IDENTIFIER_NAME 3 // 3 - sémantická chyba v programu – nedefinovaná funkce, pokus o redefinice funkce
+#define ERR_TYPES_ASS_COMPATIBILITY 4// 4 - špatný počet/typ parametrů u volání funkce či typ návratové hodnoty z funkce.
+#define ERR_FUNCTION_RET_OR_PARAM 5  // 5 - sémantická chyba v programu – použití nedefinované proměnné.
+#define ERR_TYPES 6  //6 - sémantická/běhová chyba v programu – chybějící/přebývající výraz v příkazu návratu z funkce
+#define ERR_SEM_OTHER 7 // • 7 - émantická/běhová chyba typové kompatibility v aritmetických, řetězcových a relačních výrazech
+#define ERR_NILL 8 // 8 - ostatní sémantické chyby.
+#define ERR_RUNTIME 99 //  interní chyba překladače tj. neovlivněná vstupním programem
 
 // řídící makra
 #define debug 1 // pokud je `1` vypisují se logy z.
