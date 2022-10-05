@@ -36,7 +36,6 @@ int parse(int argc, char *argv[]) {
                 success = true;
                 break;
             case terminal:
-
                 break;
             case nonTerminal:
 
@@ -51,6 +50,5 @@ int parse(int argc, char *argv[]) {
 int testParserTokens(token *tokens) {
     testTokens = tokens;
     nextToken = getTokenTesting;
-    void *a;
-    parse(0, a);
+    parse(0, "");
 }
