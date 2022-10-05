@@ -45,12 +45,17 @@ add_library(lex
         lex.c
         lex.h)
 
+add_library(LLtable
+        LLtable.c
+        LLtable.h)
+
 
 add_subdirectory(test)
 
 target_link_libraries(main
         stack
         queue
-        dstring)
+        dstring
+        LLtable)
 
 
