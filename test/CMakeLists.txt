@@ -16,3 +16,11 @@ set(Sources dynStrTest.cpp)
 add_executable(${This} ${Sources})
 target_link_libraries(${This} gtest_main dstring)
 add_test(dynStrTest dynStrTest)
+
+# Parser test
+set(This parserTest)
+set(Sources parserTest.cpp )
+add_executable(${This} ${Sources})
+target_link_libraries(${This} gtest_main parser lex common )
+add_test(parserTest parserTest)
+

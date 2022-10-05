@@ -32,6 +32,19 @@ add_library(dstring
         dynstring.c
         dynstring.c)
 
+add_library(parser
+        parser.c
+        parser.h)
+
+
+add_library(common
+        common.c
+        common.h)
+
+add_library(lex
+        lex.c
+        lex.h)
+
 
 add_subdirectory(test)
 
