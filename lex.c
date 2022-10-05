@@ -390,6 +390,13 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = null_f_s;
                         break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -436,6 +443,13 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = identifier_var_f_s;
                         break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -451,6 +465,13 @@ token_t getToken(FILE *stream)
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
                         break;
                     default:
                         currentState = unknown_f_s;
@@ -477,6 +498,13 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -492,6 +520,13 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -506,6 +541,13 @@ token_t getToken(FILE *stream)
                     case string_lit_s:
                         currentState = string_lit_f_s;
                         stop = true;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
                         break;
                     default:
                         currentState = unknown_f_s;
@@ -526,6 +568,13 @@ token_t getToken(FILE *stream)
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
                         break;
                     default:
                         currentState = unknown_f_s;
@@ -548,6 +597,61 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = float_lit_sign_s;
                         break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case '/':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = com_slash_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_slash_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_ast_s:
+                        currentState = init_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case '*':
+                switch (currentState)
+                {
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_slash_s:
+                        currentState = com_block_s;
+                        break;
+                    case com_block_s:
+                        currentState = com_block_ast_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -565,6 +669,13 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;
                     // TODO
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
                     default:
                         stop = true;
                         break;
@@ -581,6 +692,13 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;
                     // TODO
+                    case com_line_f_s:
+                        currentState = init_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
                     default:
                         stop = true;
                         break;
@@ -597,6 +715,13 @@ token_t getToken(FILE *stream)
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
                         break;
                     default:
                         currentState = unknown_f_s;
@@ -710,6 +835,14 @@ token_t getToken(FILE *stream)
             {
                 outputToken.type = unknown;
             }
+            break;
+        // commentary state
+        case com_line_f_s:
+            outputToken.type = ending;
+            break;
+        // init state (when stream ends with block commentary)
+        case init_s:
+            outputToken.type = ending;
             break;
         // unknown state and default
         case unknown_f_s:

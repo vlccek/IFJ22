@@ -112,6 +112,12 @@ typedef enum
     not_eq_2_s,
     not_eq_f_s,
 
+    // commentary states
+    com_slash_s,
+    com_line_f_s,
+    com_block_s,
+    com_block_ast_s,
+
     // TODO
 
     // nullable type state
