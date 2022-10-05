@@ -73,4 +73,52 @@ char *getTerminalName(int i);
 char *getNonTerminalName(int i);
 char *getPrecedentTerminalName(int i);
 
+
+typedef enum {
+    // S - init stav
+    ProgramBody,
+
+    // Command
+    Command,
+
+    // Definice funkcí
+    FceDefine,
+    FceHeader,
+    FunctionDeclareParams,
+    CommaOrEpsParams,
+    DeclareParam,
+
+    // FuncReturnType
+    FuncReturnColonType,
+
+    // Function call
+    FceCall,
+    FirstFceParam,
+    CommaOrEpsParam,
+
+    // Exp
+    Exp,
+
+    // Data types DataType
+    DataType,
+
+    // Definice proměné
+    DeclareVariable,
+    DefVarAss,
+
+    // Podmínky
+    Condition,
+    ElseCond,
+
+    // While
+    While,
+
+    // Return
+    Return,
+    ReturnExp,
+
+    // Vnítřek funkce
+    FunctionBody,
+} nonTerminalType;
+
 #endif //LUAINTERPRET_COMMON_H
