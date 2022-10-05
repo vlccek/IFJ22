@@ -64,7 +64,15 @@ namespace ifj22 {
         };
 
         class LexTestSimple : public lexTest {
+        };
 
+        class LexTestAdvanced : public lexTest {
+        };
+
+        class LexTestEdgeCase : public lexTest {
+        };
+
+        class LexTestTokenData : public lexTest {
         };
 
         TEST_F(LexTestSimple, variable) {
@@ -151,15 +159,6 @@ namespace ifj22 {
                            {intKey, intKey});
         }
 
-
-        class LexTestAdvanced : public lexTest {
-        };
-
-        class LexTestEdgeCase : public lexTest {
-        };
-
-        class LexTestTokenData : public lexTest {
-        };
         //region LexTestTokenData_stringLit
         TEST_F(LexTestTokenData, string_data) {
             std::string str = "\"Uplne jednoduchy ale delsi text\"";
