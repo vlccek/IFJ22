@@ -118,6 +118,7 @@ typedef enum {
 
     // Vnítřek funkce
     FunctionBody,
+    nonTerminalCount
 } nonTerminalType;
 
 #endif //LUAINTERPRET_COMMON_H
