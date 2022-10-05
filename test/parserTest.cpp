@@ -58,6 +58,12 @@ namespace ifj22 {
             testParserTokens(tokens.data());
         }
 
+        TEST_F(ParserTest, initialTest2) {
+            std::vector<token> tokens = createTokens({ leftPar, rightPar, ending });
+
+            ASSERT_EXIT_SYNTAX(testParserTokens(tokens.data()););
+        }
+
 
     }
 }
