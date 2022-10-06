@@ -20,13 +20,62 @@
 #define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rule[ruleIndex]->to[countOfRule] = member;
 #define partOfRulesRightSide(name) createExsStackMember(name, getDataType(#name))
 
-typedef enum PSADataType{
+typedef enum {
+    // S - init stav
+    ProgramBody,
+
+    // Command
+    Command,
+
+    // Definice funkcí
+    FceDefine,
+    FceHeader,
+    FunctionDeclareParams,
+    CommaOrEpsParams,
+    DeclareParam,
+
+    // FuncReturnType
+    FuncReturnColonType,
+
+    // Function call
+    FceCall,
+    FirstFceParam,
+    CommaOrEpsParam,
+
+    // Exp
+    Exp,
+
+    // Data types DataType
+    DataType,
+
+    // Definice proměné
+    DeclareVariable,
+    DefVarAss,
+
+    // Podmínky
+    Condition,
+    ElseCond,
+
+    // While
+    While,
+
+    // Return
+    Return,
+    ReturnExp,
+
+    // Vnítřek funkce
+    FunctionBody,
+    nonTerminalCount
+} nonTerminalType;
+
+
+typedef enum PSADataType {
     endOfFile, // special token to detect end of stack
     terminal,
     nonTerminal
 } PSADataType;
 
-typedef struct PSAStackMember{
+typedef struct PSAStackMember {
     int data;
     PSADataType type;
 } PSAStackMember;
