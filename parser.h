@@ -26,7 +26,7 @@ token *testTokens;
 
 #ifdef TESTING
 token getTokenTesting(FILE *fp) {
-    return *(testTokens++);
+    return *testTokens++;
 }
 token (*nextToken)(FILE *fp) = getTokenTesting;
 #else
@@ -66,8 +66,6 @@ typedef struct fceExpect{
     expectType_t whatToExpect;
     state_t currentState;
 }fceExpect_t;
-
-int testParserTokens(token *tokens);
 
 int parser();
 

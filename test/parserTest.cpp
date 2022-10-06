@@ -36,13 +36,12 @@ namespace ifj22 {
              *
              * lyxtype tokens for parse function
              */
-            void tokensForParse(const std::vector<lexType> &lexTypes) {
+            void tokensForParser(const std::vector<lexType> &lexTypes) {
                 for (auto lexType: lexTypes) {
                     token newToken = {lexType, {}, 0, 0};
                     tokens->push_back(newToken);
                 }
-                // first is skipped :(
-                tokens->insert(tokens->begin(), {lexTypeCount, {}, 0, 0});
+
                 testTokens = tokens->data();
             }
 
@@ -57,13 +56,13 @@ namespace ifj22 {
         };
 
         TEST_F(ParserTest, initialTest) {
-            tokensForParse({ending});
+            tokensForParser({ending});
 
             parser();
         }
 
         TEST_F(ParserTest, initialTest2) {
-            tokensForParse({leftPar, rightPar, ending});
+            tokensForParser({leftPar, rightPar, ending});
 
             ASSERT_EXIT_SYNTAX(parser());
         }
