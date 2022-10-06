@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+
 #ifndef PARSER_TEST
 #define PARSER_TEST
 
@@ -7,6 +8,7 @@
 // Hide the io function since this will segfault in testing
 extern "C" {
 #include "../parser.h"
+#include "../parser.c" // DON'T TOUCH THIS!
 
 #include <stdio.h>
 };
@@ -18,50 +20,52 @@ extern "C" {
 #define ASSERT_EXIT_CODE(functionCall, number) \
         ASSERT_EXIT(functionCall, ::testing::ExitedWithCode(number), ".*");
 
+
 namespace ifj22 {
     namespace parsertest {
         class ParserTest : public ::testing::Test {
         protected:
 
-            FILE *fileForTest;
-
-            void SetUp() override {
-                fileForTest = fopen("test.txt", "ab+");
-            }
-
-            void TearDown() override {
-                fclose(fileForTest);
-                fclose(fopen("test.txt", "w"));
-            }
-
-            FILE *prepareFile(const char *text) {
-                fprintf(fileForTest, "%s", text);
-                return fileForTest;
-            }
+            std::vector<token> *tokens;
 
             void getAllTokens() {
                 return;
             }
-            std::vector<token> createTokens(const std::vector<lexType>& lexTypes){
-                std::vector<token> tokens =  {};
-                for (auto lexType : lexTypes){
+
+            /**bypass getToken function,
+             *
+             * lyxtype tokens for parse function
+             */
+            void tokensForParse(const std::vector<lexType> &lexTypes) {
+                for (auto lexType: lexTypes) {
                     token newToken = {lexType, {}, 0, 0};
-                    tokens.push_back(newToken);
+                    tokens->push_back(newToken);
                 }
-                return tokens;
+                // first is skipped :(
+                tokens->insert(tokens->begin(), {lexTypeCount, {}, 0, 0});
+                testTokens = tokens->data();
             }
+
+            void SetUp() override {
+                tokens = new std::vector<token>;
+            }
+
+            void TearDown() override {
+                delete tokens;
+            }
+
         };
 
         TEST_F(ParserTest, initialTest) {
-            std::vector<token> tokens = createTokens({ ending });
+            tokensForParse({ending});
 
-            testParserTokens(tokens.data());
+            parser();
         }
 
         TEST_F(ParserTest, initialTest2) {
-            std::vector<token> tokens = createTokens({ leftPar, rightPar, ending });
+            tokensForParse({leftPar, rightPar, ending});
 
-            ASSERT_EXIT_SYNTAX(testParserTokens(tokens.data()););
+            ASSERT_EXIT_SYNTAX(parser());
         }
 
 

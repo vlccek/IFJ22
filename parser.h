@@ -20,16 +20,29 @@
 #include <stdarg.h>
 #include <string.h>
 
-typedef struct uniqueCounter{
+#ifdef TESTING
+token *testTokens;
+#endif
+
+#ifdef TESTING
+token getTokenTesting(FILE *fp) {
+    return *(testTokens++);
+}
+token (*nextToken)(FILE *fp) = getTokenTesting;
+#else
+token (*nextToken)(FILE *fp) = getToken;
+#endif
+
+typedef struct uniqueCounter {
     int conditionCount;
     int whileCount;
     int forCount;
     int repUntilCount;
     int functionCount;
     int untilCount;
-}uniqueCounter_t;
+} uniqueCounter_t;
 
-typedef enum typeOnTop{
+typedef enum typeOnTop {
     endOfFile,
     terminal,
     nonTerminal,
@@ -56,7 +69,7 @@ typedef struct fceExpect{
 
 int testParserTokens(token *tokens);
 
-int parser(int argc, char *argv[]);
+int parser();
 
 
 #endif //STACK_PARSER_H

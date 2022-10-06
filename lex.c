@@ -4,6 +4,7 @@
 
 #include "lex.h"
 
+
 token getToken(FILE *stream){
     token t;
     return t;

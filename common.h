@@ -16,7 +16,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-// exit cody
+// exit codsorry mojey
 #define ERR_LEX 1 // 1 - chyba v programu v rámci lexikální analýzy (chybná struktura aktuálního lexému).
 #define ERR_SYNTAX  2 // 2 - chyba v programu v rámci syntaktické analýzy (chybná syntaxe programu, chybějící hlavička, atp.).
 #define ERR_IDENTIFIER_NAME 3 // 3 - sémantická chyba v programu – nedefinovaná funkce, pokus o redefinice funkce

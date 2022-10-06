@@ -3,19 +3,13 @@
 //
 #include "parser.h"
 
-token (*nextToken)(FILE *fp) = getToken;
 
-token *testTokens;
-
-token getTokenTesting(FILE *fp) {
-    return *testTokens++;
-}
 
 void initialize() {
 
 }
 
-int parse(int argc, char *argv[]) {
+int parser() {
     initialize();
 
     token t;
@@ -24,7 +18,7 @@ int parse(int argc, char *argv[]) {
         if (t.type == ending)
             break;
 
-        printf( "%s", getTerminalName((int) t.type));
+        //printf( "%s", getTerminalName((int) t.type));
     }
     return 0;
 
@@ -47,8 +41,3 @@ int parse(int argc, char *argv[]) {
     return 0;
 }
 
-int testParserTokens(token *tokens) {
-    testTokens = tokens;
-    nextToken = getTokenTesting;
-    parse(0, "");
-}
