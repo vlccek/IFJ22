@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "helper.h"
+#include "common.h"
 
 #ifndef STACK_STACK_H
 #define STACK_STACK_H

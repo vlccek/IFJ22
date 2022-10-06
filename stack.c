@@ -17,7 +17,7 @@ genericStack *stackInit() {
 int push(genericStack *s, void *nm) {
     if (!s || !nm) {
         //Stack is null
-        return null_dereference;
+        return ERR_RUNTIME;
     }
 
     stackMem_t *oldtop = s->top;// saves old top
@@ -38,7 +38,7 @@ void *pop(genericStack *s) {
     }
 
     if (s->top == NULL) {
-        exit(IE_pop_empty_stack);
+        exit(ERR_RUNTIME);
     }
 
     void *r = s->top->data;// saves old top
@@ -77,7 +77,7 @@ void *popBack(genericStack *s) {
     stackMem_t *bottomEl = stackBottom(s, &pLast);
 
     if (s->top == NULL){
-        exit(IE_pop_empty_stack);
+        exit(ERR_RUNTIME);
     }
 
     void *r = bottomEl->data;// returned el
