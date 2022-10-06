@@ -86,8 +86,8 @@ namespace ifj22 {
             // Instead print error and exit with (I guess) internal error code
             // 'You should use function emptyStack()' error
 
-            ASSERT_EXIT(pop(stack), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
-            ASSERT_EXIT(popBack(stack), ::testing::ExitedWithCode(IE_pop_empty_stack), ".*");
+            ASSERT_EXIT(pop(stack), ::testing::ExitedWithCode(ERR_RUNTIME), ".*");
+            ASSERT_EXIT(popBack(stack), ::testing::ExitedWithCode(ERR_RUNTIME), ".*");
         }
 
         TEST(stackTest, push_stack_to_stack) {
