@@ -1,5 +1,4 @@
 #include "gtest/gtest.h"
-
 #ifndef PARSER_TEST
 #define PARSER_TEST
 
@@ -12,8 +11,9 @@ extern "C" {
 #include <stdio.h>
 };
 
+
 #define ASSERT_EXIT_SYNTAX(functionCall) \
-        ASSERT_EXIT(functionCall, ::testing::ExitedWithCode(ERR_SYNTAX), ".*");
+        ASSERT_EXIT_CODE(functionCall, ERR_SYNTAX);
 
 #define ASSERT_EXIT_CODE(functionCall, number) \
         ASSERT_EXIT(functionCall, ::testing::ExitedWithCode(number), ".*");
