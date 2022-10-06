@@ -9,14 +9,14 @@
  *
  */
 
-#ifndef LUAINTERPRET_COMMON_H
-#define LUAINTERPRET_COMMON_H
+#ifndef IFJ22_COMMON_H
+#define IFJ22_COMMON_H
 // includy
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
-// exit cody
+// exit codsorry mojey
 #define ERR_LEX 1 // 1 - chyba v programu v rámci lexikální analýzy (chybná struktura aktuálního lexému).
 #define ERR_SYNTAX  2 // 2 - chyba v programu v rámci syntaktické analýzy (chybná syntaxe programu, chybějící hlavička, atp.).
 #define ERR_IDENTIFIER_NAME 3 // 3 - sémantická chyba v programu – nedefinovaná funkce, pokus o redefinice funkce
@@ -28,15 +28,7 @@
 #define ERR_RUNTIME 99 //  interní chyba překladače tj. neovlivněná vstupním programem
 
 // řídící makra
-#define debug 1 // pokud je `1` vypisují se logy z.
-
-#ifndef TestParser
-#define TestParser 0 // pro testování parseru nastavuje chování makra printErr
-#endif
-
-#ifndef mainFromExpParser
-#define mainFromExpParser 0
-#endif
+#define debug 1 // pokud je `1` vypisují se logy z pomocí maker printErr
 
 #define printlog(format, ...)    do{  fprintf(stderr, format, __VA_ARGS__);}while(0)
 #define loging(message, args...)    if (debug == 1) {printlog("%15s:%d | in %s() | " message "\n", __FILE__, __LINE__,  __FUNCTION__, ## args);}
@@ -45,8 +37,8 @@
 // makra pro logování a easy exity
 //region logginAndExitingMacros
 
-#define InternalError(message, args...)     PrintErrorExit("%15s:%d | in %s() | " message "\n", __FILE__, __LINE__,  __FUNCTION__, ## args)
-#define PrintErrorExit(format, ...)    do{  if (!debug) {fprintf(stderr, format, __VA_ARGS__);}; fflush(stderr); exit(ERR_RUNTIME);}while(0)
+#define Error(message,ERR_CODE, args...)     PrintErrorExit("%15s:%d | in %s() | " message "\n", ERR_CODE ,__FILE__, __LINE__,  __FUNCTION__, ## args)
+#define PrintErrorExit(format,ERR_CODE,   ...)    do{  if (!debug) {fprintf(stderr, format, __VA_ARGS__);}; fflush(stderr); exit(ERR_CODE);}while(0)
 
 #define printlog(format, ...)    do{  fprintf(stderr, format, __VA_ARGS__);}while(0)
 #define loging(message, args...)    if (debug == 1) {printlog("%15s:%d | in %s() | " message "\n", __FILE__, __LINE__,  __FUNCTION__, ## args);}
@@ -62,62 +54,33 @@
                 }\
                 }
 
+/**
+* Generates code for malloc (if null and err output)
+*/
+#define make_var(name, type, size) \
+type name;                                                                              \
+if ((name = (type )malloc(size) ) == NULL) {                                             \
+    fprintf(stderr,                                                                     \
+    "Not enought memory (malloc err) in line `%d`, in file `%s`, in function: `%s`",    \
+    __LINE__, __FILE__, __func__);                                                      \
+    exit(ERR_RUNTIME);                                                                   \
+    };                                                                                  \
+
+
 
 void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_list args);
+
 void pErrSyntax(int terminalEnum, int rowNum, int rowPos, char *format, ...);
+
 void pErrLexer(int rowNum, int rowPos, char *format, ...);
+
 void pErrSemantic(int errCode, char *format, ...);
+
 void pErrDivideZero(int rowNum, int rowPos, char *format, ...);
+
 char *getTerminalName(int i);
+
 char *getNonTerminalName(int i);
 char *getPrecedentTerminalName(int i);
-
-
-typedef enum {
-    // S - init stav
-    ProgramBody,
-
-    // Command
-    Command,
-
-    // Definice funkcí
-    FceDefine,
-    FceHeader,
-    FunctionDeclareParams,
-    CommaOrEpsParams,
-    DeclareParam,
-
-    // FuncReturnType
-    FuncReturnColonType,
-
-    // Function call
-    FceCall,
-    FirstFceParam,
-    CommaOrEpsParam,
-
-    // Exp
-    Exp,
-
-    // Data types DataType
-    DataType,
-
-    // Definice proměné
-    DeclareVariable,
-    DefVarAss,
-
-    // Podmínky
-    Condition,
-    ElseCond,
-
-    // While
-    While,
-
-    // Return
-    Return,
-    ReturnExp,
-
-    // Vnítřek funkce
-    FunctionBody,
-} nonTerminalType;
 
 #endif //LUAINTERPRET_COMMON_H

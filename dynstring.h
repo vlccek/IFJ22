@@ -8,8 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-#include "helper.h"
+#include "common.h"
 
 #ifndef STACK_DYNSTRING_H
 #define STACK_DYNSTRING_H
