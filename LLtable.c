@@ -14,17 +14,17 @@ tableMember *getLLMember(nonTerminalType nonterm, lexType terminal) {
     return Table[nonterm][terminal];
 }
 
-bool stackMemberCmp(extendedStackMember *memberA, extendedStackMember *memberB) {
-    return (memberA->typeOfData == memberB->typeOfData && memberA->value == memberB->value);
+bool stackMemberCmp(PSAStackMember *memberA, PSAStackMember *memberB) {
+    return (memberA->type == memberB->type && memberA->data == memberB->data);
 }
 
-int cmpRules(tableMember *tMember, extendedStackMember **rightSideOfRule) {
-    for (int i = 0; i < MAX_RULE_COUNT; ++i) {
+int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
+    for (int i = 0; i < MAX_RULES_IN_CELL; ++i) {
         for (int j = 0; j < MAX_RULE_LEN; ++j) {
             if (tMember->rule[i] == NULL) {
                 break;
             }
-            extendedStackMember *m = rightSideOfRule[j];
+            PSAStackMember *m = rightSideOfRule[j];
             if (tMember->rule[i]->to[j] == NULL && m == NULL) {
                 if (j == 0) {
                     break;
@@ -42,9 +42,9 @@ int cmpRules(tableMember *tMember, extendedStackMember **rightSideOfRule) {
     return 0;
 }
 
-tableMember *getLLMemberByRule(extendedStackMember *to[MAX_RULE_LEN], int *ruleIndex) {
+tableMember *getLLMemberByRule(PSAStackMember *to[MAX_RULE_LEN], int *ruleIndex) {
     tableMember *tableMember;
-    nonTerminalType multiRule[] = {Exp, BoolExp};
+    nonTerminalType multiRule[] = {Exp};
     int multiRuleLen = sizeof(multiRule) / sizeof(nonTerminalType);
 
     for (int i = 0; i < multiRuleLen; ++i) {
@@ -61,11 +61,11 @@ tableMember *getLLMemberByRule(extendedStackMember *to[MAX_RULE_LEN], int *ruleI
 
 //endregion
 //region Table Creation
-extendedStackMember *createExsStackMember(int value, dataType type) {
-    extendedStackMember *member = (extendedStackMember *) malloc(sizeof(extendedStackMember));
+PSAStackMember *createExsStackMember(int value, PSADataType type) {
+    PSAStackMember *member = (PSAStackMember *) malloc(sizeof(PSAStackMember));
     checkNullPointer(member);
-    member->value = value;
-    member->typeOfData = type;
+    member->data = value;
+    member->type = type;
     return member;
 }
 
@@ -91,9 +91,9 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
 
     if (r->nullable == false) {
         int i;
-        for (i = 0; i < MAX_RULE_COUNT; ++i) {
+        for (i = 0; i < MAX_RULES_IN_CELL; ++i) {
             if (i < memberCount) {
-                AddToRightSide(terminal, nonTerminal, i, va_arg(members, extendedStackMember * ), ruleIndex);
+                AddToRightSide(terminal, nonTerminal, i, va_arg(members, PSAStackMember * ), ruleIndex);
             } else {
                 AddToRightSide(terminal, nonTerminal, i, NULL, ruleIndex);
 
@@ -121,13 +121,13 @@ void insertMember(int terminal, int nonTerminal, int memberCount, ...) {
             InternalError("No rule in initialized member!");
 
         int i;
-        for (i = 1; i < MAX_RULE_COUNT; ++i) {
+        for (i = 1; i < MAX_RULES_IN_CELL; ++i) {
             if (Table[nonTerminal][terminal]->rule[i] == NULL) {
                 InserRules(terminal, nonTerminal, memberCount, members, i);
                 break;
             }
         }
-        if (i == MAX_RULE_COUNT)
+        if (i == MAX_RULES_IN_CELL)
             InternalError("Rules memory overflow.");
 
     } else {
@@ -164,12 +164,12 @@ void printTable () {
     }
 }
 */
-dataType getDataType(char *name) {
+PSADataType getDataType(char *name) {
     for (int i = 0; i < nonTerminalCount; ++i) {
         if (!strcmp(name, getNonTerminalName(i)))
-            return typNeterminal;
+            return nonTerminal;
     }
-    return typTerminal;
+    return terminal;
 }
 
 //endregion

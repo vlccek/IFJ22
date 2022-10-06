@@ -15,28 +15,40 @@
 #include "common.h"
 
 #define MAX_RULE_LEN 10
-#define MAX_RULE_COUNT 10
+#define MAX_RULES_IN_CELL 10
 
 #define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rule[ruleIndex]->to[countOfRule] = member;
 #define partOfRulesRightSide(name) createExsStackMember(name, getDataType(#name))
+
+typedef enum PSADataType{
+    endOfFile, // special token to detect end of stack
+    terminal,
+    nonTerminal
+} PSADataType;
+
+typedef struct PSAStackMember{
+    int data;
+    PSADataType type;
+} PSAStackMember;
 
 typedef struct rule{
     int id;
     bool nullable;
     nonTerminalType from;
-    extendedStackMember *to[MAX_RULE_LEN];
+    PSAStackMember *to[MAX_RULE_LEN];
 }rule;
 
 typedef struct tableMember{
-    rule *rule[MAX_RULE_COUNT];
+    rule *rule[MAX_RULES_IN_CELL];
     nonTerminalType nonTerminal;
     lexType terminal;
 }tableMember;
+
 
 typedef tableMember* table[(int) nonTerminalCount][(int) lexTypeCount];
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal);
 void createLLTable();
-tableMember *getLLMemberByRule(extendedStackMember *to[MAX_RULE_LEN], int *ruleIndex);
+tableMember *getLLMemberByRule(PSAStackMember *to[MAX_RULE_LEN], int *ruleIndex);
 
 #endif //LUAINTERPRET_LLTABLE_H
