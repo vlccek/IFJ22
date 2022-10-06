@@ -11,6 +11,82 @@
 
 #include "common.h"
 
+char *allNonTerminalNames[] = {
+
+};
+
+char *allTerminalNames[] = {
+        // keywords
+        "elseKey",
+        "functionKey",
+        "ifKey",
+        "nullKey",
+        "returnKey",
+        "voidKey",
+        "whileKey",
+
+        // data types
+        "stringKey", // "'string' $hello"
+        "floatKey",
+        "intKey",
+        "stringNullKey",
+        "floatNullKey",
+        "intNullKey",
+
+        // assignment
+        "equals",
+        "colon",
+        "semiColon",
+        "comma",
+
+        // operators
+        "multiplicationOp",
+        "divisionOp",
+        "plusOp",
+        "minusOp",
+        "concatenationOp",
+        "lesserThanOp",
+        "lesserEqOp",
+        "greaterThanOp",
+        "greaterEqOp",
+        "eqOp",
+        "notEqOp",
+
+        // parentheses
+        "leftPar",
+        "rightPar",
+
+        // literals
+        "stringLiteral", // "hello"
+        "integerLiteral",
+        "decimalLiteral",
+
+        // identifiers
+        "identifierFce",
+        "identifierVar",
+
+        // unknown
+        "unknown",
+
+        // EOF type
+        "ending",
+        "lexTypeCount"
+};
+
+char *allPrecedentTerminalNames[] = {
+};
+
+
+char *getPrecedentTerminalName(int i) {
+    return allPrecedentTerminalNames[i];
+}
+char *getTerminalName(int i) {
+    return allTerminalNames[i];
+}
+char *getNonTerminalName(int i) {
+    return allNonTerminalNames[i];
+}
+
 void printErrOnLine(int rowNum, int rowPos) {
     fprintf(stderr, "Wrong syntax on:\n");
     fprintf(stderr, "Line: %d \n", rowNum);
