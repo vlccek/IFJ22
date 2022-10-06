@@ -274,7 +274,7 @@ void phpCheck(FILE *stream)
     {
         char buffer[100];
         fgets(buffer, 100, stream);
-        if ((strcmp(buffer, "<?php\n") == 0) || (strcmp(buffer, "<?php\r\n") == 0))
+        if ((strcmp(buffer, "<?php") == 0) || (strcmp(buffer, "<?php\n") == 0) || (strcmp(buffer, "<?php\r\n") == 0))
         {
             php = true;
             row++;
