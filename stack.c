@@ -93,6 +93,13 @@ void *popBack(genericStack *s) {
     return r;
 }
 
+void *stackTop(genericStack *s) {
+    if (s->top == NULL)
+        exit(ERR_RUNTIME);
+    else
+        return s->top->data;
+}
+
 
 void printStack(genericStack *s, void (*printMem)(void *)) {
     fprintf(stdout, "Your stack looks like: \n");
