@@ -99,5 +99,5 @@ typedef tableMember* table[(int) nonTerminalCount][(int) lexTypeCount];
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal);
 void createLLTable();
 tableMember *getLLMemberByRule(PSAStackMember *to[MAX_RULE_LEN], int *ruleIndex);
-
+PSAStackMember *createPSAStackMember(int value, PSADataType type);
 #endif //LUAINTERPRET_LLTABLE_H

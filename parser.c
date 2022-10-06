@@ -3,33 +3,66 @@
 //
 #include "parser.h"
 #include "LLtable.h"
-#include "stack.h"
 
-typedef struct parserMemory{
-    genericStack* PSAStack;
-    // here goes other structures
-} ParserMemory;
+
+void PSAStackInit(ParserMemory* mem) {
+    mem->PSAStack = stackInit();
+    push(mem->PSAStack, createPSAStackMember(0, endOfFile));
+    push(mem->PSAStack, createPSAStackMember(ProgramBody, nonTerminal));
+}
 
 ParserMemory* initializeMemory() {
     make_var(mem, ParserMemory*, sizeof (ParserMemory));
-    mem->PSAStack = stackInit();
+    PSAStackInit(mem);
     return mem;
+}
+
+void unxpectedEnd(token_t token) {
+    pErrSyntax(token.type, token.rowNumber, token.rowPosNumber,
+               "Unxpected end of program.\n");
+}
+
+void pushStackToStack(genericStack* original, genericStack* toEmpty){
+    while(stackTop(toEmpty) != NULL){
+        push(original, pop(toEmpty));
+    }
+}
+
+void pushReversed(genericStack* stack, PSAStackMember** rule){
+    make_var(tmpStack, genericStack*, sizeof (genericStack));
+    while (*rule != NULL){
+        push(tmpStack, *rule);
+        *rule++;
+    }
+    pushStackToStack(stack, tmpStack);
 }
 
 int parser() {
     ParserMemory* memory =  initializeMemory();
 
-
     bool success = false;
+    PSAStackMember *topOfStack;
+    token_t lastToken;
+
+    lastToken = nextToken(stdin);
     while (success == false) {
-        PSADataType type = endOfFile;
-        switch (type) {
+        topOfStack = (PSAStackMember *) stackTop(memory->PSAStack);
+        switch (topOfStack->type) {
             case endOfFile:
-                success = true;
+                if(lastToken.type == ending)
+                    success = true;
+                else
+                    unxpectedEnd(lastToken);
                 break;
             case terminal:
+                if(lastToken.type == topOfStack->data){
+                    pop(memory->PSAStack);
+                    lastToken = nextToken(stdin);
+                }
                 break;
-            case nonTerminal:
+            case nonTerminal:;
+                PSAStackMember** newRule = (PSAStackMember **) (getLLMember(topOfStack->data, lastToken.type))->rule;
+                pushReversed(memory->PSAStack, newRule);
                 break;
         }
     }

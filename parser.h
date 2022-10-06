@@ -13,6 +13,7 @@
 #include "lex.h"
 #include "symtable.h"
 #include "common.h"
+#include "stack.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -30,7 +31,7 @@ token getTokenTesting(FILE *fp) {
 }
 token (*nextToken)(FILE *fp) = getTokenTesting;
 #else
-token (*nextToken)(FILE *fp) = getToken;
+token_t (*nextToken)(FILE *fp) = getToken;
 #endif
 
 typedef struct uniqueCounter {
@@ -55,6 +56,11 @@ typedef enum state{
     fceParamsSt,
     fceReturnsSt
 }state_t;
+
+typedef struct parserMemory{
+    genericStack* PSAStack;
+    // here goes other structures
+} ParserMemory;
 
 typedef struct fceExpect{
     expectType_t whatToExpect;

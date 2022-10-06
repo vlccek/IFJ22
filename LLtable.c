@@ -61,9 +61,8 @@ tableMember *getLLMemberByRule(PSAStackMember *to[MAX_RULE_LEN], int *ruleIndex)
 
 //endregion
 //region Table Creation
-PSAStackMember *createExsStackMember(int value, PSADataType type) {
-    PSAStackMember *member = (PSAStackMember *) malloc(sizeof(PSAStackMember));
-    checkNullPointer(member);
+PSAStackMember *createPSAStackMember(int value, PSADataType type) {
+    make_var(member, PSAStackMember *, sizeof (PSAStackMember));
     member->data = value;
     member->type = type;
     return member;
