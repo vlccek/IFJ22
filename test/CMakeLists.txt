@@ -21,7 +21,7 @@ add_test(dynStrTest dynStrTest)
 set(This parserTest)
 set(Sources parserTest.cpp )
 add_executable(${This} ${Sources})
-target_link_libraries(${This} gtest_main parser lex common )
+target_link_libraries(${This} gtest_main parser lex common stack )
 add_test(parserTest parserTest)
 
 
