@@ -42,12 +42,6 @@ typedef struct uniqueCounter {
     int untilCount;
 } uniqueCounter_t;
 
-typedef enum typeOnTop {
-    endOfFile,
-    terminal,
-    nonTerminal,
-    fail
-}typeOnTop;
 
 typedef enum expectType{
     fceExpect,

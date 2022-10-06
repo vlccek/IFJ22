@@ -2,29 +2,27 @@
 // Created by tonda on 05/10/22.
 //
 #include "parser.h"
+#include "LLtable.h"
+#include "stack.h"
 
+typedef struct parserMemory{
+    genericStack* PSAStack;
+    // here goes other structures
+} ParserMemory;
 
-
-void initialize() {
-
+ParserMemory* initializeMemory() {
+    make_var(mem, ParserMemory*, sizeof (ParserMemory));
+    mem->PSAStack = stackInit();
+    return mem;
 }
 
 int parser() {
-    initialize();
+    ParserMemory* memory =  initializeMemory();
 
-    token t;
-    while(true){
-        t = nextToken(stdin);
-        if (t.type == ending)
-            break;
-
-        //printf( "%s", getTerminalName((int) t.type));
-    }
-    return 0;
 
     bool success = false;
     while (success == false) {
-        typeOnTop type = endOfFile;
+        PSADataType type = endOfFile;
         switch (type) {
             case endOfFile:
                 success = true;
@@ -32,10 +30,7 @@ int parser() {
             case terminal:
                 break;
             case nonTerminal:
-
                 break;
-            case fail:
-                InternalError("Error - Precedence op in TopDownParser stack.");
         }
     }
     return 0;
