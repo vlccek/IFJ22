@@ -37,7 +37,7 @@
 // makra pro logování a easy exity
 //region logginAndExitingMacros
 
-#define Error(message,ERR_CODE, args...)     PrintErrorExit("%15s:%d | in %s() | " message "\n", ERR_CODE ,__FILE__, __LINE__,  __FUNCTION__, ## args)
+#define InternalError(message, args...)     PrintErrorExit("%15s:%d | in %s() | " message "\n", ERR_RUNTIME ,__FILE__, __LINE__,  __FUNCTION__, ## args)
 #define PrintErrorExit(format,ERR_CODE,   ...)    do{  if (!debug) {fprintf(stderr, format, __VA_ARGS__);}; fflush(stderr); exit(ERR_CODE);}while(0)
 
 #define printlog(format, ...)    do{  fprintf(stderr, format, __VA_ARGS__);}while(0)
