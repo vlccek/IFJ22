@@ -62,3 +62,4 @@ dkms.conf
 /lexTest.c
 /lexTest
 /test1
+/Makefile
