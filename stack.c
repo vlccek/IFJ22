@@ -6,7 +6,7 @@
 #include "stack.h"
 
 genericStack *stackInit() {
-    make_var(stack, genericStack *, sizeof(genericStack))
+    make_var(stack, genericStack *, sizeof(genericStack));
             stack->c = 0;
     stack->top = NULL;
     return stack;
@@ -95,7 +95,7 @@ void *popBack(genericStack *s) {
 
 void *stackTop(genericStack *s) {
     if (s->top == NULL)
-        exit(ERR_RUNTIME);
+        return NULL;
     else
         return s->top->data;
 }
