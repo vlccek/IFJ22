@@ -11,6 +11,11 @@
 table Table;
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal) {
+    if(nonterm >= nonTerminalCount || terminal >= lexTypeCount)
+        InternalError("Trying to access Table[%d][%d]\n"
+                      "Max nonTerminal is %d and max terminal: %d ",
+                      nonterm, terminal, nonTerminalCount, lexTypeCount);
+    checkNullPointer(Table[nonterm][terminal]);
     return Table[nonterm][terminal];
 }
 
