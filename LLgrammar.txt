@@ -1,7 +1,7 @@
 ## S - init stav
-ProgramBody ::= FceDefine ProgramBody
-ProgramBody ::= Command ProgramBody
-ProgramBody ::=''
+S ::= FceDefine S
+S ::= Command S
+S ::=''
 
 ## Command
 Command ::= DeclareVariable
