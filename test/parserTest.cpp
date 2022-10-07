@@ -66,7 +66,7 @@ namespace ifj22 {
         };
 
         TEST_F(ParserTestSuccess, initialTest) {
-            tokensForParser({ending, ending});
+            tokensForParser({ending});
             parser();
         }
 
@@ -89,6 +89,270 @@ namespace ifj22 {
                      ending});
 
             ASSERT_EXIT_SYNTAX(parser());
+        }
+
+
+        TEST_F(ParserTestSuccess, functionDeclaration) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_returnVoid) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
+                     curlyBraceLeft,
+                     returnKey, semicolon,
+                     curlyBraceRight});
+
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_returnInMainBody) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight,
+                     returnKey, semicolon});
+
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_returnEverywhere) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
+                     curlyBraceLeft,
+                     returnKey, semicolon,
+                     curlyBraceRight,
+                     returnKey, semicolon});
+
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_returnOnly) {
+            tokensForParser(
+                    {returnKey, semicolon});
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_returnOnly_ManyTimes) {
+            tokensForParser(
+                    {returnKey, semicolon,
+                     returnKey, semicolon,
+                     returnKey, semicolon});
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_SemicolonOnly) {
+            tokensForParser(
+                    {semicolon});
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_ManySemicolons) {
+            tokensForParser(
+                    {semicolon, semicolon, semicolon, semicolon, semicolon,});
+            parser();
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_returnKeyDuplication) {
+            tokensForParser(
+                    {returnKey, returnKey, semicolon});
+
+            ASSERT_EXIT_SYNTAX(parser());
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NoLeftPar) {
+            tokensForParser(
+                    {functionKey, identifierFunc, rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NoRightPar) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NoColon) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NoReturnType) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NoFunctionKey) {
+            tokensForParser(
+                    {identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NoidentifierFunc) {
+            tokensForParser(
+                    {functionKey, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NocurlyBraceLeft) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_NocurlyBraceRight) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleFunctionKey) {
+            tokensForParser(
+                    {functionKey, functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleIdentifierFunc) {
+            tokensForParser(
+                    {functionKey, identifierFunc, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleLeftPar) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleRightPar) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleReturnType) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleCurlyBraceLeft) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleCurlyBraceRight) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon1) {
+            tokensForParser(
+                    {functionKey, semicolon, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon2) {
+            tokensForParser(
+                    {functionKey, identifierFunc, semicolon, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon3) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, semicolon, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon4) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, semicolon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon5) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey, semicolon,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_Good) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_WithSemicolons) {
+            tokensForParser(
+                    {semicolon, semicolon,
+                     functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft,
+                     semicolon, semicolon, semicolon,
+                     curlyBraceRight,
+                     semicolon, semicolon, semicolon,});
+
+            parser();
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_WithSemicolonsAndReturnKeys) {
+            tokensForParser(
+                    {returnKey, semicolon, semicolon,
+                     functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     curlyBraceLeft,
+                     returnKey, semicolon, semicolon, semicolon,
+                     curlyBraceRight,
+                     returnKey, semicolon, semicolon, semicolon,});
+
+            parser();
         }
 
 
