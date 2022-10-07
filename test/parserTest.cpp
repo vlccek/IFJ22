@@ -63,18 +63,51 @@ namespace ifj22 {
                     }
                     tokens->push_back(newToken);
                 }
-
-                testTokens = tokens->data();
             }
 
             void SetUp() override {
                 tokens = new std::vector<token_t>;
+                testTokens = tokens->data();
             }
 
             void TearDown() override {
                 delete tokens;
             }
 
+            void *genLit(std::string s){
+                make_var(t, token_t, sizeof(token_t));
+                t->type = stringLiteral;
+                t->data.valueString = reinterpret_cast<dynStr_t *>(s.data());
+                tokens->push_back(t);
+            }
+
+            void *genLit(int i){
+                make_var(t, token_t, sizeof(token_t));
+                t->type = stringLiteral;
+                t->data.valueInteger = i;
+                tokens->push_back(t);
+            }
+
+            void *genLit(float f){
+                make_var(t, token_t, sizeof(token_t));
+                t->type = stringLiteral;
+                t->data.valueInteger = f;
+                tokens->push_back(t);
+            }
+
+            void *genVar(std::string s){
+                make_var(t, token_t, sizeof(token_t));
+                t->type = identifierVar;
+                t->data.valueString = reinterpret_cast<dynStr_t *>(s.data());
+                tokens->push_back(t);
+            }
+
+            void *genFce(std::string s){
+                make_var(t, token_t, sizeof(token_t));
+                t->type = identifierFunc;
+                t->data.valueString = reinterpret_cast<dynStr_t *>(s.data());
+                tokens->push_back(t);
+            }
         };
 
         class ParserTestSyntaxError : public ParserTest {
