@@ -67,6 +67,21 @@ namespace ifj22 {
             ASSERT_EXIT_SYNTAX(parser());
         }
 
+        // region operation_concat
+        TEST_F(ParserTest, concatenationOp_basic) {
+            tokensForParser({stringLiteral, concatenationOp, identifierVar, ending});
+
+            ASSERT_EXIT_SYNTAX(parser());
+        }
+
+        TEST_F(ParserTest, concatenationOp_par) {
+            tokensForParser(
+                    {stringLiteral, concatenationOp, leftPar, identifierVar, concatenationOp, identifierVar, rightPar,
+                     ending});
+
+            ASSERT_EXIT_SYNTAX(parser());
+        }
+
 
     }
 }
