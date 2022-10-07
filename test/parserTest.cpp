@@ -7,9 +7,7 @@
 
 // Hide the io function since this will segfault in testing
 extern "C" {
-#include "../parser.h"
-#include "../parser.c"
-// DON'T TOUCH THIS!
+#include "../parser.h" // DON'T TOUCH THIS!
 #include "../dynstring.h"
 
 #include <stdio.h>
@@ -32,12 +30,7 @@ namespace ifj22 {
         protected:
             std::vector<token_t> *tokens;
 
-            int uID = 0
-
-                    void
-                    getAllTokens() {
-                return;
-            }
+            int uID = 0;
 
             /**bypass getToken function,
              *
@@ -58,7 +51,7 @@ namespace ifj22 {
                             break;
                         case identifierFunc:
                         case identifierVar:
-                            newToken.data.valueString = dstrInitChar(std::string("hovnokod") + std::to_string(uID));
+                            newToken.data.valueString = dstrInitChar((std::string("hovnokod") + std::to_string(uID)).c_str());
                             break;
                     }
                     tokens->push_back(newToken);
@@ -74,38 +67,30 @@ namespace ifj22 {
                 delete tokens;
             }
 
-            void *genLit(std::string s){
-                make_var(t, token_t, sizeof(token_t));
-                t->type = stringLiteral;
-                t->data.valueString = reinterpret_cast<dynStr_t *>(s.data());
+            void *genLit(const char *s){
+                token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
             }
 
             void *genLit(int i){
-                make_var(t, token_t, sizeof(token_t));
-                t->type = stringLiteral;
-                t->data.valueInteger = i;
+                token_t t = {floatLiteral, nullptr, 0, 0};
+                t.data.valueFloat = i;
                 tokens->push_back(t);
             }
 
             void *genLit(float f){
-                make_var(t, token_t, sizeof(token_t));
-                t->type = stringLiteral;
-                t->data.valueInteger = f;
+                token_t t = {floatLiteral, nullptr, 0, 0};
+                t.data.valueFloat = f;
                 tokens->push_back(t);
             }
 
-            void *genVar(std::string s){
-                make_var(t, token_t, sizeof(token_t));
-                t->type = identifierVar;
-                t->data.valueString = reinterpret_cast<dynStr_t *>(s.data());
+            void *genVar(const char *s ){
+                token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
             }
 
-            void *genFce(std::string s){
-                make_var(t, token_t, sizeof(token_t));
-                t->type = identifierFunc;
-                t->data.valueString = reinterpret_cast<dynStr_t *>(s.data());
+            void *genFce(const char *s){
+                token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
             }
         };
