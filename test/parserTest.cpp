@@ -8,14 +8,18 @@
 // Hide the io function since this will segfault in testing
 extern "C" {
 #include "../parser.h"
+#include "../parser.c"
 // DON'T TOUCH THIS!
 
 #include <stdio.h>
 };
-
-
+#if(DEBUG)
+#define ASSERT_EXIT_SYNTAX(functionCall) \
+        functionCall;
+#else
 #define ASSERT_EXIT_SYNTAX(functionCall) \
         ASSERT_EXIT_CODE(functionCall, ERR_SYNTAX);
+#endif
 
 #define ASSERT_EXIT_CODE(functionCall, number) \
         ASSERT_EXIT(functionCall, ::testing::ExitedWithCode(number), ".*");
@@ -55,26 +59,31 @@ namespace ifj22 {
 
         };
 
-        TEST_F(ParserTest, initialTest) {
-            tokensForParser({ending});
+        class ParserTestSyntaxError : public ParserTest {
+        };
 
+        class ParserTestSuccess : public ParserTest {
+        };
+
+        TEST_F(ParserTestSuccess, initialTest) {
+            tokensForParser({ending, ending});
             parser();
         }
 
-        TEST_F(ParserTest, initialTest2) {
+        TEST_F(ParserTestSyntaxError, initialTest2) {
             tokensForParser({leftPar, rightPar, ending});
 
             ASSERT_EXIT_SYNTAX(parser());
         }
 
         // region operation_concat
-        TEST_F(ParserTest, concatenationOp_basic) {
+        TEST_F(ParserTestSyntaxError, concatenationOp_basic) {
             tokensForParser({stringLiteral, concatenationOp, identifierVar, ending});
 
             ASSERT_EXIT_SYNTAX(parser());
         }
 
-        TEST_F(ParserTest, concatenationOp_par) {
+        TEST_F(ParserTestSyntaxError, concatenationOp_par) {
             tokensForParser(
                     {stringLiteral, concatenationOp, leftPar, identifierVar, concatenationOp, identifierVar, rightPar,
                      ending});
