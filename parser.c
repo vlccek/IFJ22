@@ -61,7 +61,7 @@ int parser() {
                 }
                 break;
             case nonTerminal:;
-                PSAStackMember** newRule = (PSAStackMember **) (getLLMember(topOfStack->data, lastToken.type))->rule;
+                PSAStackMember** newRule = (PSAStackMember **) (getLLMember((nonTerminalType) topOfStack->data, lastToken.type))->rule;
                 pushReversed(memory->PSAStack, newRule);
                 break;
         }

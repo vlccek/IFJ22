@@ -4,11 +4,11 @@
 #define PARSER_TEST
 
 // Hide main
-#define TESTING
+
 // Hide the io function since this will segfault in testing
 extern "C" {
 #include "../parser.h"
-#include "../parser.c" // DON'T TOUCH THIS!
+// DON'T TOUCH THIS!
 
 #include <stdio.h>
 };
@@ -26,7 +26,7 @@ namespace ifj22 {
         class ParserTest : public ::testing::Test {
         protected:
 
-            std::vector<token> *tokens;
+            std::vector<token_t> *tokens;
 
             void getAllTokens() {
                 return;
@@ -38,7 +38,7 @@ namespace ifj22 {
              */
             void tokensForParser(const std::vector<lexType> &lexTypes) {
                 for (auto lexType: lexTypes) {
-                    token newToken = {lexType, {}, 0, 0};
+                    token_t newToken = {lexType, {}, 0, 0};
                     tokens->push_back(newToken);
                 }
 
@@ -46,7 +46,7 @@ namespace ifj22 {
             }
 
             void SetUp() override {
-                tokens = new std::vector<token>;
+                tokens = new std::vector<token_t>;
             }
 
             void TearDown() override {

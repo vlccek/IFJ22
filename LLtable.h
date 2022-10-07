@@ -11,7 +11,6 @@
 #define LUAINTERPRET_LLTABLE_H
 
 #include "lex.h"
-#include "parser.h"
 #include "common.h"
 
 #define MAX_RULE_LEN 10

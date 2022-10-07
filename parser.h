@@ -21,17 +21,14 @@
 #include <stdarg.h>
 #include <string.h>
 
-#ifdef TESTING
-token *testTokens;
-#endif
 
-#ifdef TESTING
-token getTokenTesting(FILE *fp) {
-    return *testTokens++;
-}
-token (*nextToken)(FILE *fp) = getTokenTesting;
+
+
+#if TESTING == 1
+token_t *testTokens;
+#define nextToken(FILE) *testTokens++;
 #else
-token_t (*nextToken)(FILE *fp) = getToken;
+#define nextToken(FILE) getToken(FILE)
 #endif
 
 typedef struct uniqueCounter {
@@ -51,7 +48,7 @@ typedef enum expectType{
     nothingSpecial
 }expectType_t;
 
-typedef enum state{
+typedef enum {
     identifSt,
     fceParamsSt,
     fceReturnsSt
