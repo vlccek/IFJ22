@@ -15,11 +15,12 @@ with open("LL(1) Parser Generator.html") as fp:
                     y = r.split("::=")[0]
                     rule = r.split("::=")[1].split()
                     if (rule == ["ε"]):
-                        print(f"insertMember({x}, {y}, 0)")
+                        print(f"insertMember({x}, {y}, 0);")
+                        continue
                     print(f"insertMember({x}, {y}, {len(rule)}", end="")
                     for l in rule:
                         l = l.replace("ε","eps").replace("$", "ending")                
                         print(f", {l}" ,end="")
-                    print(")")
+                    print(");")
                 except:
                     pass
