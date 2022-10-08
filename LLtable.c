@@ -47,19 +47,15 @@ int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
     return 0;
 }
 
-tableMember *getLLMemberByRule(PSAStackMember *to[MAX_RULE_LEN], int *ruleIndex) {
+rule *findHandleInLLTable(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
     tableMember *tableMember;
-    nonTerminalType multiRule[] = {Exp};
-    int multiRuleLen = sizeof(multiRule) / sizeof(nonTerminalType);
-
-    for (int i = 0; i < multiRuleLen; ++i) {
-        for (int token = 0; token < lexTypeCount; ++token) {
-            if ((tableMember = Table[multiRule[i]][token]) == NULL) {
-                continue;
-            };
-            if ((*ruleIndex = cmpRules(tableMember, to)) != 0)
-                return tableMember;
-        }
+    int ruleIndex;
+    for (int token = 0; token < lexTypeCount; ++token) {
+        if ((tableMember = Table[Exp][token]) == NULL) {
+            continue;
+        };
+        if ((ruleIndex = cmpRules(tableMember, handleToFind)) != 0)
+            return tableMember->rule[ruleIndex] ;
     }
     return NULL;
 }
@@ -90,10 +86,10 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
     static int counter = 0;
     r->id = counter++;
     r->from = nonTerminal;
-    r->nullable = memberCount == 0;
+    r->epsRule = memberCount == 0;
     Table[nonTerminal][terminal]->rule[ruleIndex] = r;
 
-    if (r->nullable == false) {
+    if (r->epsRule == false) {
         int i;
         for (i = 0; i < MAX_RULES_IN_CELL; ++i) {
             if (i < memberCount) {
@@ -184,5 +180,114 @@ void createLLTable() {
         return;
 
 
+    insertMember(ending, ProgramBody , 0);
+    insertMember(functionKey, ProgramBody , 2, FceDefine, ProgramBody);
+    insertMember(identifierFunc, ProgramBody , 2, Command, ProgramBody);
+    insertMember(leftPar, ProgramBody , 2, Command, ProgramBody);
+    insertMember(identifierVar, ProgramBody , 2, Command, ProgramBody);
+    insertMember(floatLiteral, ProgramBody , 2, Command, ProgramBody);
+    insertMember(stringLiteral, ProgramBody , 2, Command, ProgramBody);
+    insertMember(integerLiteral, ProgramBody , 2, Command, ProgramBody);
+    insertMember(nullKey, ProgramBody , 2, Command, ProgramBody);
+    insertMember(ifKey, ProgramBody , 2, Command, ProgramBody);
+    insertMember(whileKey, ProgramBody , 2, Command, ProgramBody);
+    insertMember(returnKey, ProgramBody , 2, Command, ProgramBody);
+    insertMember(identifierFunc, Command , 2, Exp, semicolon);
+    insertMember(leftPar, Command , 2, Exp, semicolon);
+    insertMember(identifierVar, Command , 2, DeclareVariable, Command);
+    insertMember(floatLiteral, Command , 2, Exp, semicolon);
+    insertMember(stringLiteral, Command , 2, Exp, semicolon);
+    insertMember(integerLiteral, Command , 2, Exp, semicolon);
+    insertMember(nullKey, Command , 2, Exp, semicolon);
+    insertMember(ifKey, Command , 1, Condition);
+    insertMember(whileKey, Command , 1, While);
+    insertMember(returnKey, Command , 1, Return);
+    insertMember(functionKey, FceDefine , 4, FceHeader, curlyBraceLeft, FunctionBody, curlyBraceRight);
+    insertMember(functionKey, FceHeader , 7, functionKey, identifierFunc, leftPar, FunctionDeclareParams, rightPar, colon, FuncReturnColonType);
+    insertMember(rightPar, FunctionDeclareParams , 0);
+    insertMember(stringNullKey, FunctionDeclareParams , 2, DeclareParam, CommaOrEpsParams);
+    insertMember(floatNullKey, FunctionDeclareParams , 2, DeclareParam, CommaOrEpsParams);
+    insertMember(intNullKey, FunctionDeclareParams , 2, DeclareParam, CommaOrEpsParams);
+    insertMember(stringKey, FunctionDeclareParams , 2, DeclareParam, CommaOrEpsParams);
+    insertMember(floatKey, FunctionDeclareParams , 2, DeclareParam, CommaOrEpsParams);
+    insertMember(intKey, FunctionDeclareParams , 2, DeclareParam, CommaOrEpsParams);
+    insertMember(rightPar, CommaOrEpsParams , 0);
+    insertMember(comma, CommaOrEpsParams , 3, comma, DeclareParam, CommaOrEpsParams);
+    insertMember(stringNullKey, DeclareParam , 2, DataType, identifierVar);
+    insertMember(floatNullKey, DeclareParam , 2, DataType, identifierVar);
+    insertMember(intNullKey, DeclareParam , 2, DataType, identifierVar);
+    insertMember(stringKey, DeclareParam , 2, DataType, identifierVar);
+    insertMember(floatKey, DeclareParam , 2, DataType, identifierVar);
+    insertMember(intKey, DeclareParam , 2, DataType, identifierVar);
+    insertMember(voidKey, FuncReturnColonType , 1, voidKey);
+    insertMember(stringNullKey, FuncReturnColonType , 1, DataType);
+    insertMember(floatNullKey, FuncReturnColonType , 1, DataType);
+    insertMember(intNullKey, FuncReturnColonType , 1, DataType);
+    insertMember(stringKey, FuncReturnColonType , 1, DataType);
+    insertMember(floatKey, FuncReturnColonType , 1, DataType);
+    insertMember(intKey, FuncReturnColonType , 1, DataType);
+    insertMember(identifierFunc, FceCall , 4, identifierFunc, leftPar, FirstFceParam, rightPar);
+    insertMember(identifierFunc, FirstFceParam , 2, Exp, CommaOrEpsParam);
+    insertMember(leftPar, FirstFceParam , 2, Exp, CommaOrEpsParam);
+    insertMember(rightPar, FirstFceParam , 0);
+    insertMember(identifierVar, FirstFceParam , 2, Exp, CommaOrEpsParam);
+    insertMember(floatLiteral, FirstFceParam , 2, Exp, CommaOrEpsParam);
+    insertMember(stringLiteral, FirstFceParam , 2, Exp, CommaOrEpsParam);
+    insertMember(integerLiteral, FirstFceParam , 2, Exp, CommaOrEpsParam);
+    insertMember(nullKey, FirstFceParam , 2, Exp, CommaOrEpsParam);
+    insertMember(rightPar, CommaOrEpsParam , 0);
+    insertMember(comma, CommaOrEpsParam , 3, comma, Exp, CommaOrEpsParam);
+    insertMember(identifierFunc, Exp , 2, FceCall, Exp);
+    insertMember(leftPar, Exp , 4, Exp, minusOp, Exp, Exp);
+    insertMember(identifierVar, Exp , 2, identifierVar, Exp);
+    insertMember(floatLiteral, Exp , 2, floatLiteral, Exp);
+    insertMember(stringLiteral, Exp , 2, stringLiteral, Exp);
+    insertMember(integerLiteral, Exp , 2, integerLiteral, Exp);
+    insertMember(nullKey, Exp , 2, nullKey, Exp);
+    insertMember(stringNullKey, DataType , 1, stringNullKey);
+    insertMember(floatNullKey, DataType , 1, floatNullKey);
+    insertMember(intNullKey, DataType , 1, intNullKey);
+    insertMember(stringKey, DataType , 1, stringKey);
+    insertMember(floatKey, DataType , 1, floatKey);
+    insertMember(intKey, DataType , 1, intKey);
+    insertMember(identifierVar, DeclareVariable , 2, identifierVar, DefVarAss);
+    insertMember(semicolon, DefVarAss , 1, semicolon);
+    insertMember(equals, DefVarAss , 3, equals, Exp, semicolon);
+    insertMember(ifKey, Condition , 8, ifKey, leftPar, Exp, rightPar, curlyBraceLeft, FunctionBody, curlyBraceRight, ElseCond);
+    insertMember(ending, ElseCond , 0);
+    insertMember(curlyBraceRight, ElseCond , 0);
+    insertMember(functionKey, ElseCond , 0);
+    insertMember(identifierFunc, ElseCond , 0);
+    insertMember(leftPar, ElseCond , 0);
+    insertMember(identifierVar, ElseCond , 0);
+    insertMember(floatLiteral, ElseCond , 0);
+    insertMember(stringLiteral, ElseCond , 0);
+    insertMember(integerLiteral, ElseCond , 0);
+    insertMember(nullKey, ElseCond , 0);
+    insertMember(ifKey, ElseCond , 0);
+    insertMember(elseKey, ElseCond , 4, elseKey, curlyBraceLeft, FunctionBody, curlyBraceRight);
+    insertMember(whileKey, ElseCond , 0);
+    insertMember(returnKey, ElseCond , 0);
+    insertMember(whileKey, While , 7, whileKey, leftPar, Exp, rightPar, curlyBraceLeft, FunctionBody, curlyBraceRight);
+    insertMember(returnKey, Return , 3, returnKey, ReturnExp, semicolon);
+    insertMember(semicolon, ReturnExp , 0);
+    insertMember(identifierFunc, ReturnExp , 1, Exp);
+    insertMember(leftPar, ReturnExp , 1, Exp);
+    insertMember(identifierVar, ReturnExp , 1, Exp);
+    insertMember(floatLiteral, ReturnExp , 1, Exp);
+    insertMember(stringLiteral, ReturnExp , 1, Exp);
+    insertMember(integerLiteral, ReturnExp , 1, Exp);
+    insertMember(nullKey, ReturnExp , 1, Exp);
+    insertMember(curlyBraceRight, FunctionBody , 0);
+    insertMember(identifierFunc, FunctionBody , 2, Command, FunctionBody);
+    insertMember(leftPar, FunctionBody , 2, Command, FunctionBody);
+    insertMember(identifierVar, FunctionBody , 2, Command, FunctionBody);
+    insertMember(floatLiteral, FunctionBody , 2, Command, FunctionBody);
+    insertMember(stringLiteral, FunctionBody , 2, Command, FunctionBody);
+    insertMember(integerLiteral, FunctionBody , 2, Command, FunctionBody);
+    insertMember(nullKey, FunctionBody , 2, Command, FunctionBody);
+    insertMember(ifKey, FunctionBody , 2, Command, FunctionBody);
+    insertMember(whileKey, FunctionBody , 2, Command, FunctionBody);
+    insertMember(returnKey, FunctionBody , 2, Command, FunctionBody);
 
 }
