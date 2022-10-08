@@ -47,7 +47,7 @@ int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
     return 0;
 }
 
-rule *findHandleInLLTable(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
+rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
     tableMember *tableMember;
     int ruleIndex;
     for (int token = 0; token < lexTypeCount; ++token) {
