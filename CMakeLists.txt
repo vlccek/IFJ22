@@ -49,6 +49,10 @@ add_library(LLtable
         LLtable.c
         LLtable.h)
 
+add_library(expParse
+        expParse.c
+        expParse.h)
+
 
 add_subdirectory(test)
 
