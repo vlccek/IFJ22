@@ -14,6 +14,8 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+add_compile_definitions("DEBUG=$<CONFIG:Debug>")
+
 
 set(CMAKE_C_STANDARD 11)
 add_executable(main

@@ -57,7 +57,7 @@ static void dstrRealloc(dynStr_t *str, int necessarySize);
 
 void dstrAppend(dynStr_t *dstr, char *t);
 
-dynStr_t *dstrInitChar(char *text) ;
+dynStr_t *dstrInitChar(const char *text) ;
 void dstrPrepend(dynStr_t *dstr, char *newStr);
 
 inline bool dstrCmp(dynStr_t *dstr, dynStr_t *dstr2) {
