@@ -14,23 +14,29 @@ void PSAStackInit(ParserMemory* mem) {
 ParserMemory* initializeMemory() {
     make_var(mem, ParserMemory*, sizeof (ParserMemory));
     PSAStackInit(mem);
+    createLLTable();
     return mem;
 }
 
-void unxpectedEnd(token_t token) {
+void exitUnxpectedEnd(token_t token) {
     pErrSyntax(token.type, token.rowNumber, token.rowPosNumber,
                "Unxpected end of program.\n");
 }
 
-void pushStackToStack(genericStack* original, genericStack* toEmpty){
-    while(stackTop(toEmpty) != NULL){
+void exitNoRule(token_t token, nonTerminalType topOfTheStack) {
+    pErrSyntax(token.type, token.rowNumber, token.rowPosNumber,
+               "No rule found.\nOn top of stack is: %s.\n", getNonTerminalName(topOfTheStack));
+}
+
+void pushStackToStack(genericStack *original, genericStack *toEmpty) {
+    while (stackTop(toEmpty) != NULL) {
         push(original, pop(toEmpty));
     }
 }
 
-void pushReversed(genericStack* stack, PSAStackMember** rule){
-    make_var(tmpStack, genericStack*, sizeof (genericStack));
-    while (*rule != NULL){
+void pushReversed(genericStack *stack, PSAStackMember **rule) {
+    make_var(tmpStack, genericStack*, sizeof(genericStack));
+    while (*rule != NULL) {
         push(tmpStack, *rule);
         *rule++;
     }
@@ -49,23 +55,30 @@ int parser() {
         topOfStack = (PSAStackMember *) stackTop(memory->PSAStack);
         switch (topOfStack->type) {
             case endOfFile:
-                if(lastToken.type == ending)
+                if (lastToken.type == ending)
                     success = true;
                 else
-                    unxpectedEnd(lastToken);
+                    exitUnxpectedEnd(lastToken);
                 break;
             case terminal:
-                if(lastToken.type == topOfStack->data){
+                if (lastToken.type == topOfStack->data) {
                     pop(memory->PSAStack);
                     lastToken = nextToken(stdin);
                 }
                 break;
             case nonTerminal:;
-                PSAStackMember** newRule = (PSAStackMember **) (getLLMember((nonTerminalType) topOfStack->data, lastToken.type))->rule;
-                pushReversed(memory->PSAStack, newRule);
+                rule **newRule = (getLLMember((nonTerminalType) topOfStack->data, lastToken.type))->rule;
+                if (newRule == NULL)
+                    exitNoRule(lastToken, (nonTerminalType) topOfStack->data);
+                if ((*newRule)->epsRule) {
+                    pop(memory->PSAStack);
+                } else {
+                    pushReversed(memory->PSAStack, (*newRule)->to);
+                }
                 break;
         }
     }
+
     return 0;
 }
 
