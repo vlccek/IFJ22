@@ -5,6 +5,7 @@
 #ifndef STACK_EXPPARSE_H
 #define STACK_EXPPARSE_H
 
+#include "LLtable.h"
 #include "common.h"
 #include "lex.h"
 #include "stack.h"
@@ -27,7 +28,8 @@ typedef enum {
     precR,                   //  >
     precEq,                  // =
     precErr,                 // nogo
-    dollar
+    dollar,
+    precendenceTypeCount
 } precendenceType;
 
 precendenceType precedenceTable[indexCount][indexCount] = {
@@ -41,11 +43,33 @@ precendenceType precedenceTable[indexCount][indexCount] = {
         {precL, precL, precL, precL, precL, precL, precL}         // dollar
 
 };
+
+rule *derivateTopStack(genericStack *sTokens);
+
+typedef enum {
+    exp = precendenceTypeCount + 1
+} notTerminaltype;
+
+typedef struct {
+    int type;
+    token_t *tokenData;
+} expParserType;
+
 precedenceTableIndex indexInPrecTable(lexType t);
 
-#define precSymb(x, y) precedenceTable[indexInPrecTable(x->type)][indexInPrecTable(y.type)]
+#define precSymb(x, y) precedenceTable[indexInPrecTable((x)->type)][indexInPrecTable((y)->type)]
 
-genericStack *sTokens;// stack for tokens
+#if TESTING == 1
+#ifndef nextToken
+token_t *testTokens;
+#define nextToken(FILE) *testTokens++;
+#define preToken(FILE) *(--testTokens);
+#endif
+#else
+#define nextToken(FILE) getToken(FILE)
+#define preToken(FILE) ungetToken(FILE);
+#endif
+
 
 // praser for expresions
 void expAnal();
