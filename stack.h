@@ -9,12 +9,7 @@
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
 
-struct ints2 {
-    int a;
-    int b;
-};
 
-typedef struct ints2 typeOfStoredData;
 
 struct stackMem;
 struct stackMem {
