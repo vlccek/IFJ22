@@ -6,19 +6,19 @@
 typedef genericStack queue_t;
 
 queue_t *queue() {
-    return stackInit();
+    return gStackInit();
 }
 
 inline void enqueue(queue_t *queue, void *nm) {
-    push(queue, nm);
+    gStackPush(queue, nm);
 }
 
 inline void *dequeue(queue_t *queue) {
-    return popBack(queue);
+    return gStackPopBack(queue);
 };
 
 inline void *peek(queue_t *queue) {
-    return &stackBottom(queue, NULL)->data;
+    return &gStackBottom(queue, NULL)->data;
 }
 
 inline void *front(queue_t *queue) {
@@ -26,5 +26,5 @@ inline void *front(queue_t *queue) {
 }
 
 inline bool empty(queue_t *queue) {
-    return sIsEmpty(queue);
+    return gStackIsEmpty(queue);
 }

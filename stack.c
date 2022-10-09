@@ -5,7 +5,7 @@
 
 #include "stack.h"
 
-genericStack *stackInit() {
+genericStack *gStackInit() {
     make_var(stack, genericStack *, sizeof(genericStack));
             stack->c = 0;
     stack->top = NULL;
@@ -14,7 +14,7 @@ genericStack *stackInit() {
 
 //
 
-int push(genericStack *s, void *nm) {
+int gStackPush(genericStack *s, void *nm) {
     if (!s || !nm) {
         //Stack is null
         return ERR_RUNTIME;
@@ -32,7 +32,7 @@ int push(genericStack *s, void *nm) {
     return 0;
 }
 
-void *pop(genericStack *s) {
+void *gStackPop(genericStack *s) {
     if (!s->top) {
         // return NULL;
     }
@@ -47,14 +47,14 @@ void *pop(genericStack *s) {
     return r;
 }
 
-bool sIsEmpty(genericStack *st) {
+bool gStackIsEmpty(genericStack *st) {
     if (st->top == NULL)
         return true;
     else
         return false;
 }
 
-stackMem_t *stackBottom(genericStack *s, stackMem_t **pLast) {
+stackMem_t *gStackBottom(genericStack *s, stackMem_t **pLast) {
     if (!s->top) {
         return NULL;
     }
@@ -72,9 +72,9 @@ stackMem_t *stackBottom(genericStack *s, stackMem_t **pLast) {
     return i;
 }
 
-void *popBack(genericStack *s) {
+void *gStackPopBack(genericStack *s) {
     stackMem_t *pLast;
-    stackMem_t *bottomEl = stackBottom(s, &pLast);
+    stackMem_t *bottomEl = gStackBottom(s, &pLast);
 
     if (s->top == NULL){
         exit(ERR_RUNTIME);
@@ -93,7 +93,7 @@ void *popBack(genericStack *s) {
     return r;
 }
 
-void *stackTop(genericStack *s) {
+void *gStackTop(genericStack *s) {
     if (s->top == NULL)
         return NULL;
     else
@@ -101,7 +101,7 @@ void *stackTop(genericStack *s) {
 }
 
 
-void printStack(genericStack *s, void (*printMem)(void *)) {
+void gStackPrint(genericStack *s, void (*printMem)(void *)) {
     fprintf(stdout, "Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
@@ -114,7 +114,7 @@ void printStack(genericStack *s, void (*printMem)(void *)) {
 /*
  * Returns null when elemnt not exist
  */
-void *getFromTop(genericStack *s, unsigned int numberForTop) {
+void *gStackGetNth(genericStack *s, unsigned int numberForTop) {
     stackMem_t *i = s->top;
     while (numberForTop != 0 && s->c > numberForTop--) {
         i = i->next;

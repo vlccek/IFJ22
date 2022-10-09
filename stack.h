@@ -27,23 +27,22 @@ struct stack {
 
 typedef struct stack genericStack;
 
-genericStack *stackInit();
+genericStack *gStackInit();
 
-int push(genericStack *s, void *nm);
+int gStackPush(genericStack *s, void *nm);
 
-void *pop(genericStack *s);
+void *gStackPop(genericStack *s);
 
-bool sIsEmpty(genericStack *st);
+bool gStackIsEmpty(genericStack *st);
 
-stackMem_t *stackBottom(genericStack *s, stackMem_t **pLast);
+stackMem_t *gStackBottom(genericStack *s, stackMem_t **pLast);
 
-void *popBack(genericStack *s);
+void *gStackPopBack(genericStack *s);
 
-void printMember(void *data);
 
-void printStack(genericStack *s, void (*printMem)(void *));
+void gStackPrint(genericStack *s, void (*printMem)(void *));
 
-void *getFromTop(genericStack *s, unsigned int numberForTop);
+void *gStackGetNth(genericStack *s, unsigned int numberForTop);
 
 void* stackTop(genericStack *s);
 

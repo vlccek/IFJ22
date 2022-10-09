@@ -20,59 +20,59 @@ namespace ifj22 {
         };
 
         TEST(stackTest, poptest) {
-            genericStack *st = stackInit();
+            genericStack *st = gStackInit();
 
             int array[] = {10, 20, 30, 40, 50};
 
             for (int i = 0; i < std::size(array); i++) {
-                push(st, &array[i]);
+                gStackPush(st, &array[i]);
             }
 
             for (int i = std::size(array) - 1; i > 0; i--) {
-                int *out = (int *) pop(st);
+                int *out = (int *) gStackPop(st);
                 ASSERT_EQ(array[i], *out);
             }
         }
 
         TEST(stackTest, empty_after_init) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
 
-            ASSERT_TRUE(sIsEmpty(stack));
+            ASSERT_TRUE(gStackIsEmpty(stack));
         }
 
         TEST(stackTest, not_empty_after_push) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             int x = 69;
-            push(stack, &x);
+            gStackPush(stack, &x);
 
-            ASSERT_FALSE(sIsEmpty(stack));
+            ASSERT_FALSE(gStackIsEmpty(stack));
         }
 
         TEST(stackTest, empty_push_pop) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             int x = 69;
-            push(stack, &x);
+            gStackPush(stack, &x);
 
-            ASSERT_FALSE(sIsEmpty(stack));
-            int y = *(int *) pop(stack);
-            ASSERT_TRUE(sIsEmpty(stack));
+            ASSERT_FALSE(gStackIsEmpty(stack));
+            int y = *(int *) gStackPop(stack);
+            ASSERT_TRUE(gStackIsEmpty(stack));
         }
 
         TEST(stackTest, int_push_pop_eq) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             int x = 69;
-            push(stack, &x);
-            int y = *(int *) pop(stack);
+            gStackPush(stack, &x);
+            int y = *(int *) gStackPop(stack);
 
             ASSERT_EQ(x, y);
         }
 
         TEST(stackTest, value_in_pointer_not_changing_after_push) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             int array_not_push[] = {69, 70, 71};
             int array[] = {69, 70, 71};
             for (int i = 0; i < std::size(array); i++) {
-                push(stack, &array[i]);
+                gStackPush(stack, &array[i]);
             }
 
             for (int i = 0; i < std::size(array); i++) {
@@ -81,33 +81,33 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_on_empty_stack) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             // Pop on empty should not crash with sigsegv
             // Instead print error and exit with (I guess) internal error code
             // 'You should use function emptyStack()' error
 
-            ASSERT_EXIT(pop(stack), ::testing::ExitedWithCode(ERR_RUNTIME), ".*");
-            ASSERT_EXIT(popBack(stack), ::testing::ExitedWithCode(ERR_RUNTIME), ".*");
+            ASSERT_EXIT(gStackPop(stack), ::testing::ExitedWithCode(ERR_RUNTIME), ".*");
+            ASSERT_EXIT(gStackPopBack(stack), ::testing::ExitedWithCode(ERR_RUNTIME), ".*");
         }
 
         TEST(stackTest, push_stack_to_stack) {
-            genericStack *inner_stack = stackInit();
-            genericStack *stack = stackInit();
+            genericStack *inner_stack = gStackInit();
+            genericStack *stack = gStackInit();
             int a = 1;
             int b = 2;
 
-            push(inner_stack, &a);
-            push(inner_stack, &b);
-            push(stack, inner_stack);
+            gStackPush(inner_stack, &a);
+            gStackPush(inner_stack, &b);
+            gStackPush(stack, inner_stack);
 
-            int *x = (int *) pop(inner_stack);
-            int *y = (int *) pop(inner_stack);
+            int *x = (int *) gStackPop(inner_stack);
+            int *y = (int *) gStackPop(inner_stack);
 
             ASSERT_EQ(b, *x);
             ASSERT_EQ(a, *y);
 
-            ASSERT_TRUE(sIsEmpty(inner_stack));
-            ASSERT_FALSE(sIsEmpty(stack));
+            ASSERT_TRUE(gStackIsEmpty(inner_stack));
+            ASSERT_FALSE(gStackIsEmpty(stack));
         }
 
         TEST(stackTest, stack_name_not_stack_type) {
@@ -116,65 +116,65 @@ namespace ifj22 {
         }
 
         TEST(stackTest, pop_back_empty) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             int x = 1;
-            push(stack, &x);
-            void *y = popBack(stack);
+            gStackPush(stack, &x);
+            void *y = gStackPopBack(stack);
 
-            ASSERT_TRUE(sIsEmpty(stack));
+            ASSERT_TRUE(gStackIsEmpty(stack));
         }
 
         TEST(stackTest, pop_back_not_empty) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             int x = 1;
-            push(stack, &x);
-            push(stack, &x);
-            void *y = popBack(stack);
+            gStackPush(stack, &x);
+            gStackPush(stack, &x);
+            void *y = gStackPopBack(stack);
 
-            ASSERT_FALSE(sIsEmpty(stack));
+            ASSERT_FALSE(gStackIsEmpty(stack));
         }
 
         TEST(stackTest, pop_back_int) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
             int x = 69;
 
-            push(stack, &x);
-            int y = *(int *) pop(stack);
+            gStackPush(stack, &x);
+            int y = *(int *) gStackPop(stack);
 
             ASSERT_EQ(x, y);
         }
 
         TEST(stackTest, pop_back_many) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
 
             int array[] = {10, 20, 30, 40, 50};
 
             for (int i = 0; i < std::size(array); i++) {
-                push(stack, &array[i]);
+                gStackPush(stack, &array[i]);
             }
 
             for (int i = 0; i < std::size(array); i++) {
-                int *out = (int *) popBack(stack);
+                int *out = (int *) gStackPopBack(stack);
                 ASSERT_EQ(array[i], *out);
             }
         }
 
         TEST(stackTest, pop_back_many_empty) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
 
             int array[] = {10, 20, 30, 40, 50};
 
             for (int i = 0; i < std::size(array); i++) {
-                push(stack, &array[i]);
+                gStackPush(stack, &array[i]);
             }
 
             for (int i = 0; i < std::size(array); i++) {
-                popBack(stack);
+                gStackPopBack(stack);
             }
-            ASSERT_TRUE(sIsEmpty(stack));
+            ASSERT_TRUE(gStackIsEmpty(stack));
         }
         TEST(stackTest, getElement) {
-            genericStack *s = stackInit();
+            genericStack *s = gStackInit();
             int a = 10;
             int b = 11;
             int c = 12;
@@ -182,15 +182,15 @@ namespace ifj22 {
             int e = 13;
 
 
-            push(s, &a);
-            push(s, &b);
-            push(s, &c);
-            push(s, &d);
-            push(s, &e);
+            gStackPush(s, &a);
+            gStackPush(s, &b);
+            gStackPush(s, &c);
+            gStackPush(s, &d);
+            gStackPush(s, &e);
 
-            int *x = static_cast<int *>(getFromTop(s, 0));
-            int *z = static_cast<int *>(getFromTop(s, 2));
-            int *y = static_cast<int *>(getFromTop(s, 15));
+            int *x = static_cast<int *>(gStackGetNth(s, 0));
+            int *z = static_cast<int *>(gStackGetNth(s, 2));
+            int *y = static_cast<int *>(gStackGetNth(s, 15));
 
             ASSERT_EQ(13, *x);
             ASSERT_EQ(12, *z);
@@ -199,16 +199,16 @@ namespace ifj22 {
 
 
         TEST(stackTest, getElementMore) {
-            genericStack *stack = stackInit();
+            genericStack *stack = gStackInit();
 
             int array[] = {10, 20, 30, 40, 50};
 
             for (int i = 0; i < std::size(array); i++) {
-                push(stack, &array[i]);
+                gStackPush(stack, &array[i]);
             }
             int l = std::size(array);
             for (int i = 0; i < std::size(array); i++) {
-                ASSERT_EQ(*static_cast<int *>(getFromTop(stack, i)), array[--l]);
+                ASSERT_EQ(*static_cast<int *>(gStackGetNth(stack, i)), array[--l]);
             }
         }
     }// namespace stack
