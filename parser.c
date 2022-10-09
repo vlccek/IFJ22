@@ -91,12 +91,7 @@ PSAStackMember *getTopStack(ParserMemory *memory) {
 }
 
 
-void initParser() {
-    stderrToFileIfTesting();
-}
-
 int parser() {
-    initParser();
     ParserMemory *memory = initializeMemory();
 
 
