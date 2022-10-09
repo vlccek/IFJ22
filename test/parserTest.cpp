@@ -73,11 +73,6 @@ namespace ifj22 {
                 delete tokens;
             }
 
-            void *genLit(const char *s){
-                token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
-                tokens->push_back(t);
-            }
-
             void *genLit(int i){
                 token_t t = {floatLiteral, nullptr, 0, 0};
                 t.data.valueFloat = i;
@@ -91,12 +86,17 @@ namespace ifj22 {
             }
 
             void *genVar(const char *s ){
-                token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
+                token_t t = {identifierVar, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
             }
 
             void *genFce(const char *s){
-                token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
+                token_t t = {identifierFunc, dstrInitChar(s), 0, 0};
+                tokens->push_back(t);
+            }
+
+            void *genLex(lexType type){
+                token_t t = {type, {}, 0, 0};
                 tokens->push_back(t);
             }
 
