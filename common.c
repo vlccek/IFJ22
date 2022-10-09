@@ -12,7 +12,51 @@
 #include "common.h"
 
 char *allNonTerminalNames[] = {
+        // S - init stav
+         "ProgramBody",
 
+        // Command
+         "Command",
+
+        // Definice funkcí
+         "FceDefine",
+         "FceHeader",
+         "FunctionDeclareParams",
+         "CommaOrEpsParams",
+         "DeclareParam",
+
+        // FuncReturnType
+         "FuncReturnColonType",
+
+        // Function call
+         "FceCall",
+         "FirstFceParam",
+         "CommaOrEpsParam",
+
+        // Exp
+         "Exp",
+
+        // Data types DataType
+         "DataType",
+
+        // Definice proměné
+         "DeclareVariable",
+         "DefVarAss",
+
+        // Podmínky
+         "Condition",
+         "ElseCond",
+
+        // While
+         "While",
+
+        // Return
+         "Return",
+         "ReturnExp",
+
+        // Vnítřek funkce
+         "FunctionBody",
+        "nonTerminalCount"
 };
 
 char *allTerminalNames[] = {
