@@ -186,45 +186,6 @@ void createLLTable() {
     if (onlyOneCallAllowed++ > 0)
         return;
 
-    insertMember(ending, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(semicolon, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(functionKey, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(identifierFunc, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(leftPar, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(identifierVar, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(floatLiteral, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(stringLiteral, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(integerLiteral, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(nullKey, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(ifKey, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(whileKey, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
-    insertMember(returnKey, S , 2,
-                 partOfRulesRightSide(ProgramBody),
-                 partOfRulesRightSide(ending));
     insertMember(ending, ProgramBody , 0);
     insertMember(semicolon, ProgramBody , 2,
                  partOfRulesRightSide(Command),
