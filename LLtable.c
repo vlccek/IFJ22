@@ -15,7 +15,6 @@ tableMember *getLLMember(nonTerminalType nonterm, lexType terminal) {
         InternalError("Trying to access Table[%d][%d]\n"
                       "Max nonTerminal is %d and max terminal: %d ",
                       nonterm, terminal, nonTerminalCount, lexTypeCount);
-    checkNullPointer(Table[nonterm][terminal]);
     return Table[nonterm][terminal];
 }
 
@@ -26,20 +25,20 @@ bool stackMemberCmp(PSAStackMember *memberA, PSAStackMember *memberB) {
 int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
     for (int i = 0; i < MAX_RULES_IN_CELL; ++i) {
         for (int j = 0; j < MAX_RULE_LEN; ++j) {
-            if (tMember->rule[i] == NULL) {
+            if (tMember->rules[i] == NULL) {
                 break;
             }
             PSAStackMember *m = rightSideOfRule[j];
-            if (tMember->rule[i]->to[j] == NULL && m == NULL) {
+            if (tMember->rules[i]->to[j] == NULL && m == NULL) {
                 if (j == 0) {
                     break;
                 }
                 return j;
             }
-            if (tMember->rule[i]->to[j] == NULL || m == NULL) {
+            if (tMember->rules[i]->to[j] == NULL || m == NULL) {
                 break;
             }
-            if (!stackMemberCmp(tMember->rule[i]->to[j], m)) {
+            if (!stackMemberCmp(tMember->rules[i]->to[j], m)) {
                 break;
             }
         }
@@ -55,7 +54,7 @@ rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
             continue;
         };
         if ((ruleIndex = cmpRules(tableMember, handleToFind)) != 0)
-            return tableMember->rule[ruleIndex] ;
+            return tableMember->rules[ruleIndex] ;
     }
     return NULL;
 }
@@ -87,7 +86,7 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
     r->id = counter++;
     r->from = nonTerminal;
     r->epsRule = memberCount == 0;
-    Table[nonTerminal][terminal]->rule[ruleIndex] = r;
+    Table[nonTerminal][terminal]->rules[ruleIndex] = r;
 
     if (r->epsRule == false) {
         int i;
@@ -98,7 +97,7 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
                 AddToRightSide(terminal, nonTerminal, i, NULL, ruleIndex);
 
             }
-            // Table[nonTerminal][terminal]->rule[ruleIndex]->to[i] = ((extendedStackMember *) members);
+            // Table[nonTerminal][terminal]->rules[ruleIndex]->to[i] = ((extendedStackMember *) members);
         }
         if (i < MAX_RULE_LEN) {
             // Poslední se dává na null jen pokud jsem nenaplnil celý
@@ -117,12 +116,12 @@ void insertMember(int terminal, int nonTerminal, int memberCount, ...) {
     }
 
     if (Table[nonTerminal][terminal] != NULL) {
-        if (Table[nonTerminal][terminal]->rule[0] == NULL) // this should never happen
-            InternalError("No rule in initialized member!");
+        if (Table[nonTerminal][terminal]->rules[0] == NULL) // this should never happen
+            InternalError("No rules in initialized member!");
 
         int i;
         for (i = 1; i < MAX_RULES_IN_CELL; ++i) {
-            if (Table[nonTerminal][terminal]->rule[i] == NULL) {
+            if (Table[nonTerminal][terminal]->rules[i] == NULL) {
                 InserRules(terminal, nonTerminal, memberCount, members, i);
                 break;
             }
@@ -148,12 +147,12 @@ void printTable () {
             fprintf(stderr, "Line: %d\n", radekIndex);
             while (Table[radekIndex] != NULL && Table[radekIndex][sloupecIndex] != NULL) {
                 fprintf(stderr, "   Nonterminal type (ze kterého derivuju): `%d` \n",
-                        Table[radekIndex][sloupecIndex]->rule.from);
+                        Table[radekIndex][sloupecIndex]->rules.from);
                 int i = 0;
-                while (Table[radekIndex][sloupecIndex]->rule.to[i] != NULL && i < MAX_RULE_LEN) {
+                while (Table[radekIndex][sloupecIndex]->rules.to[i] != NULL && i < MAX_RULE_LEN) {
                     // vypíše typdat,value
-                    fprintf(stderr, "\t\t%d;%d ", Table[radekIndex][sloupecIndex]->rule.to[i]->typeOfData,
-                            Table[radekIndex][sloupecIndex]->rule.to[i]->value);
+                    fprintf(stderr, "\t\t%d;%d ", Table[radekIndex][sloupecIndex]->rules.to[i]->typeOfData,
+                            Table[radekIndex][sloupecIndex]->rules.to[i]->value);
                     i++;
                 }
                 fprintf(stderr, " derivuje na `%d` hodnot\n", i);
@@ -170,6 +169,14 @@ PSADataType getDataType(char *name) {
             return nonTerminal;
     }
     return terminal;
+}
+
+char* getStringPSAMember(PSAStackMember m){
+    if(m.type == terminal)
+        return getTerminalName(m.data);
+    if(m.type == nonTerminal)
+        return getNonTerminalName(m.data);
+    return "EndOfProgram";
 }
 
 //endregion

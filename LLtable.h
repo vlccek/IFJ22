@@ -16,7 +16,7 @@
 #define MAX_RULE_LEN 10
 #define MAX_RULES_IN_CELL 10
 
-#define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rule[ruleIndex]->to[countOfRule] = member;
+#define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rules[ruleIndex]->to[countOfRule] = member;
 #define partOfRulesRightSide(name) createPSAStackMember(name, getDataType(#name))
 
 typedef enum {
@@ -87,7 +87,7 @@ typedef struct rule{
 }rule;
 
 typedef struct tableMember{
-    rule *rule[MAX_RULES_IN_CELL];
+    rule *rules[MAX_RULES_IN_CELL];
     nonTerminalType nonTerminal;
     lexType terminal;
 }tableMember;
@@ -96,7 +96,12 @@ typedef struct tableMember{
 typedef tableMember* table[(int) nonTerminalCount][(int) lexTypeCount];
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal);
+
 void createLLTable();
+
 rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]);
+
 PSAStackMember *createPSAStackMember(int value, PSADataType type);
+
+char* getStringPSAMember(PSAStackMember m);
 #endif //LUAINTERPRET_LLTABLE_H

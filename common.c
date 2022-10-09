@@ -68,19 +68,21 @@ char *allTerminalNames[] = {
         "returnKey",
         "voidKey",
         "whileKey",
-
-        // data types
-        "stringKey", // "'string' $hello"
+        "stringKey",
         "floatKey",
         "intKey",
         "stringNullKey",
         "floatNullKey",
         "intNullKey",
 
+        // curly braces
+        "curlyBraceRight",
+        "curlyBraceLeft",
+
         // assignment
         "equals",
         "colon",
-        "semiColon",
+        "semicolon",
         "comma",
 
         // operators
@@ -103,10 +105,10 @@ char *allTerminalNames[] = {
         // literals
         "stringLiteral", // "hello"
         "integerLiteral",
-        "decimalLiteral",
+        "floatLiteral",
 
         // identifiers
-        "identifierFce",
+        "identifierFunc",
         "identifierVar",
 
         // unknown

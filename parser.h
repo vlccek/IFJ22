@@ -22,8 +22,6 @@
 #include <string.h>
 
 
-
-
 #if TESTING == 1
 token_t *testTokens;
 #define nextToken(FILE) *testTokens++;
@@ -33,6 +31,7 @@ token_t *testTokens;
 #define stderrToFileIfTesting() ;
 #endif
 
+#define MAX_STACK_VIEWABLE 100
 typedef struct uniqueCounter {
     int conditionCount;
     int whileCount;
@@ -58,6 +57,7 @@ typedef enum {
 
 typedef struct parserMemory{
     genericStack* PSAStack;
+    char* stackView[MAX_STACK_VIEWABLE];
     // here goes other structures
 } ParserMemory;
 
