@@ -9,6 +9,7 @@ Command ::= Condition
 Command ::= While
 Command ::= Return
 Command ::= Exp semicolon
+Command ::= semicolon
 
 ## Definice funkcí
 FceDefine ::= FceHeader curlyBraceLeft FunctionBody curlyBraceRight
