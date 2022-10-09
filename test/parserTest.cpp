@@ -8,6 +8,7 @@
 // Hide the io function since this will segfault in testing
 extern "C" {
 #include "../parser.h" // DON'T TOUCH THIS!
+#include "../parser.c" // DON'T TOUCH THIS!
 #include "../dynstring.h"
 
 #include <stdio.h>
@@ -55,12 +56,12 @@ namespace ifj22 {
                             break;
                     }
                     tokens->push_back(newToken);
+                    testTokens = tokens->data();
                 }
             }
 
             void SetUp() override {
                 tokens = new std::vector<token_t>;
-                testTokens = tokens->data();
             }
 
             void TearDown() override {
