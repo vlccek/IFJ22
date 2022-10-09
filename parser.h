@@ -25,10 +25,8 @@
 #if TESTING == 1
 token_t *testTokens;
 #define nextToken(FILE) *testTokens++;
-#define stderrToFileIfTesting() freopen("stderr.txt", "w", stderr)
 #else
 #define nextToken(FILE) getToken(FILE)
-#define stderrToFileIfTesting() ;
 #endif
 
 #define MAX_STACK_VIEWABLE 100

@@ -20,7 +20,7 @@ extern "C" {
         statement;
 #else
 #define ASSERT_EXIT_CODE(statement, number) \
-        ASSERT_EXIT(statement, ::testing::ExitedWithCode(number), ".*") << readStderrFile();
+        ASSERT_EXIT(statement, ::testing::ExitedWithCode(number), ".*");
 #endif
 
 #define ASSERT_EXIT_SYNTAX(statement) \
@@ -36,7 +36,6 @@ namespace ifj22 {
             std::vector<token_t> *tokens;
             token_t endingToken = {ending, {}, 0, 0};
             int uID = 0;
-            char *errorFile;
             /**bypass getToken function,
              *
              * lyxtype tokens for parse function
@@ -99,29 +98,6 @@ namespace ifj22 {
             void *genFce(const char *s){
                 token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
-            }
-
-            char *readStderrFile()
-            {
-                FILE *file = fopen("stderr.txt", "r");
-
-                size_t n = 0;
-                int c;
-
-                if (file == NULL)
-                    return NULL; //could not open file
-
-                errorFile = static_cast<char *>(malloc(1000));
-
-                while ((c = fgetc(file)) != EOF)
-                {
-                    errorFile[n++] = (char) c;
-                }
-
-                // don't forget to terminate with the null character
-                errorFile[n] = '\0';
-                fclose(file);
-                return errorFile;
             }
 
         };
