@@ -48,4 +48,6 @@ void printMember(void *data);
 
 void printStack(genericStack *s, void (*printMem)(void *));
 
-#endif //STACK_STACK_H
+void *getFromTop(genericStack *s, unsigned int numberForTop);
+
+#endif//STACK_STACK_H

@@ -173,6 +173,43 @@ namespace ifj22 {
             }
             ASSERT_TRUE(sIsEmpty(stack));
         }
+        TEST(stackTest, getElement) {
+            genericStack *s = stackInit();
+            int a = 10;
+            int b = 11;
+            int c = 12;
+            int d = 13;
+            int e = 13;
 
-    }
-}
+
+            push(s, &a);
+            push(s, &b);
+            push(s, &c);
+            push(s, &d);
+            push(s, &e);
+
+            int *x = static_cast<int *>(getFromTop(s, 0));
+            int *z = static_cast<int *>(getFromTop(s, 2));
+            int *y = static_cast<int *>(getFromTop(s, 15));
+
+            ASSERT_EQ(13, *x);
+            ASSERT_EQ(12, *z);
+            ASSERT_EQ(NULL, y);
+        }
+
+
+        TEST(stackTest, getElementMore) {
+            genericStack *stack = stackInit();
+
+            int array[] = {10, 20, 30, 40, 50};
+
+            for (int i = 0; i < std::size(array); i++) {
+                push(stack, &array[i]);
+            }
+            int l = std::size(array);
+            for (int i = 0; i < std::size(array); i++) {
+                ASSERT_EQ(*static_cast<int *>(getFromTop(stack, i)), array[--l]);
+            }
+        }
+    }// namespace stack
+}// namespace ifj22
