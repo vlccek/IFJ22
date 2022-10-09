@@ -437,12 +437,12 @@ namespace ifj22 {
             ASSERT_EXIT_SYNTAX(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, functionDeclaration_Good) {
+        TEST_F(ParserTestSuccess, functionDeclaration_Good) {
             tokensForParser(
                     {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_WithSemicolons) {
