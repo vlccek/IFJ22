@@ -150,7 +150,7 @@ void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_l
     fprintf(stderr, "ERR_CODE: %d \n", ERR_SYNTAX);
 }
 
-void pErrSyntax(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
+void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
     va_list args;
     va_start (args, format);
     printArgsEnd(format, args);
@@ -158,6 +158,7 @@ void pErrSyntax(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
     fprintf(stderr, "Unexpected token: %s\n", getTerminalName(terminalEnum));
     printErrOnLine(rowNum, rowPos);
     fprintf(stderr, "ERR_CODE: %d \n", ERR_SYNTAX);
+    exit(ERR_SYNTAX);
 }
 
 void pErrLexer(int rowNum, int rowPos, char *format, ...) {
