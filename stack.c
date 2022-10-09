@@ -111,3 +111,17 @@ void printStack(genericStack *s, void (*printMem)(void *)) {
     }
     printMem(&i->data);
 }
+/*
+ * Returns null when elemnt not exist
+ */
+void *getFromTop(genericStack *s, unsigned int numberForTop) {
+    stackMem_t *i = s->top;
+    while (numberForTop != 0 && s->c > numberForTop--) {
+        i = i->next;
+    }
+    if (numberForTop != 0) {
+        return NULL;
+    }
+
+    return i->data;
+}
