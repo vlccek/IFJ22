@@ -20,7 +20,7 @@ with open("LL(1) Parser Generator.html") as fp:
                     print(f"insertMember({x}, {y}, {len(rule)}", end="")
                     for l in rule:
                         l = l.replace("ε","eps").replace("$", "ending")                
-                        print(f", {l}" ,end="")
+                        print(f", \npartOfRulesRightSide({l})" ,end="")
                     print(");")
                 except:
                     pass
