@@ -59,6 +59,9 @@ precedenceTableIndex indexInPrecTable(lexType t);
 
 #define precSymb(x, y) precedenceTable[indexInPrecTable((x)->type)][indexInPrecTable((y)->type)]
 
+expParserType *stackTopTerminal(genericStack *s);
+unsigned findFirst(genericStack *s, int searchSymb);
+
 #if TESTING == 1
 #ifndef nextToken
 token_t *testTokens;
