@@ -6,7 +6,7 @@
 #include "stack.h"
 
 genericStack *gStackInit() {
-    make_var(stack, genericStack *, sizeof(genericStack))
+    make_var(stack, genericStack *, sizeof(genericStack));
             stack->c = 0;
     stack->top = NULL;
     return stack;
@@ -17,7 +17,7 @@ genericStack *gStackInit() {
 int gStackPush(genericStack *s, void *nm) {
     if (!s || !nm) {
         //Stack is null
-        return null_dereference;
+        return ERR_RUNTIME;
     }
 
     stackMem_t *oldtop = s->top;// saves old top
@@ -38,7 +38,7 @@ void *gStackPop(genericStack *s) {
     }
 
     if (s->top == NULL) {
-        exit(IE_pop_empty_stack);
+        exit(ERR_RUNTIME);
     }
 
     void *r = s->top->data;// saves old top
@@ -77,7 +77,7 @@ void *gStackPopBack(genericStack *s) {
     stackMem_t *bottomEl = gStackBottom(s, &pLast);
 
     if (s->top == NULL){
-        exit(IE_pop_empty_stack);
+        exit(ERR_RUNTIME);
     }
 
     void *r = bottomEl->data;// returned el
@@ -91,6 +91,13 @@ void *gStackPopBack(genericStack *s) {
     s->c--;
 
     return r;
+}
+
+void *stackTop(genericStack *s) {
+    if (s->top == NULL)
+        return NULL;
+    else
+        return s->top->data;
 }
 
 

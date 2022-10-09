@@ -12,7 +12,7 @@
 #include "common.h"
 
 char *allNonTerminalNames[] = {
-        
+
 };
 
 char *allTerminalNames[] = {
@@ -131,14 +131,4 @@ void pErrSemantic(int errCode, char *format, ...) {
     printArgsEnd(format, args);
 
     fprintf(stderr, "ERR_CODE: %d \n", errCode);
-}
-
-void pErrDivideZero(int rowNum, int rowPos, char *format, ...) {
-    va_list args;
-    va_start (args, format);
-    printArgsEnd(format, args);
-
-    fprintf(stderr, "Divide by zero is not possible. \n");
-    printErrOnLine(rowNum, rowPos);
-    fprintf(stderr, "ERR_CODE: %d \n", ERR_ZERO_DIV);
 }

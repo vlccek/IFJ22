@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "helper.h"
+#include "common.h"
 
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
@@ -44,4 +44,6 @@ void gStackPrint(genericStack *s, void (*printMem)(void *));
 
 void *gStackGetNth(genericStack *s, unsigned int numberForTop);
 
-#endif//STACK_STACK_H
+void* gStackTop(genericStack *s);
+
+#endif //STACK_STACK_H

@@ -3,7 +3,6 @@
 //
 
 #include "stack.h"
-#include "helper.h"
 #include "dynstring.h"
 
 int main(int argc, char *argv[]) {
