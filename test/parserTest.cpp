@@ -303,7 +303,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_NoReturnType) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon,
                      curlyBraceLeft, curlyBraceRight});
 
            ASSERT_EXIT_SYNTAX(parser())
@@ -311,7 +311,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_NoFunctionKey) {
             tokensForParser(
-                    {identifierFunc, leftPar, rightPar, voidKey,
+                    {identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser());
@@ -319,7 +319,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_NoidentifierFunc) {
             tokensForParser(
-                    {functionKey, leftPar, rightPar, voidKey,
+                    {functionKey, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -327,7 +327,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_NocurlyBraceLeft) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -335,7 +335,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_NocurlyBraceRight) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -343,7 +343,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleFunctionKey) {
             tokensForParser(
-                    {functionKey, functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -351,7 +351,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleIdentifierFunc) {
             tokensForParser(
-                    {functionKey, identifierFunc, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -359,7 +359,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleLeftPar) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -367,7 +367,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleRightPar) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -375,7 +375,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleReturnType) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, voidKey, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -383,7 +383,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleCurlyBraceLeft) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -391,7 +391,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_DoubleCurlyBraceRight) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -399,7 +399,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon1) {
             tokensForParser(
-                    {functionKey, semicolon, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, semicolon, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -407,7 +407,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon2) {
             tokensForParser(
-                    {functionKey, identifierFunc, semicolon, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, semicolon, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -415,7 +415,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon3) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, semicolon, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, semicolon, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -423,7 +423,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_RandomSemicolon4) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, semicolon, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, semicolon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -439,7 +439,7 @@ namespace ifj22 {
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_Good) {
             tokensForParser(
-                    {functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
             ASSERT_EXIT_SYNTAX(parser())
@@ -448,7 +448,7 @@ namespace ifj22 {
         TEST_F(ParserTestSuccess, functionDeclaration_WithSemicolons) {
             tokensForParser(
                     {semicolon, semicolon,
-                     functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft,
                      semicolon, semicolon, semicolon,
                      curlyBraceRight,
@@ -460,7 +460,7 @@ namespace ifj22 {
         TEST_F(ParserTestSuccess, functionDeclaration_WithSemicolonsAndReturnKeys) {
             tokensForParser(
                     {returnKey, semicolon, semicolon,
-                     functionKey, identifierFunc, leftPar, rightPar, voidKey,
+                     functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft,
                      returnKey, semicolon, semicolon, semicolon,
                      curlyBraceRight,
