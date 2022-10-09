@@ -13,26 +13,30 @@ extern "C" {
 
 #include <stdio.h>
 };
+
+
 #if(DEBUG)
-#define ASSERT_EXIT_SYNTAX(functionCall) \
-        functionCall;
+#define ASSERT_EXIT_CODE(statement, number) \
+        statement;
 #else
-#define ASSERT_EXIT_SYNTAX(functionCall) \
-        ASSERT_EXIT_CODE(functionCall, ERR_SYNTAX);
+#define ASSERT_EXIT_CODE(statement, number) \
+        ASSERT_EXIT(statement, ::testing::ExitedWithCode(number), ".*") << readStderrFile();
 #endif
 
-#define ASSERT_EXIT_CODE(functionCall, number) \
-        ASSERT_EXIT(functionCall, ::testing::ExitedWithCode(number), ".*");
+#define ASSERT_EXIT_SYNTAX(statement) \
+        ASSERT_EXIT_CODE(statement, ERR_SYNTAX);
 
+#define ASSERT_NO_EXIT(statement)\
+        ASSERT_EXIT_CODE({{ statement ;} ::exit(EXIT_SUCCESS); }, EXIT_SUCCESS);
 
 namespace ifj22 {
     namespace parsertest {
         class ParserTest : public ::testing::Test {
         protected:
             std::vector<token_t> *tokens;
-
+            token_t endingToken = {ending, {}, 0, 0};
             int uID = 0;
-
+            char *errorFile;
             /**bypass getToken function,
              *
              * lyxtype tokens for parse function
@@ -52,12 +56,14 @@ namespace ifj22 {
                             break;
                         case identifierFunc:
                         case identifierVar:
-                            newToken.data.valueString = dstrInitChar((std::string("hovnokod") + std::to_string(uID)).c_str());
+                            newToken.data.valueString = dstrInitChar(
+                                    (std::string("hovnokod") + std::to_string(uID)).c_str());
                             break;
                     }
                     tokens->push_back(newToken);
-                    testTokens = tokens->data();
                 }
+                tokens->push_back(endingToken);
+                testTokens = tokens->data();
             }
 
             void SetUp() override {
@@ -94,6 +100,30 @@ namespace ifj22 {
                 token_t t = {stringLiteral, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
             }
+
+            char *readStderrFile()
+            {
+                FILE *file = fopen("stderr.txt", "r");
+
+                size_t n = 0;
+                int c;
+
+                if (file == NULL)
+                    return NULL; //could not open file
+
+                errorFile = static_cast<char *>(malloc(1000));
+
+                while ((c = fgetc(file)) != EOF)
+                {
+                    errorFile[n++] = (char) c;
+                }
+
+                // don't forget to terminate with the null character
+                errorFile[n] = '\0';
+                fclose(file);
+                return errorFile;
+            }
+
         };
 
         class ParserTestSyntaxError : public ParserTest {
@@ -104,40 +134,40 @@ namespace ifj22 {
 
         TEST_F(ParserTestSuccess, initialTest) {
             tokensForParser({ending});
-            parser();
+            ASSERT_NO_EXIT(parser());
         }
 
         TEST_F(ParserTestSyntaxError, initialTest2) {
             tokensForParser({leftPar, rightPar, ending});
 
-            ASSERT_EXIT_SYNTAX(parser());
+            ASSERT_EXIT_SYNTAX(parser();)
         }
 
         // region basic_op
         TEST_F(ParserTestSuccess, concatenationOp_basic) {
             tokensForParser({stringLiteral, concatenationOp, identifierVar, ending});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
         TEST_F(ParserTestSuccess, plusOP) {
             tokensForParser({stringLiteral, plusOp, identifierVar, ending});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
         TEST_F(ParserTestSuccess, minusOP) {
             tokensForParser({stringLiteral, minusOp, identifierVar, ending});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
         TEST_F(ParserTestSuccess, multipl) {
             tokensForParser({stringLiteral, multiplicationOp, identifierVar, ending});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
         TEST_F(ParserTestSuccess, div) {
             tokensForParser({stringLiteral, divisionOp, identifierVar, ending});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
         // endregion
 
@@ -147,28 +177,28 @@ namespace ifj22 {
                     {stringLiteral, concatenationOp, leftPar, identifierVar, concatenationOp, identifierVar, rightPar,
                      ending});
 
-            parser();
+            ASSERT_EXIT_SYNTAX(parser())
         }
         TEST_F(ParserTestSyntaxError, add_par) {
             tokensForParser(
                     {stringLiteral, plusOp, leftPar, identifierVar, plusOp, identifierVar, rightPar,
                      ending});
 
-            parser();
+            ASSERT_EXIT_SYNTAX(parser())
         }
         TEST_F(ParserTestSyntaxError, multiOp_par) {
             tokensForParser(
                     {stringLiteral, multiplicationOp, leftPar, identifierVar, multiplicationOp, identifierVar, rightPar,
                      ending});
 
-            parser();
+            ASSERT_EXIT_SYNTAX(parser())
         }
         TEST_F(ParserTestSyntaxError, divOP_par) {
             tokensForParser(
                     {stringLiteral, divisionOp, leftPar, identifierVar, divisionOp, identifierVar, rightPar,
                      ending});
 
-            parser();
+            ASSERT_EXIT_SYNTAX(parser())
         }
 
         //end region
@@ -179,7 +209,7 @@ namespace ifj22 {
                     {functionKey, identifierFunc, leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         //endregion
@@ -191,7 +221,7 @@ namespace ifj22 {
                      returnKey, semicolon,
                      curlyBraceRight});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_returnInMainBody) {
@@ -200,7 +230,7 @@ namespace ifj22 {
                      curlyBraceLeft, curlyBraceRight,
                      returnKey, semicolon});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_returnEverywhere) {
@@ -211,13 +241,13 @@ namespace ifj22 {
                      curlyBraceRight,
                      returnKey, semicolon});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_returnOnly) {
             tokensForParser(
                     {returnKey, semicolon});
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_returnOnly_ManyTimes) {
@@ -225,19 +255,19 @@ namespace ifj22 {
                     {returnKey, semicolon,
                      returnKey, semicolon,
                      returnKey, semicolon});
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_SemicolonOnly) {
             tokensForParser(
                     {semicolon});
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_ManySemicolons) {
             tokensForParser(
                     {semicolon, semicolon, semicolon, semicolon, semicolon,});
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_returnKeyDuplication) {
@@ -276,7 +306,7 @@ namespace ifj22 {
                     {functionKey, identifierFunc, leftPar, rightPar,
                      curlyBraceLeft, curlyBraceRight});
 
-            ASSERT_EXIT_SYNTAX(parser())
+           ASSERT_EXIT_SYNTAX(parser())
         }
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_NoFunctionKey) {
@@ -284,7 +314,7 @@ namespace ifj22 {
                     {identifierFunc, leftPar, rightPar, voidKey,
                      curlyBraceLeft, curlyBraceRight});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_EXIT_SYNTAX(parser());
         }
 
         TEST_F(ParserTestSyntaxError, functionDeclaration_NoidentifierFunc) {
@@ -424,7 +454,7 @@ namespace ifj22 {
                      curlyBraceRight,
                      semicolon, semicolon, semicolon,});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_WithSemicolonsAndReturnKeys) {
@@ -436,7 +466,7 @@ namespace ifj22 {
                      curlyBraceRight,
                      returnKey, semicolon, semicolon, semicolon,});
 
-            parser();
+            ASSERT_NO_EXIT(parser())
         }
 
 
