@@ -445,6 +445,20 @@ namespace ifj22 {
             ASSERT_NO_EXIT(parser())
         }
 
+        TEST_F(ParserTestSuccess, functionDeclaration_FunctionCall) {
+            genLex(functionKey);
+            genFce("foo");
+            tokensForParser(
+                    { leftPar, rightPar, colon, voidKey,
+                     curlyBraceLeft,
+                     returnKey, semicolon,
+                     curlyBraceRight,});
+
+            genFce("foo");
+            tokensForParser({leftPar, rightPar, semicolon});
+            ASSERT_NO_EXIT(parser())
+        }
+
 
     }
 }
