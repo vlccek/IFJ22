@@ -37,8 +37,8 @@
 // makra pro logování a easy exity
 //region logginAndExitingMacros
 
-#define InternalError(message, args...)     PrintErrorExit("%15s:%d | in %s() | " message "\n", ERR_RUNTIME ,__FILE__, __LINE__,  __FUNCTION__, ## args)
-#define PrintErrorExit(format,ERR_CODE,   ...)    do{  if (!debug) {fprintf(stderr, format, __VA_ARGS__);}; fflush(stderr); exit(ERR_CODE);}while(0)
+#define InternalError(message, args...)    PrintErrorExit("%15s:%d | in %s() | " message "\n", ERR_RUNTIME ,__FILE__, __LINE__,  __FUNCTION__, ## args)
+#define PrintErrorExit(format,ERR_CODE,   ...)    do{  fprintf(stderr, format, __VA_ARGS__); fflush(stderr); exit(ERR_CODE);}while(0)
 
 #define printlog(format, ...)    do{  fprintf(stderr, format, __VA_ARGS__);}while(0)
 #define loging(message, args...)    if (debug == 1) {printlog("%15s:%d | in %s() | " message "\n", __FILE__, __LINE__,  __FUNCTION__, ## args);}
@@ -70,7 +70,7 @@ if ((name = (type )malloc(size) ) == NULL) {                                    
 
 void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_list args);
 
-void pErrSyntax(int terminalEnum, int rowNum, int rowPos, char *format, ...);
+void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, char *format, ...);
 
 void pErrLexer(int rowNum, int rowPos, char *format, ...);
 
