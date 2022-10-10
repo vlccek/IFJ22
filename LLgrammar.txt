@@ -27,16 +27,19 @@ FuncReturnColonType ::= voidKey
 ## Function call
 FceCall ::= identifierFunc leftPar FirstFceParam rightPar
 FirstFceParam ::=''
-FirstFceParam ::= Exp CommaOrEpsParam
+FirstFceParam ::= Statement CommaOrEpsParam
 CommaOrEpsParam ::=''
-CommaOrEpsParam ::= comma Exp CommaOrEpsParam
+CommaOrEpsParam ::= comma Statement CommaOrEpsParam
+
+## Statement (simple expression)
+Statement ::= identifierVar
+Statement ::= floatLiteral
+Statement ::= stringLiteral
+Statement ::= integerLiteral
 
 ## Exp
-Exp ::= identifierVar
+Exp ::= Statement
 Exp ::= FceCall
-Exp ::= floatLiteral
-Exp ::= stringLiteral
-Exp ::= integerLiteral
 Exp ::= nullKey
 Exp ::= Exp minusOp Exp
 Exp ::= Exp plusOp Exp
