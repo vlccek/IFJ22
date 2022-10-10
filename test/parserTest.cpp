@@ -73,29 +73,29 @@ namespace ifj22 {
                 delete tokens;
             }
 
-            void *genLit(int i){
+            void genLit(int i) {
                 token_t t = {floatLiteral, nullptr, 0, 0};
                 t.data.valueFloat = i;
                 tokens->push_back(t);
             }
 
-            void *genLit(float f){
+            void genLit(float f) {
                 token_t t = {floatLiteral, nullptr, 0, 0};
                 t.data.valueFloat = f;
                 tokens->push_back(t);
             }
 
-            void *genVar(const char *s ){
+            void genVar(const char *s) {
                 token_t t = {identifierVar, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
             }
 
-            void *genFce(const char *s){
+            void genFce(const char *s) {
                 token_t t = {identifierFunc, dstrInitChar(s), 0, 0};
                 tokens->push_back(t);
             }
 
-            void *genLex(lexType type){
+            void genLex(lexType type) {
                 token_t t = {type, {}, 0, 0};
                 tokens->push_back(t);
             }
@@ -449,7 +449,7 @@ namespace ifj22 {
             genLex(functionKey);
             genFce("foo");
             tokensForParser(
-                    { leftPar, rightPar, colon, voidKey,
+                    {leftPar, rightPar, colon, voidKey,
                      curlyBraceLeft,
                      returnKey, semicolon,
                      curlyBraceRight,});
@@ -459,7 +459,271 @@ namespace ifj22 {
             ASSERT_NO_EXIT(parser())
         }
 
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodReturnString) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, stringKey,
+                     curlyBraceLeft, curlyBraceRight});
 
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodReturnInt) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, intKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodReturnFloat) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, floatKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodReturnFloatReturning) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, floatKey,
+                     curlyBraceLeft,
+                     returnKey, floatLiteral, semicolon,
+                     curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodReturnStringReturning) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, stringKey,
+                     curlyBraceLeft,
+                     returnKey, stringLiteral, semicolon,
+                     curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodReturnIntReturning) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar, rightPar, colon, intKey,
+                     curlyBraceLeft,
+                     returnKey, integerLiteral, semicolon,
+                     curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, ProgramBody_ReturnValues) {
+            tokensForParser(
+                    {returnKey, integerLiteral, semicolon,});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, ProgramBody_ReturnValues1) {
+            tokensForParser(
+                    {returnKey, returnKey, integerLiteral, semicolon,});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, ProgramBody_ReturnValues2) {
+            tokensForParser(
+                    {eqOp, returnKey, integerLiteral, semicolon,});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSuccess, ProgramBody_ReturnValues3) {
+            tokensForParser(
+                    {returnKey, integerLiteral, semicolon,});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, ProgramBody_ReturnValues1) {
+            tokensForParser(
+                    {returnKey, floatLiteral, semicolon,});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, ProgramBody_ReturnValues2) {
+            tokensForParser(
+                    {returnKey, stringLiteral, semicolon,});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        // parametry funkcí
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithParams1) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     stringKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithParams2) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     stringNullKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithParams3) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithParams4) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intNullKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithParams5) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     floatKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithParams6) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     floatNullKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithManyParams1) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     stringKey, identifierVar, comma, stringKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithManyParams2) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     stringKey, identifierVar, comma, intKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithManyParams3) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intNullKey, identifierVar, comma, intKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithManyParams4) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar,
+                     intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar,
+                     intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSuccess, functionDeclaration_GoodWithManyParamsAllPosibilities) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intKey, identifierVar, comma, stringKey, identifierVar, comma, floatKey, identifierVar,
+                     intNullKey, identifierVar, comma, stringNullKey, identifierVar, comma, floatNullKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_NO_EXIT(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_ParamsEndingComma) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intKey, identifierVar, comma,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_ParamsStartingComma) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     comma, intKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_ParamsMissingComma) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intKey, identifierVar, intKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_ParamsMissingRighPar) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intKey, identifierVar, comma, intKey, identifierVar,
+                     colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        TEST_F(ParserTestSyntaxError, functionDeclaration_ParamsDoubleComma) {
+            tokensForParser(
+                    {functionKey, identifierFunc, leftPar,
+                     intKey, identifierVar, comma, comma, intKey, identifierVar,
+                     rightPar, colon, voidKey,
+                     curlyBraceLeft, curlyBraceRight});
+
+            ASSERT_EXIT_SYNTAX(parser())
+        }
+
+        // assignment
+        // if else
+        // while
+        // function calls
+        // void function call
     }
 }
 
