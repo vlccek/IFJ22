@@ -10,6 +10,7 @@ Command ::= While
 Command ::= Return
 Command ::= Exp semicolon
 Command ::= semicolon
+Command ::= FceCall
 
 ## Definice funkcí
 FceDefine ::= FceHeader curlyBraceLeft FunctionBody curlyBraceRight
@@ -39,7 +40,6 @@ Statement ::= integerLiteral
 
 ## Exp
 Exp ::= Statement
-Exp ::= FceCall
 Exp ::= nullKey
 Exp ::= Exp minusOp Exp
 Exp ::= Exp plusOp Exp

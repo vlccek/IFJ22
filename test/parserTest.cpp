@@ -641,8 +641,8 @@ namespace ifj22 {
         TEST_F(ParserTestSuccess, functionDeclaration_GoodWithManyParams4) {
             tokensForParser(
                     {functionKey, identifierFunc, leftPar,
-                     intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar,
-                     intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar,
+                     intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar, comma,
+                     intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar, comma,
                      intKey, identifierVar, comma, intKey, identifierVar, comma, intKey, identifierVar,
                      rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
@@ -653,7 +653,7 @@ namespace ifj22 {
         TEST_F(ParserTestSuccess, functionDeclaration_GoodWithManyParamsAllPosibilities) {
             tokensForParser(
                     {functionKey, identifierFunc, leftPar,
-                     intKey, identifierVar, comma, stringKey, identifierVar, comma, floatKey, identifierVar,
+                     intKey, identifierVar, comma, stringKey, identifierVar, comma, floatKey, identifierVar, comma,
                      intNullKey, identifierVar, comma, stringNullKey, identifierVar, comma, floatNullKey, identifierVar,
                      rightPar, colon, voidKey,
                      curlyBraceLeft, curlyBraceRight});
@@ -1304,7 +1304,6 @@ namespace ifj22 {
         }
 
         TEST_F(ParserTestSuccess, functionDeclaration_GoodFuncCallParamsMore) {
-            genLex(functionKey);
             genFce("write");
             tokensForParser({leftPar, integerLiteral, comma, integerLiteral, rightPar, semicolon});
             ASSERT_NO_EXIT(parser())
