@@ -90,10 +90,48 @@ PSAStackMember *getTopStack(ParserMemory *memory) {
     return m;
 }
 
+bool expressionParsing(PSAStackMember *topOfStack) {
+    if (topOfStack->data == (int) Exp) {
+        InternalError("\nExpression parser is not ready yet.");
+        return 1;
+    }
+    return 0;
+}
+
+rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
+    rule **newRule = (getLLMember((nonTerminalType) topOfStack.data, lastToken.type))->rules;
+    if (newRule == NULL)
+        exitNoRule(lastToken, (nonTerminalType) topOfStack.data);
+
+    rule *firstRule = *newRule;
+    if(firstRule->from == Command && lastToken.type == (int) identifierVar);
+        // todo: solve LL1 problem
+    return firstRule;
+}
+
+void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, token_t *lastToken) {
+    rule *newRule = findRule((*lastToken), *topOfStack);
+    pop(memory->PSAStack);
+    if (newRule->epsRule == false) {
+        pushReversed(memory->PSAStack, newRule->to);
+    }
+}
+
+void checkTopAndLastMatch(const PSAStackMember *topOfStack, token_t *lastToken) {
+    if ((*lastToken).type != topOfStack->data) {
+        exitWrongToken((*lastToken), (lexType) topOfStack->data);
+    }
+}
+
+bool parserEnding(token_t lastToken) {
+    if (lastToken.type == ending)
+        return 1;
+    exitUnexpectedEnd(lastToken);
+
+}
 
 int parser() {
     ParserMemory *memory = initializeMemory();
-
 
     bool success = false;
     PSAStackMember *topOfStack;
@@ -104,32 +142,19 @@ int parser() {
         topOfStack = getTopStack(memory);
         switch (topOfStack->type) {
             case endOfFile:
-                if (lastToken.type == ending)
-                    success = true;
-                else
-                    exitUnexpectedEnd(lastToken);
+                success = parserEnding(lastToken);
                 break;
             case terminal:
-                if (lastToken.type == topOfStack->data) {
-                    pop(memory->PSAStack);
-                    lastToken = nextToken(stdin);
-                } else {
-                    exitWrongToken(lastToken, (lexType) topOfStack->data);
-                }
+                checkTopAndLastMatch(topOfStack, &lastToken);
+
+                pop(memory->PSAStack);
+                lastToken = nextToken(stdin);
                 break;
             case nonTerminal:;
-                if (topOfStack->data == (int) Exp)
-                    InternalError("\nExpression parser is not ready yet.");
+                if(expressionParsing(topOfStack))
+                    continue;
 
-                rule **newRule = (getLLMember((nonTerminalType) topOfStack->data, lastToken.type))->rules;
-                if (newRule == NULL)
-                    exitNoRule(lastToken, (nonTerminalType) topOfStack->data);
-                if ((*newRule)->epsRule) {
-                    pop(memory->PSAStack);
-                } else {
-                    pop(memory->PSAStack);
-                    pushReversed(memory->PSAStack, (*newRule)->to);
-                }
+                deriveNonTerminal(memory, topOfStack, &lastToken);
                 break;
         }
     }
