@@ -35,6 +35,7 @@ char *allNonTerminalNames[] = {
 
         // Exp
          "Exp",
+         "Statement",
 
         // Data types DataType
          "DataType",
