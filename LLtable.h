@@ -11,14 +11,13 @@
 #define LUAINTERPRET_LLTABLE_H
 
 #include "lex.h"
-#include "parser.h"
 #include "common.h"
 
 #define MAX_RULE_LEN 10
 #define MAX_RULES_IN_CELL 10
 
-#define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rule[ruleIndex]->to[countOfRule] = member;
-#define partOfRulesRightSide(name) createExsStackMember(name, getDataType(#name))
+#define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rules[ruleIndex]->to[countOfRule] = member;
+#define partOfRulesRightSide(name) createPSAStackMember(name, getDataType(#name))
 
 typedef enum {
     // S - init stav
@@ -44,6 +43,7 @@ typedef enum {
 
     // Exp
     Exp,
+    Statement,
 
     // Data types DataType
     DataType,
@@ -82,13 +82,13 @@ typedef struct PSAStackMember {
 
 typedef struct rule{
     int id;
-    bool nullable;
+    bool epsRule;
     nonTerminalType from;
     PSAStackMember *to[MAX_RULE_LEN];
 }rule;
 
 typedef struct tableMember{
-    rule *rule[MAX_RULES_IN_CELL];
+    rule *rules[MAX_RULES_IN_CELL];
     nonTerminalType nonTerminal;
     lexType terminal;
 }tableMember;
@@ -97,7 +97,12 @@ typedef struct tableMember{
 typedef tableMember* table[(int) nonTerminalCount][(int) lexTypeCount];
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal);
-void createLLTable();
-tableMember *getLLMemberByRule(PSAStackMember *to[MAX_RULE_LEN], int *ruleIndex);
 
+void createLLTable();
+
+rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]);
+
+PSAStackMember *createPSAStackMember(int value, PSADataType type);
+
+char* getStringPSAMember(PSAStackMember m);
 #endif //LUAINTERPRET_LLTABLE_H
