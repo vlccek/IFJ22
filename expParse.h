@@ -12,9 +12,9 @@
 
 // for gouping operation in precendece table
 typedef enum {
-    indexId = 0,
-    indexOpPlusMinus,
+    indexOpPlusMinus= 0,
     indexOpMulDiv,
+    indexId ,
     indexOpConcat,
     indexLpar,
     indexRpar,
@@ -32,17 +32,8 @@ typedef enum {
     precendenceTypeCount
 } precendenceType;
 
-precendenceType precedenceTable[indexCount][indexCount] = {
-        // +- | */ | ID lit... | lpar | rpar | | dollar
-        {precR, precR, precL, precR, precL, precR, precR},        // +-
-        {precR, precR, precL, precR, precL, precR, precR},        // */
-        {precR, precR, precErr, precErr, precErr, precR},         // ID LIT
-        {precErr, precErr, precL, precErr, precL, precErr, precR},// ID LIT
-        {precR, precR, precL, precR, precR, precEq, precR},       // lpar
-        {precR, precR, precL, precR, precR, precR, precR},        // rpar
-        {precL, precL, precL, precL, precL, precL, precL}         // dollar
-
-};
+extern char *precTypeString[];
+extern precendenceType precedenceTable[indexCount][indexCount];
 
 rule *derivateTopStack(genericStack *sTokens);
 
@@ -59,22 +50,31 @@ precedenceTableIndex indexInPrecTable(lexType t);
 
 #define precSymb(x, y) precedenceTable[indexInPrecTable((x)->type)][indexInPrecTable((y)->type)]
 
+// converts precedenc symbol to readeable form
+#define precSymbString(a) precTypeString[((int) a % (int) lexTypeCount) - 1]
+
 expParserType *stackTopTerminal(genericStack *s);
 unsigned findFirst(genericStack *s, int searchSymb);
 
 #if TESTING == 1
 #ifndef nextToken
-token_t *testTokens;
+extern token_t *testTokens;
 #define nextToken(FILE) *testTokens++;
 #define preToken(FILE) *(--testTokens);
 #endif
 #else
+#ifndef nextToken
 #define nextToken(FILE) getToken(FILE)
 #define preToken(FILE) ungetToken(FILE);
+#endif
 #endif
 
 
 // praser for expresions
 void expAnal();
+
+void printExpParserType(void *data);
+
+char *generatePrintExpParsertype(expParserType *data);
 
 #endif//STACK_EXPPARSE_H

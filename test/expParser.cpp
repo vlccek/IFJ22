@@ -11,7 +11,7 @@ extern "C" {
 // DON'T TOUCH THIS!
 
 #include <stdio.h>
-};
+}
 
 
 #define ASSERT_EXIT_SYNTAX(functionCall) \
@@ -53,7 +53,7 @@ namespace ifj22 {
             }
         };
 
-        TEST_F(expParserTest, basicTest) {
+        TEST_F(expParserTest, basicTestExp) {
             tokensForParser({integerLiteral, plusOp, integerLiteral, semicolon});
 
             expAnal();
