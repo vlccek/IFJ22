@@ -6,9 +6,9 @@
 
 
 void PSAStackInit(ParserMemory* mem) {
-    mem->PSAStack = stackInit();
-    push(mem->PSAStack, createPSAStackMember(0, endOfFile));
-    push(mem->PSAStack, createPSAStackMember(ProgramBody, nonTerminal));
+    mem->PSAStack = gStackInit();
+    gStackPush(mem->PSAStack, createPSAStackMember(0, endOfFile));
+    gStackPush(mem->PSAStack, createPSAStackMember(ProgramBody, nonTerminal));
 }
 
 ParserMemory* initializeMemory() {
@@ -23,15 +23,15 @@ void unxpectedEnd(token_t token) {
 }
 
 void pushStackToStack(genericStack* original, genericStack* toEmpty){
-    while(stackTop(toEmpty) != NULL){
-        push(original, pop(toEmpty));
+    while(gStackTop(toEmpty) != NULL){
+        gStackPush(original, gStackPop(toEmpty));
     }
 }
 
 void pushReversed(genericStack* stack, PSAStackMember** rule){
     make_var(tmpStack, genericStack*, sizeof (genericStack));
     while (*rule != NULL){
-        push(tmpStack, *rule);
+        gStackPush(tmpStack, *rule);
         *rule++;
     }
     pushStackToStack(stack, tmpStack);
@@ -46,7 +46,7 @@ int parser() {
 
     lastToken = nextToken(stdin);
     while (success == false) {
-        topOfStack = (PSAStackMember *) stackTop(memory->PSAStack);
+        topOfStack = (PSAStackMember *) gStackTop(memory->PSAStack);
         switch (topOfStack->type) {
             case endOfFile:
                 if(lastToken.type == ending)
@@ -56,7 +56,7 @@ int parser() {
                 break;
             case terminal:
                 if(lastToken.type == topOfStack->data){
-                    pop(memory->PSAStack);
+                    gStackPop(memory->PSAStack);
                     lastToken = nextToken(stdin);
                 }
                 break;
