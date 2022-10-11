@@ -46,16 +46,29 @@ int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
     return 0;
 }
 
-rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
+rule *findInTable(PSAStackMember *handleToFind[10], nonTerminalType tableRow) {
     tableMember *tableMember;
     int ruleIndex;
+
     for (int token = 0; token < lexTypeCount; ++token) {
-        if ((tableMember = Table[Exp][token]) == NULL) {
+        if ((tableMember = Table[tableRow][token]) == NULL) {
             continue;
         };
         if ((ruleIndex = cmpRules(tableMember, handleToFind)) != 0)
-            return tableMember->rules[ruleIndex] ;
+            return tableMember->rules[ruleIndex];
     }
+    return NULL;
+}
+
+rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
+    nonTerminalType whereToLookForHandle[] = {Exp, Statement};
+    int multiRuleLen = sizeof(whereToLookForHandle) / sizeof(nonTerminalType);
+    rule *found;
+    for (int i = 0; i < multiRuleLen; ++i) {
+        if((found = findInTable(handleToFind, whereToLookForHandle[i])) != NULL)
+            return found;
+    }
+
     return NULL;
 }
 
