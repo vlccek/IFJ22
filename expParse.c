@@ -6,13 +6,13 @@
 
 precendenceType precedenceTable[indexCount][indexCount] = {
         //a vstup// +- | */ | ID lit... | . | lpar | rpar  | dollar
-        {precR, precR, precL, precR, precL, precR, precR},          // +-             //// top b
-        {precR, precR, precL, precR, precL, precR, precR},          // */
-        {precR, precR, precErr, precErr, precErr, precR, precR},    // ID LIT
-        {precErr, precErr, precErr, precErr, precL, precErr, precR},// .
-        {precR, precR, precL, precR, precR, precEq, precR},         // lpar
-        {precR, precR, precL, precR, precErr, precR, precR},        // rpar
-        {precL, precL, precL, precL, precL, precL, precErr}         // dollar
+        {precR,   precR,   precL,   precR,   precL,   precR,   precR},          // +-             //// top b
+        {precR,   precR,   precL,   precR,   precL,   precR,   precR},          // */
+        {precR,   precR,   precErr, precErr, precErr, precR,   precR},    // ID LIT
+        {precErr, precErr, precErr, precErr, precL,   precErr, precR},// .
+        {precR,   precR,   precL,   precR,   precR,   precEq,  precR},         // lpar
+        {precR,   precR,   precL,   precR,   precErr, precR,   precR},        // rpar
+        {precL,   precL,   precL,   precL,   precL,   precL,   precErr}         // dollar
 };
 
 
@@ -66,6 +66,7 @@ void pushPrecedencToken(genericStack *sTokens, precendenceType precT) {
     nPrec->tokenData = NULL;
     gStackPush(sTokens, nPrec);
 }
+
 void pushExpNonTerminal(genericStack *sTokens) {
     make_var(nPrec, expParserType *, sizeof(token_t));
     nPrec->type = exp;

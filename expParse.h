@@ -12,9 +12,9 @@
 
 // for gouping operation in precendece table
 typedef enum {
-    indexOpPlusMinus= 0,
+    indexOpPlusMinus = 0,
     indexOpMulDiv,
-    indexId ,
+    indexId,
     indexOpConcat,
     indexLpar,
     indexRpar,
@@ -54,6 +54,7 @@ precedenceTableIndex indexInPrecTable(lexType t);
 #define precSymbString(a) precTypeString[((int) a % (int) lexTypeCount) - 1]
 
 expParserType *stackTopTerminal(genericStack *s);
+
 unsigned findFirst(genericStack *s, int searchSymb);
 
 #if TESTING == 1
