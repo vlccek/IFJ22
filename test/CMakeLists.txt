@@ -32,5 +32,3 @@ add_executable(${This} ${Sources})
 target_link_libraries(${This} gtest_main expParseTests)
 target_compile_definitions(${This} PUBLIC TESTING=1)
 add_test(parserTest parserTest)
-
-
