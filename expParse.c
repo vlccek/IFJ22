@@ -105,6 +105,7 @@ void printExpParserType(void *data) {
 }
 
 void expAnal() {
+    createLLTable(); // todo: remove if not testing
     genericStack *sTokens = gStackInit();
     pushPrecedencToken(sTokens, dollar);
     expParserType *b = getTokenP(), *a;
@@ -172,7 +173,7 @@ rule *derivateTopStack(genericStack *sTokens) {
     handle[indexOfPrec] = NULL;                          // setting len of rule
     while (indexOfPrec != 0) {
         tmp = gStackPop(sTokens);
-        handle[--indexOfPrec] = createPSAStackMember(tmp->type, nonTerminal);// todo exp je v pici
+        handle[--indexOfPrec] = createPSAStackMember(tmp->type, terminal);// todo exp je v pici
     }
     free(gStackPop(sTokens));// pop
 

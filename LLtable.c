@@ -22,7 +22,11 @@ bool stackMemberCmp(PSAStackMember *memberA, PSAStackMember *memberB) {
     return (memberA->type == memberB->type && memberA->data == memberB->data);
 }
 
-int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
+/*
+ * Returns negative number when comparing failed
+ * Returns rule index otherwise
+ * */
+int findHandleInTableMember(tableMember *tMember, PSAStackMember **rightSideOfRule) {
     for (int i = 0; i < MAX_RULES_IN_CELL; ++i) {
         for (int j = 0; j < MAX_RULE_LEN; ++j) {
             if (tMember->rules[i] == NULL) {
@@ -33,7 +37,7 @@ int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
                 if (j == 0) {
                     break;
                 }
-                return j;
+                return i;
             }
             if (tMember->rules[i]->to[j] == NULL || m == NULL) {
                 break;
@@ -43,29 +47,29 @@ int cmpRules(tableMember *tMember, PSAStackMember **rightSideOfRule) {
             }
         }
     }
-    return 0;
+    return -1;
 }
 
 rule *findInTable(PSAStackMember *handleToFind[10], nonTerminalType tableRow) {
     tableMember *tableMember;
     int ruleIndex;
 
-    for (int token = 0; token < lexTypeCount; ++token) {
+    for (lexType token = 0; token < lexTypeCount; ++token) {
         if ((tableMember = Table[tableRow][token]) == NULL) {
             continue;
         };
-        if ((ruleIndex = cmpRules(tableMember, handleToFind)) != 0)
+        if ((ruleIndex = findHandleInTableMember(tableMember, handleToFind)) >= 0)
             return tableMember->rules[ruleIndex];
     }
     return NULL;
 }
 
 rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
-    nonTerminalType whereToLookForHandle[] = {Exp, Statement};
-    int multiRuleLen = sizeof(whereToLookForHandle) / sizeof(nonTerminalType);
+    nonTerminalType tableRows[] = {Exp, Statement}; // looking only in this rows
+    int multiRuleLen = sizeof(tableRows) / sizeof(nonTerminalType);
     rule *found;
     for (int i = 0; i < multiRuleLen; ++i) {
-        if((found = findInTable(handleToFind, whereToLookForHandle[i])) != NULL)
+        if ((found = findInTable(handleToFind, tableRows[i])) != NULL)
             return found;
     }
 
