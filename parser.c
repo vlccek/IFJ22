@@ -4,9 +4,9 @@
 #include "parser.h"
 #include "LLtable.h"
 
-void pushStackToStack(genericStack *original, genericStack *toEmpty) {
-    while (stackTop(toEmpty) != NULL) {
-        push(original, pop(toEmpty));
+void gStackPushStackToStack(genericStack *original, genericStack *toEmpty) {
+    while (gStackTop(toEmpty) != NULL) {
+        gStackPush(original, gStackPop(toEmpty));
     }
 }
 
@@ -15,7 +15,7 @@ void pushStackToStack(genericStack *original, genericStack *toEmpty) {
 /// \param stackLength
 /// \return Returns 0 if NULL inserted otherwise returns 1
 int updateStackViewMember(ParserMemory *memory, int stackLength) {
-    PSAStackMember *top = (PSAStackMember *) stackTop(memory->PSAStack);
+    PSAStackMember *top = (PSAStackMember *) gStackTop(memory->PSAStack);
     if (top == NULL) {
         memory->stackView[stackLength] = NULL;
         return 0;
@@ -30,16 +30,16 @@ void updateStackView(ParserMemory *memory) {
     for (int stackLength = 0; stackLength < MAX_STACK_VIEWABLE; ++stackLength) {
         if (updateStackViewMember(memory, stackLength) == 0)
             break;
-        push(tmpStack, pop(memory->PSAStack));
+        gStackPush(tmpStack, gStackPop(memory->PSAStack));
     }
-    pushStackToStack(memory->PSAStack, tmpStack);
+    gStackPushStackToStack(memory->PSAStack, tmpStack);
     free(tmpStack);
 }
 
 void PSAStackInit(ParserMemory *mem) {
-    mem->PSAStack = stackInit();
-    push(mem->PSAStack, createPSAStackMember(0, endOfFile));
-    push(mem->PSAStack, createPSAStackMember(ProgramBody, nonTerminal));
+    mem->PSAStack = gStackInit();
+    gStackPush(mem->PSAStack, createPSAStackMember(0, endOfFile));
+    gStackPush(mem->PSAStack, createPSAStackMember(ProgramBody, nonTerminal));
     updateStackView(mem);
 }
 
@@ -73,19 +73,19 @@ void exitWrongToken(token_t actualToken, lexType expectedLexType) {
 }
 
 
-void pushReversed(genericStack *stack, PSAStackMember **rule) {
+void gStackPushReversed(genericStack *stack, PSAStackMember **rule) {
     make_var(tmpStack, genericStack*, sizeof(genericStack));
     while (*rule != NULL) {
-        push(tmpStack, *rule);
+        gStackPush(tmpStack, *rule);
         *rule++;
     }
-    pushStackToStack(stack, tmpStack);
+    gStackPushStackToStack(stack, tmpStack);
     free(tmpStack);
 }
 
 
 PSAStackMember *getTopStack(ParserMemory *memory) {
-    PSAStackMember *m = (PSAStackMember *) stackTop(memory->PSAStack);
+    PSAStackMember *m = (PSAStackMember *) gStackTop(memory->PSAStack);
     updateStackView(memory);
     return m;
 }
@@ -111,9 +111,9 @@ rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
 
 void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, token_t *lastToken) {
     rule *newRule = findRule((*lastToken), *topOfStack);
-    pop(memory->PSAStack);
+    gStackPop(memory->PSAStack);
     if (newRule->epsRule == false) {
-        pushReversed(memory->PSAStack, newRule->to);
+        gStackPushReversed(memory->PSAStack, newRule->to);
     }
 }
 
@@ -147,7 +147,7 @@ int parser() {
             case terminal:
                 checkTopAndLastMatch(topOfStack, &lastToken);
 
-                pop(memory->PSAStack);
+                gStackPop(memory->PSAStack);
                 lastToken = nextToken(stdin);
                 break;
             case nonTerminal:;
