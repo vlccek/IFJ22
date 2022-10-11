@@ -104,8 +104,8 @@ rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
         exitNoRule(lastToken, (nonTerminalType) topOfStack.data);
 
     rule *firstRule = *newRule;
-    if(firstRule->from == Command && lastToken.type == (int) identifierVar);
-        // todo: solve LL1 problem
+    if (firstRule->from == Command && lastToken.type == (int) identifierVar);
+    // todo: solve LL1 problem
     return firstRule;
 }
 
@@ -151,7 +151,7 @@ int parser() {
                 lastToken = nextToken(stdin);
                 break;
             case nonTerminal:;
-                if(expressionParsing(topOfStack, lastToken.type))
+                if (expressionParsing(topOfStack, lastToken.type))
                     continue;
 
                 deriveNonTerminal(memory, topOfStack, &lastToken);
