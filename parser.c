@@ -90,9 +90,9 @@ PSAStackMember *getTopStack(ParserMemory *memory) {
     return m;
 }
 
-bool expressionParsing(PSAStackMember *topOfStack) {
+bool expressionParsing(PSAStackMember *topOfStack, lexType lastTokenTypy) {
     if (topOfStack->data == (int) Exp) {
-        InternalError("\nExpression parser is not ready yet.");
+        InternalError("Top of stack: %s\nExpression parser is not ready yet.\n", getTerminalName(lastTokenTypy));
         return 1;
     }
     return 0;
@@ -151,7 +151,7 @@ int parser() {
                 lastToken = nextToken(stdin);
                 break;
             case nonTerminal:;
-                if(expressionParsing(topOfStack))
+                if(expressionParsing(topOfStack, lastToken.type))
                     continue;
 
                 deriveNonTerminal(memory, topOfStack, &lastToken);

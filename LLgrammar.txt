@@ -59,8 +59,9 @@ DataType ::= intKey
 
 
 ## Definice proměné
-DeclareVariable ::=  identifierVar DefVarAss
-DefVarAss ::= equals Exp semicolon
+DeclareVariable ::=  identifierVar equals DefVarAss
+DefVarAss ::= Exp semicolon
+DefVarAss ::= FceCall semicolon
 DefVarAss ::= semicolon
 
 ## Podmínky
