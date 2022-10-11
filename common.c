@@ -17,6 +17,7 @@ char *allNonTerminalNames[] = {
 
 char *allTerminalNames[] = {
         // keywords
+        // keywords
         "elseKey",
         "functionKey",
         "ifKey",
@@ -24,19 +25,21 @@ char *allTerminalNames[] = {
         "returnKey",
         "voidKey",
         "whileKey",
-
-        // data types
-        "stringKey", // "'string' $hello"
+        "stringKey",
         "floatKey",
         "intKey",
         "stringNullKey",
         "floatNullKey",
         "intNullKey",
 
+        // curly braces
+        "curlyBraceRight",
+        "curlyBraceLeft",
+
         // assignment
         "equals",
         "colon",
-        "semiColon",
+        "semicolon",
         "comma",
 
         // operators
@@ -57,12 +60,12 @@ char *allTerminalNames[] = {
         "rightPar",
 
         // literals
-        "stringLiteral", // "hello"
+        "stringLiteral",// "hello"
         "integerLiteral",
-        "decimalLiteral",
+        "floatLiteral",
 
         // identifiers
-        "identifierFce",
+        "identifierFunc",
         "identifierVar",
 
         // unknown
@@ -70,8 +73,7 @@ char *allTerminalNames[] = {
 
         // EOF type
         "ending",
-        "lexTypeCount"
-};
+        "lexTypeCount"};
 
 char *allPrecedentTerminalNames[] = {
 };
