@@ -49,9 +49,17 @@ add_library(LLtable
         LLtable.c
         LLtable.h)
 
-add_library(expParse
+add_library(expParseTests
         expParse.c
-        expParse.h)
+        expParse.h
+        LLtable
+        parser
+        common
+        stack
+        lex)
+
+
+target_compile_definitions(expParseTests PUBLIC TESTING=1)
 
 
 add_subdirectory(test)
