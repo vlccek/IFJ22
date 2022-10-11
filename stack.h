@@ -44,6 +44,8 @@ void gStackPrint(genericStack *s, void (*printMem)(void *));
 
 void *gStackGetNth(genericStack *s, unsigned int numberForTop);
 
-void* gStackTop(genericStack *s);
+void*gStackTop(genericStack *s);
 
-#endif //STACK_STACK_H
+void *getFromTop(genericStack *s, unsigned int numberForTop);
+
+#endif//STACK_STACK_H

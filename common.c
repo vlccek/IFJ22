@@ -62,6 +62,7 @@ char *allNonTerminalNames[] = {
 
 char *allTerminalNames[] = {
         // keywords
+        // keywords
         "elseKey",
         "functionKey",
         "ifKey",
@@ -104,7 +105,7 @@ char *allTerminalNames[] = {
         "rightPar",
 
         // literals
-        "stringLiteral", // "hello"
+        "stringLiteral",// "hello"
         "integerLiteral",
         "floatLiteral",
 
@@ -117,8 +118,7 @@ char *allTerminalNames[] = {
 
         // EOF type
         "ending",
-        "lexTypeCount"
-};
+        "lexTypeCount"};
 
 char *allPrecedentTerminalNames[] = {
 };

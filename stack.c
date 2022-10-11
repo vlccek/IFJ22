@@ -43,7 +43,7 @@ void *gStackPop(genericStack *s) {
 
     void *r = s->top->data;// saves old top
     s->top = s->top->next;
-    s--;
+    s->c--;
     return r;
 }
 
@@ -93,7 +93,7 @@ void *gStackPopBack(genericStack *s) {
     return r;
 }
 
-void *stackTop(genericStack *s) {
+void *gStackTop(genericStack *s) {
     if (s->top == NULL)
         return NULL;
     else
@@ -105,11 +105,54 @@ void gStackPrint(genericStack *s, void (*printMem)(void *)) {
     fprintf(stdout, "Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
-        printMem(&i->data);
+        printMem(i->data);
         fprintf(stdout, " -> ");
         i = i->next;
     }
-    printMem(&i->data);
+    printMem(i->data);
+    fprintf(stdout, "\n");
+}
+/*
+ * Returns null when elemnt not exist
+ */
+void *gStackGetNth(genericStack *s, unsigned int numberForTop) {
+    stackMem_t *i = s->top;
+    while (numberForTop != 0 && s->c > numberForTop--) {
+        i = i->next;
+    }
+    if (numberForTop != 0 || i == NULL) {
+        return NULL;
+    }
+
+    return i->data;
+}
+/*
+ * Returns null when elemnt not exist
+ */
+void *getFromTop(genericStack *s, unsigned int numberForTop) {
+    stackMem_t *i = s->top;
+    while (numberForTop != 0 && s->c > numberForTop--) {
+        i = i->next;
+    }
+    if (numberForTop != 0) {
+        return NULL;
+    }
+
+    return i->data;
+}
+/*
+ * Returns null when elemnt not exist
+ */
+void *getFromTop(genericStack *s, unsigned int numberForTop) {
+    stackMem_t *i = s->top;
+    while (numberForTop != 0 && s->c > numberForTop--) {
+        i = i->next;
+    }
+    if (numberForTop != 0) {
+        return NULL;
+    }
+
+    return i->data;
 }
 /*
  * Returns null when elemnt not exist
