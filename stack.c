@@ -43,7 +43,7 @@ void *gStackPop(genericStack *s) {
 
     void *r = s->top->data;// saves old top
     s->top = s->top->next;
-    s--;
+    s->c--;
     return r;
 }
 
@@ -105,11 +105,12 @@ void gStackPrint(genericStack *s, void (*printMem)(void *)) {
     fprintf(stdout, "Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
-        printMem(&i->data);
+        printMem(i->data);
         fprintf(stdout, " -> ");
         i = i->next;
     }
-    printMem(&i->data);
+    printMem(i->data);
+    fprintf(stdout, "\n");
 }
 /*
  * Returns null when elemnt not exist
@@ -119,7 +120,7 @@ void *gStackGetNth(genericStack *s, unsigned int numberForTop) {
     while (numberForTop != 0 && s->c > numberForTop--) {
         i = i->next;
     }
-    if (numberForTop != 0) {
+    if (numberForTop != 0 || i == NULL) {
         return NULL;
     }
 
