@@ -96,7 +96,7 @@ void dstrPrepend(dynStr_t *dstr, char *newStr) {
     free(tmpStr);
 }
 
-dynStr_t *dstrInitChar(char *text) {
+dynStr_t *dstrInitChar(const char *text) {
     dynStr_t *nstring = dstrInit();
     dstrAppend(nstring, text);
     return nstring;

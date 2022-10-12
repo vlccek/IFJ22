@@ -1,7 +1,7 @@
 ## S - init stav
 ProgramBody ::= FceDefine ProgramBody
 ProgramBody ::= Command ProgramBody
-ProgramBody ::= /*eps*/
+ProgramBody ::=''
 
 ## Command
 Command ::= DeclareVariable
@@ -9,13 +9,15 @@ Command ::= Condition
 Command ::= While
 Command ::= Return
 Command ::= Exp semicolon
+Command ::= semicolon
+Command ::= FceCall
 
 ## Definice funkcí
 FceDefine ::= FceHeader curlyBraceLeft FunctionBody curlyBraceRight
 FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType
-FunctionDeclareParams ::= /*eps*/
+FunctionDeclareParams ::=''
 FunctionDeclareParams ::= DeclareParam  CommaOrEpsParams
-CommaOrEpsParams ::= /*eps*/
+CommaOrEpsParams ::=''
 CommaOrEpsParams ::= comma DeclareParam  CommaOrEpsParams
 DeclareParam ::= DataType identifierVar
 
@@ -25,17 +27,19 @@ FuncReturnColonType ::= voidKey
 
 ## Function call
 FceCall ::= identifierFunc leftPar FirstFceParam rightPar
-FirstFceParam ::= /*eps*/
-FirstFceParam ::= Exp CommaOrEpsParam
-CommaOrEpsParam ::= /*eps*/
-CommaOrEpsParam ::= comma Exp CommaOrEpsParam
+FirstFceParam ::=''
+FirstFceParam ::= Statement CommaOrEpsParam
+CommaOrEpsParam ::=''
+CommaOrEpsParam ::= comma Statement CommaOrEpsParam
+
+## Statement (simple expression)
+Statement ::= identifierVar
+Statement ::= floatLiteral
+Statement ::= stringLiteral
+Statement ::= integerLiteral
 
 ## Exp
-Exp ::= identifierVar
-Exp ::= FceCall
-Exp ::= floatLiteral
-Exp ::= stringLiteral
-Exp ::= integerLiteral
+Exp ::= Statement
 Exp ::= nullKey
 Exp ::= Exp minusOp Exp
 Exp ::= Exp plusOp Exp
@@ -55,14 +59,15 @@ DataType ::= intKey
 
 
 ## Definice proměné
-DeclareVariable ::=  identifierVar DefVarAss
-DefVarAss ::= equals Exp semicolon
+DeclareVariable ::=  identifierVar equals DefVarAss
+DefVarAss ::= Exp semicolon
+DefVarAss ::= FceCall semicolon
 DefVarAss ::= semicolon
 
 ## Podmínky
 Condition ::= ifKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight ElseCond
 ElseCond ::= elseKey curlyBraceLeft FunctionBody curlyBraceRight
-ElseCond ::= /*eps*/
+ElseCond ::=''
 
 ## While
 While ::= whileKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight
@@ -70,8 +75,8 @@ While ::= whileKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRi
 ## Return
 Return ::= returnKey ReturnExp semicolon
 ReturnExp ::= Exp
-ReturnExp ::= /*eps*/
+ReturnExp ::=''
 
 ## Vnítřek funkce
 FunctionBody ::= Command FunctionBody
-FunctionBody ::= /*eps*/
+FunctionBody ::=''

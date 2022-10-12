@@ -13,6 +13,7 @@
 #include "lex.h"
 #include "symtable.h"
 #include "common.h"
+#include "stack.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -20,19 +21,15 @@
 #include <stdarg.h>
 #include <string.h>
 
-#ifdef TESTING
-token *testTokens;
-#endif
 
-#ifdef TESTING
-token getTokenTesting(FILE *fp) {
-    return *testTokens++;
-}
-token (*nextToken)(FILE *fp) = getTokenTesting;
+#if TESTING == 1
+token_t *testTokens;
+#define nextToken(FILE) *testTokens++;
 #else
-token (*nextToken)(FILE *fp) = getToken;
+#define nextToken(FILE) getToken(FILE)
 #endif
 
+#define MAX_STACK_VIEWABLE 100
 typedef struct uniqueCounter {
     int conditionCount;
     int whileCount;
@@ -50,11 +47,17 @@ typedef enum expectType{
     nothingSpecial
 }expectType_t;
 
-typedef enum state{
+typedef enum {
     identifSt,
     fceParamsSt,
     fceReturnsSt
 }state_t;
+
+typedef struct parserMemory{
+    genericStack* PSAStack;
+    char* stackView[MAX_STACK_VIEWABLE];
+    // here goes other structures
+} ParserMemory;
 
 typedef struct fceExpect{
     expectType_t whatToExpect;

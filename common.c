@@ -12,10 +12,56 @@
 #include "common.h"
 
 char *allNonTerminalNames[] = {
+        // S - init stav
+         "ProgramBody",
 
+        // Command
+         "Command",
+
+        // Definice funkcí
+         "FceDefine",
+         "FceHeader",
+         "FunctionDeclareParams",
+         "CommaOrEpsParams",
+         "DeclareParam",
+
+        // FuncReturnType
+         "FuncReturnColonType",
+
+        // Function call
+         "FceCall",
+         "FirstFceParam",
+         "CommaOrEpsParam",
+
+        // Exp
+         "Exp",
+         "Statement",
+
+        // Data types DataType
+         "DataType",
+
+        // Definice proměné
+         "DeclareVariable",
+         "DefVarAss",
+
+        // Podmínky
+         "Condition",
+         "ElseCond",
+
+        // While
+         "While",
+
+        // Return
+         "Return",
+         "ReturnExp",
+
+        // Vnítřek funkce
+         "FunctionBody",
+        "nonTerminalCount"
 };
 
 char *allTerminalNames[] = {
+        // keywords
         // keywords
         "elseKey",
         "functionKey",
@@ -24,19 +70,21 @@ char *allTerminalNames[] = {
         "returnKey",
         "voidKey",
         "whileKey",
-
-        // data types
-        "stringKey", // "'string' $hello"
+        "stringKey",
         "floatKey",
         "intKey",
         "stringNullKey",
         "floatNullKey",
         "intNullKey",
 
+        // curly braces
+        "curlyBraceRight",
+        "curlyBraceLeft",
+
         // assignment
         "equals",
         "colon",
-        "semiColon",
+        "semicolon",
         "comma",
 
         // operators
@@ -57,12 +105,12 @@ char *allTerminalNames[] = {
         "rightPar",
 
         // literals
-        "stringLiteral", // "hello"
+        "stringLiteral",// "hello"
         "integerLiteral",
-        "decimalLiteral",
+        "floatLiteral",
 
         // identifiers
-        "identifierFce",
+        "identifierFunc",
         "identifierVar",
 
         // unknown
@@ -70,8 +118,7 @@ char *allTerminalNames[] = {
 
         // EOF type
         "ending",
-        "lexTypeCount"
-};
+        "lexTypeCount"};
 
 char *allPrecedentTerminalNames[] = {
 };
@@ -106,7 +153,7 @@ void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_l
     fprintf(stderr, "ERR_CODE: %d \n", ERR_SYNTAX);
 }
 
-void pErrSyntax(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
+void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
     va_list args;
     va_start (args, format);
     printArgsEnd(format, args);
@@ -114,6 +161,7 @@ void pErrSyntax(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
     fprintf(stderr, "Unexpected token: %s\n", getTerminalName(terminalEnum));
     printErrOnLine(rowNum, rowPos);
     fprintf(stderr, "ERR_CODE: %d \n", ERR_SYNTAX);
+    exit(ERR_SYNTAX);
 }
 
 void pErrLexer(int rowNum, int rowPos, char *format, ...) {
