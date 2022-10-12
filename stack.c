@@ -110,6 +110,7 @@ void gStackPrint(genericStack *s, void (*printMem)(void *)) {
         i = i->next;
     }
     printMem(i->data);
+
     fprintf(stdout, "\n");
 }
 /*
@@ -139,4 +140,23 @@ void *getFromTop(genericStack *s, unsigned int numberForTop) {
     }
 
     return i->data;
+}
+
+
+void gStackPushBefore(genericStack *s, unsigned elementNum, void *data) {
+    if (elementNum > s->c) {
+        return;
+    }
+    stackMem_t *i = s->top;
+    while (elementNum != 0 && s->c > elementNum--) {
+        i = i->next;
+    }
+
+    stackMem_t *oldnext = i->next;
+
+    make_var(new, stackMem_t *, sizeof(stackMem_t));
+    new->data = data;
+    new->next = i->next;
+    i->next = new;
+    s->c++;
 }

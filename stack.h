@@ -46,6 +46,9 @@ void *gStackGetNth(genericStack *s, unsigned int numberForTop);
 
 void*gStackTop(genericStack *s);
 
+void gStackPushBefore(genericStack *s, unsigned elementNum, void *data);
+
 void *getFromTop(genericStack *s, unsigned int numberForTop);
+
 
 #endif//STACK_STACK_H
