@@ -78,4 +78,5 @@ void printExpParserType(void *data);
 
 char *generatePrintExpParsertype(expParserType *data);
 
+unsigned stackTopTerminalIndex(genericStack *s);
 #endif//STACK_EXPPARSE_H

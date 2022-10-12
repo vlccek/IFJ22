@@ -88,13 +88,13 @@ expParserType *getTokenP() {
 }
 
 char *generatePrintExpParsertype(expParserType *data) {
-    loging("Generatiing Print for stack: ");
+    // loging("Generatiing Print for stack: ");
     if (data->type < lexTypeCount) {
-        loging("Token is : %s", getTerminalName(data->type));
+        // loging("Token is : %s", getTerminalName(data->type));
         return getTerminalName(data->type);
     } else {
         char *out = precSymbString(data->type);
-        loging("Token: %s", precSymbString(data->type));
+        // loging("Token: %s", precSymbString(data->type));
         return out;
     }
 }
@@ -104,8 +104,21 @@ void printExpParserType(void *data) {
     fprintf(stdout, "%s", generatePrintExpParsertype((expParserType *) data));
 }
 
+void addPrecLBefore(genericStack *s, unsigned position) {
+    genericStack *tmpStack = gStackInit();
+    for (int i = (int) position; i > 0; i--) {
+        gStackPush(tmpStack, gStackPop(s));
+    }
+
+    pushPrecedencToken(s, precL);
+
+    while (!gStackIsEmpty(tmpStack)) {
+        gStackPush(s, gStackPop(tmpStack));
+    }
+}
+
 void expAnal() {
-    createLLTable(); // todo: remove if not testing
+    createLLTable();// todo: remove if not testing
     genericStack *sTokens = gStackInit();
     pushPrecedencToken(sTokens, dollar);
     expParserType *b = getTokenP(), *a;
@@ -116,7 +129,7 @@ void expAnal() {
         gStackPrint(sTokens, printExpParserType);
         a = stackTopTerminal(sTokens);
         loging("IN a (Top notnerminal): %s", generatePrintExpParsertype(a));
-        loging("IN B: %s (input)", generatePrintExpParsertype(b));
+        loging("IN B (input): %s ", generatePrintExpParsertype(b));
         loging("precedence sympol: %s", precSymbString(precSymb(a, b)));
         switch (precSymb(a, b)) {
             case precR:
@@ -126,7 +139,7 @@ void expAnal() {
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)
-                pushPrecedencToken(sTokens, precL);
+                addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
                 gStackPush(sTokens, b);
                 b = getTokenP();
                 break;
@@ -143,6 +156,10 @@ void expAnal() {
 }
 
 expParserType *stackTopTerminal(genericStack *s) {
+    return gStackGetNth(s, stackTopTerminalIndex(s));
+}
+
+unsigned stackTopTerminalIndex(genericStack *s) {
     unsigned i = 0;
     expParserType *tmp = (expParserType *) gStackGetNth(s, i);
     while (tmp->type > lexTypeCount && tmp->type != dollar) {
@@ -151,7 +168,7 @@ expParserType *stackTopTerminal(genericStack *s) {
             InternalError("No Terminal in stack in exp-parser :(");
         }
     }
-    return gStackGetNth(s, i);
+    return i;
 }
 
 
@@ -173,14 +190,19 @@ rule *derivateTopStack(genericStack *sTokens) {
     handle[indexOfPrec] = NULL;                          // setting len of rule
     while (indexOfPrec != 0) {
         tmp = gStackPop(sTokens);
-        handle[--indexOfPrec] = createPSAStackMember(tmp->type, terminal);// todo exp je v pici
+        if (tmp->type == exp) {
+            handle[--indexOfPrec] = createPSAStackMember(Exp, nonTerminal);// hovno kod ale couž:)
+        } else {
+            handle[--indexOfPrec] = createPSAStackMember(tmp->type, terminal);
+        }
     }
     free(gStackPop(sTokens));// pop
 
     rule *r;
-    if ((r = findRuleByHandle(handle)) == NULL)
+    if ((r = findRuleByHandle(handle)) == NULL) {
         //todo exit semntika
+        loging("Nebylo nalezeno pravidlo :(");
         exit(ERR_SYNTAX);
-    else
+    } else
         return r;
 }
