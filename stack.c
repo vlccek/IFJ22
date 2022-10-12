@@ -105,11 +105,12 @@ void gStackPrint(genericStack *s, void (*printMem)(void *)) {
     fprintf(stdout, "Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
-        printMem(&i->data);
+        printMem(i->data);
         fprintf(stdout, " -> ");
         i = i->next;
     }
-    printMem(&i->data);
+    printMem(i->data);
+    printf("\n");
 }
 /*
  * Returns null when elemnt not exist
@@ -124,4 +125,23 @@ void *gStackGetNth(genericStack *s, unsigned int numberForTop) {
     }
 
     return i->data;
+}
+
+
+void gStackPushBefore(genericStack *s, unsigned elementNum, void *data) {
+    if (elementNum > s->c) {
+        return;
+    }
+    stackMem_t *i = s->top;
+    while (elementNum != 0 && s->c > elementNum--) {
+        i = i->next;
+    }
+
+    stackMem_t *oldnext = i->next;
+
+    make_var(new, stackMem_t *, sizeof(stackMem_t));
+    new->data = data;
+    new->next = i->next;
+    i->next = new;
+    s->c++;
 }

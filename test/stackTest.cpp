@@ -10,6 +10,9 @@ extern "C" {
 
 #include <stdio.h>
 
+void printEl(void *data) {
+    printf("%d", *(int *) data);
+}
 };
 
 namespace ifj22 {
@@ -209,6 +212,29 @@ namespace ifj22 {
             int l = std::size(array);
             for (int i = 0; i < std::size(array); i++) {
                 ASSERT_EQ(*static_cast<int *>(gStackGetNth(stack, i)), array[--l]);
+            }
+        }
+
+        TEST(stackTest, pushOnPlace) {
+            genericStack *stack = gStackInit();
+
+            int array[] = {10, 20, 30, 40, 50};
+
+            for (int & i : array) {
+                gStackPush(stack, &i);
+            }
+
+
+            for (int & i : array) {
+                gStackPushBefore(stack, 4, &i);
+            }
+            gStackPrint(stack, printEl);
+
+            int array2[] = {10, 20, 30, 40, 50, 10, 20, 30, 40, 50};
+
+            int l = std::size(array2);
+            for (int i = 0; i < std::size(array2); i++) {
+                ASSERT_EQ(*static_cast<int *>(gStackPop(stack)), array2[--l]);
             }
         }
     }// namespace stack
