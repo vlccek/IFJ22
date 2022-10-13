@@ -32,7 +32,7 @@ add_library(queue
 
 add_library(dstring
         dynstring.c
-        dynstring.c)
+        dynstring.h)
 
 add_library(parser
         parser.c
@@ -47,6 +47,10 @@ add_library(lex
         lex.c
         lex.h)
 
+add_library(lextest
+        lex.c
+        lex.h)
+
 add_library(LLtable
         LLtable.c
         LLtable.h)
@@ -54,6 +58,8 @@ add_library(LLtable
 add_library(expParseTests
         expParse.c
         expParse.h
+        dynstring.c
+        dynstring.h
         LLtable
         parser
         common
