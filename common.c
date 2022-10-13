@@ -153,7 +153,7 @@ void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_l
     fprintf(stderr, "ERR_CODE: %d \n", ERR_SYNTAX);
 }
 
-void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
+void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, const char *format, ...) {
     va_list args;
     va_start (args, format);
     printArgsEnd(format, args);

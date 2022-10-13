@@ -39,6 +39,7 @@
 
 #define InternalError(message, args...)    PrintErrorExit("%15s:%d | in %s() | " message "\n", ERR_RUNTIME ,__FILE__, __LINE__,  __FUNCTION__, ## args)
 #define PrintErrorExit(format,ERR_CODE,   ...)    do{  fprintf(stderr, format, __VA_ARGS__); fflush(stderr); exit(ERR_CODE);}while(0)
+#define PrettyExit(ERR_CODE)   printlog("%15s:%d | in %s() | Exit with code: %d \n", __FILE__, __LINE__,  __FUNCTION__, ERR_CODE); exit(ERR_CODE)
 
 #define printlog(format, ...)    do{  fprintf(stderr, format, __VA_ARGS__);}while(0)
 #define loging(message, args...)    if (debug == 1) {printlog("%15s:%d | in %s() | " message "\n", __FILE__, __LINE__,  __FUNCTION__, ## args);}
@@ -70,7 +71,7 @@ if ((name = (type )malloc(size) ) == NULL) {                                    
 
 void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_list args);
 
-void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, char *format, ...);
+void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, const char *format, ...);
 
 void pErrLexer(int rowNum, int rowPos, char *format, ...);
 
