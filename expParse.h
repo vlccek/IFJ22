@@ -10,6 +10,7 @@
 #include "lex.h"
 #include "stack.h"
 
+
 // for gouping operation in precendece table
 typedef enum {
     indexOpPlusMinus = 0,
@@ -57,18 +58,6 @@ expParserType *stackTopTerminal(genericStack *s);
 
 unsigned findFirst(genericStack *s, int searchSymb);
 
-#if TESTING == 1
-#ifndef nextToken
-extern token_t *testTokens;
-#define nextToken(FILE) *testTokens++;
-#define preToken(FILE) *(--testTokens);
-#endif
-#else
-#ifndef nextToken
-#define nextToken(FILE) getToken(FILE)
-#define preToken(FILE) ungetToken(FILE);
-#endif
-#endif
 
 
 // praser for expresions

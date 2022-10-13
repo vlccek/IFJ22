@@ -156,4 +156,21 @@ void resetCounters();
 // sets the file pointer one token back
 void ungetToken(FILE *stream);
 
+#ifndef testTokens
+#if TESTING == 1
+extern token_t *testTokens;
+#define nextToken(a) \
+    (token_t) * testTokens++;
+#define preToken(f) \
+    *(--testTokens);
+#endif
+#else
+#ifndef nextToken
+#define nextToken(a) \
+    getToken(a);
+#define preToken(f) \
+    uungetToken(f);
+#endif
+#endif
+
 #endif

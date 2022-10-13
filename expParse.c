@@ -118,7 +118,7 @@ void addPrecLBefore(genericStack *s, unsigned position) {
 }
 
 void expAnal() {
-    createLLTable();// todo: remove if not testing
+    //    createLLTable();// todo: remove if not testing
     genericStack *sTokens = gStackInit();
     pushPrecedencToken(sTokens, dollar);
     expParserType *b = getTokenP(), *a;
@@ -149,7 +149,11 @@ void expAnal() {
                 break;
             case precErr:
             default:
-                InternalError("Neznáma, nebo nedovolená kombinace tokenů");
+                if (a->type == dollar && b->type == semicolon) {
+                    return;
+                } else {
+                    InternalError("Neznáma, nebo nedovolená kombinace tokenů");
+                }
                 break;
         }
     } while (true);
@@ -202,7 +206,7 @@ rule *derivateTopStack(genericStack *sTokens) {
     if ((r = findRuleByHandle(handle)) == NULL) {
         //todo exit semntika
         loging("Nebylo nalezeno pravidlo :(");
-        exit(ERR_SYNTAX);
+        PrettyExit(ERR_SYNTAX);
     } else
         return r;
 }

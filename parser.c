@@ -92,7 +92,9 @@ PSAStackMember *getTopStack(ParserMemory *memory) {
 
 bool expressionParsing(PSAStackMember *topOfStack, lexType lastTokenTypy) {
     if (topOfStack->data == (int) Exp) {
-        InternalError("Top of stack: %s\nExpression parser is not ready yet.\n", getTerminalName(lastTokenTypy));
+        preToken(stdin);
+        expAnal();
+        preToken(stdin);
         return 1;
     }
     return 0;
@@ -127,7 +129,7 @@ bool parserEnding(token_t lastToken) {
     if (lastToken.type == ending)
         return 1;
     exitUnexpectedEnd(lastToken);
-
+    return 0;
 }
 
 int parser() {
