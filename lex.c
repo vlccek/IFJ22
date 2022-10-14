@@ -221,12 +221,51 @@ void incrementCounters(char c)
     return;
 }
 
+// TODO edge cases, finish the function
+void decrementCounters(char c)
+{
+    switch (c)
+    {
+        // the alphabet
+        case 'a' ... 'z':
+        case 'A' ... 'Z':
+            rowPos--;
+            break;
+        // whitespace characters
+        case ' ':
+            rowPos--;
+            break;
+        case '\n':
+            row--;
+            // TODO rowPos = 0;
+            break;
+        case '\t':
+        case '\r':
+        case '\v':
+        case '\f':
+            break;
+        // default
+        default:
+            rowPos--;
+            break;
+    }
+    return;
+}
+
 // gets next char and automatically increments counters
 int getNextChar(FILE *stream)
 {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
     return outputChar;
+}
+
+// TODO ungets next char and automatically decrements counters
+void ungetNextChar(FILE *stream, int currentChar)
+{
+    ungetc(currentChar, stream);
+    decrementCounters(currentChar);
+    return;
 }
 
 // sets the file pointer one token back TODO testing! could potentially cause problems due to different position calculating
@@ -456,6 +495,57 @@ token_t getToken(FILE *stream)
                 }
                 break;
             // TODO special characters
+            case '(':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = left_par_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case identifier_func_f_s:
+                        ungetNextChar(stream, currentChar),
+                        currentState = identifier_func_f_s;
+                        stop = true;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case ')':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = right_par_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
             case '$':
                 switch (currentState)
                 {
@@ -835,6 +925,13 @@ token_t getToken(FILE *stream)
             {
                 outputToken.type = unknown;
             }
+            break;
+        // parentheses states
+        case left_par_f_s:
+            outputToken.type = leftPar;
+            break;
+        case right_par_f_s:
+            outputToken.type = rightPar;
             break;
         // commentary state
         case com_line_f_s:

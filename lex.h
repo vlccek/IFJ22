@@ -112,6 +112,10 @@ typedef enum
     not_eq_2_s,
     not_eq_f_s,
 
+    // parentheses states
+    left_par_f_s,
+    right_par_f_s,
+
     // commentary states
     com_slash_s,
     com_line_f_s,
