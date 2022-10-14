@@ -303,13 +303,10 @@ void writeToBuffer(int *charCounter, int *bufferLevel, char *buffer, int current
 }
 
 // checks if the "<?php" part of the header is present and correct
-void phpCheck(FILE *stream)
+void headerCheck(FILE *stream)
 {
-    if (php == true)
-    {
-        return;
-    }
-    else
+    // php check
+    if (php == false)
     {
         char buffer[100];
         fgets(buffer, 100, stream);
@@ -324,13 +321,18 @@ void phpCheck(FILE *stream)
             exit(2);
         }
     }
+    // declare check
+    if (declare == false)
+    {
+        // TODO
+    }
 }
 
 // gets the next token and advances the pointer TODO
 token_t getToken(FILE *stream)
 {
     // header check, first part
-    phpCheck(stream);
+    headerCheck(stream);
 
     // initial declarations
     state currentState = init_s;
