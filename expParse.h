@@ -28,7 +28,7 @@ typedef enum {
     precL = lexTypeCount + 1,// <
     precR,                   //  >
     precEq,                  // =
-    precErr,                 // nogo
+    precE,                 // nogo
     dollar,
     precendenceTypeCount
 } precendenceType;

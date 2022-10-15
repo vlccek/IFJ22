@@ -5,21 +5,22 @@
 
 
 precendenceType precedenceTable[indexCount][indexCount] = {
-        //a vstup// +- | */ | ID lit... | . | lpar | rpar  | dollar
-        {precR,   precR,   precL,   precR,   precL,   precR,   precR},          // +-             //// top b
-        {precR,   precR,   precL,   precR,   precL,   precR,   precR},          // */
-        {precR,   precR,   precErr, precErr, precErr, precR,   precR},    // ID LIT
-        {precErr, precErr, precErr, precErr, precL,   precErr, precR},// .
-        {precR,   precR,   precL,   precR,   precR,   precEq,  precR},         // lpar
-        {precR,   precR,   precL,   precR,   precErr, precR,   precR},        // rpar
-        {precL,   precL,   precL,   precL,   precL,   precL,   precErr}         // dollar
+        //a
+        // +- | */ | ID lit... | . | lpar | rpar  | dollar
+        {precR, precR, precL, precR, precL, precR, precR}, // +-             //// top b
+        {precR, precR, precL, precR, precL, precR, precR}, // */
+        {precR, precR, precE, precR, precE, precR, precR}, // ID LIT
+        {precE, precE, precL, precE, precL, precE, precR}, // .
+        {precR, precR, precL, precR, precR, precEq, precR},// lpar
+        {precR, precR, precL, precR, precE, precR, precR}, // rpar
+        {precL, precL, precL, precL, precL, precL, precE}  // dollar
 };
 
 
 char *precTypeString[] = {"precL",
                           "precR",
                           "precEq",
-                          "precErr",
+                          "precE",
                           "dollar",
                           "precendenceTypeCount",
                           "exp"};
@@ -28,28 +29,33 @@ precedenceTableIndex indexInPrecTable(lexType t) {
     switch (t) {
         case plusOp:
         case minusOp:
+        case concatenationOp:
+            loging("Index in precedenc table: %d", indexOpPlusMinus);
             return indexOpPlusMinus;
             break;
         case divisionOp:
         case multiplicationOp:
+            loging("Index in precedenc table: %d", indexOpMulDiv);
             return indexOpMulDiv;
-            break;
-        case concatenationOp:
-            return indexOpConcat;
             break;
         case identifierVar:
         case identifierFunc:
         case stringLiteral:
         case floatLiteral:
         case integerLiteral:
+            loging("Index in precedenc table: %d", indexId);
             return indexId;
             break;
         case leftPar:
+            loging("Index in precedenc table: %d", indexLpar);
             return indexLpar;
         case rightPar:
+            loging("Index in precedenc table: %d", indexRpar);
             return indexRpar;
         case dollar:
         case semicolon:
+        case ending:
+            loging("Index in precedenc table: %d", indexDollar);
             return indexDollar;
             break;
     }
@@ -99,6 +105,15 @@ char *generatePrintExpParsertype(expParserType *data) {
     }
 }
 
+bool precOver(genericStack *s) {
+    if (s->c == 1) {
+        if (((expParserType *) gStackTop(s))->type == dollar) {
+            return false;
+        }
+    } else {
+        return true;
+    }
+}
 
 void printExpParserType(void *data) {
     fprintf(stdout, "%s", generatePrintExpParsertype((expParserType *) data));
@@ -118,7 +133,7 @@ void addPrecLBefore(genericStack *s, unsigned position) {
 }
 
 void expAnal() {
-    //    createLLTable();// todo: remove if not testing
+    // )   createLLTable();// todo: remove if not testing
     genericStack *sTokens = gStackInit();
     pushPrecedencToken(sTokens, dollar);
     expParserType *b = getTokenP(), *a;
@@ -147,16 +162,12 @@ void expAnal() {
                 gStackPush(sTokens, a);
                 b = getTokenP();
                 break;
-            case precErr:
+            case precE:
             default:
-                if (a->type == dollar && b->type == semicolon) {
-                    return;
-                } else {
-                    InternalError("Neznáma, nebo nedovolená kombinace tokenů");
-                }
+                loging("Not know token, returning to parser") return;
                 break;
         }
-    } while (true);
+    } while (precOver(sTokens));
 }
 
 expParserType *stackTopTerminal(genericStack *s) {
