@@ -1201,48 +1201,48 @@ namespace ifj22 {
         }
 
         // Assignment without id
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId1) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId1) {
             tokensForParser(
                     {floatLiteral, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId2) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId2) {
             tokensForParser(
                     {integerLiteral, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId3) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId3) {
             tokensForParser(
                     {stringLiteral, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId4) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId4) {
             genVar("kokos");
             tokensForParserNoEnding({equals, stringLiteral, semicolon});
             genVar("kokos");
             tokensForParser({semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId5) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId5) {
             tokensForParser(
                     {leftPar, stringLiteral, rightPar, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId6) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId6) {
             tokensForParser(
                     {leftPar, integerLiteral, plusOp, integerLiteral, rightPar, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
         // function calls
         TEST_F(ParserTestSuccess, functionDeclaration_GoodFuncCall1) {
