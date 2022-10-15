@@ -153,9 +153,11 @@ int parser() {
                 lastToken = nextToken(stdin);
                 break;
             case nonTerminal:;
-                if (expressionParsing(topOfStack, lastToken.type))
+                if (expressionParsing(topOfStack, lastToken.type)) {
+                    gStackPop(memory->PSAStack);
+                    lastToken = nextToken(stdin);
                     continue;
-
+                }
                 deriveNonTerminal(memory, topOfStack, &lastToken);
                 break;
         }
