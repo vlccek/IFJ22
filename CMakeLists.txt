@@ -55,6 +55,10 @@ add_library(LLtable
         LLtable.c
         LLtable.h)
 
+add_library(symtable
+        symtable.c
+        symtable.h)
+
 add_library(expParseTests
         expParse.c
         expParse.h
