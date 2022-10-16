@@ -7,9 +7,9 @@
 
 // Hide the io function since this will segfault in testing
 extern "C" {
-#include "../parser.h" // DON'T TOUCH THIS!
-#include "../parser.c" // DON'T TOUCH THIS!
 #include "../dynstring.h"
+#include "../lex.h"
+#include "../parser.h"// DON'T TOUCH THIS!
 
 #include <stdio.h>
 };
@@ -72,6 +72,7 @@ namespace ifj22 {
             }
 
             void SetUp() override {
+                teston = true;
                 tokens = new std::vector<token_t>;
             }
 

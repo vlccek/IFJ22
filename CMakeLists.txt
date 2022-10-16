@@ -36,7 +36,9 @@ add_library(dstring
 
 add_library(parser
         parser.c
-        parser.h)
+        parser.h
+        lex.h
+        lex.c)
 
 
 add_library(common
@@ -71,7 +73,7 @@ add_library(expParseTests
         lex)
 
 
-target_compile_definitions(expParseTests PUBLIC TESTING=1)
+target_compile_definitions(expParseTests PUBLIC)
 
 
 add_subdirectory(test)
@@ -80,6 +82,7 @@ target_link_libraries(main
         stack
         queue
         dstring
-        LLtable)
+        LLtable
+        lex)
 
 

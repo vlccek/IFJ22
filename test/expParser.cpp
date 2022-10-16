@@ -8,8 +8,8 @@
 // Hide the io function since this will segfault in testing
 extern "C" {
 #include "../expParse.h"
+#include "../lex.h"
 // DON'T TOUCH THIS!
-
 #include <stdio.h>
 }
 
@@ -45,6 +45,7 @@ namespace ifj22 {
             }
 
             void SetUp() override {
+                teston = true;
                 tokens = new std::vector<token_t>;
             }
 
