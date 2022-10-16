@@ -148,12 +148,14 @@ void expAnal() {
         loging("precedence sympol: %s", precSymbString(precSymb(a, b)));
         switch (precSymb(a, b)) {
             case precR:
+                loging("Entering precR case")
                 ruleNum = derivateTopStack(sTokens);
                 pushExpNonTerminal(sTokens);
                 // najde se první < pak se přejde
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)
+                loging("Entering precL case")
                 addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
                 gStackPush(sTokens, b);
                 b = getTokenP();
@@ -198,6 +200,7 @@ unsigned findFirst(genericStack *s, int searchSymb) {
 }
 
 rule *derivateTopStack(genericStack *sTokens) {
+    loging("Entering derivate top Ofstack");
     expParserType *tmp;
     PSAStackMember *handle[MAX_RULE_LEN];
 
@@ -212,12 +215,15 @@ rule *derivateTopStack(genericStack *sTokens) {
         }
     }
     free(gStackPop(sTokens));// pop
+    loging("END derivate top Ofstack");
 
     rule *r;
     if ((r = findRuleByHandle(handle)) == NULL) {
         //todo exit semntika
         loging("Nebylo nalezeno pravidlo :(");
         PrettyExit(ERR_SYNTAX);
-    } else
+    } else {
+        loging("END derivate top Ofstack");
         return r;
+    }
 }
