@@ -37,6 +37,15 @@ typedef enum symbolType {
 
 } symbolType_t;
 
+typedef enum variableType {
+    integer,
+    floating,
+    string,
+    boolean,
+    nil,
+    undefined
+} variableType_t;
+
 typedef struct symbol {
     char *identifier;
     symbolType_t type;
@@ -44,7 +53,7 @@ typedef struct symbol {
     int rowPosNumber;
     int symtablePos;
     struct DTList *firstParam;
-    struct DTList *firstReturn;
+    variableType_t firstReturn;
 
 } symbol_t;
 
@@ -57,8 +66,7 @@ typedef struct htItem {
 typedef htItem_t *htTable_t[MAX_HTSIZE];
 
 typedef struct symtable {
-    htTable_t prototypes;
-    htTable_t global;
+    htTable_t functions;
     htTable_t table[MAX_SYMTABLES];
     int last;
 } symtable_t;
