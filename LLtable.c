@@ -96,7 +96,7 @@ tableMember *getMember(int terminal, int nonTerminal) {
 }
 
 
-void InserRules(int terminal, int nonTerminal, int memberCount, va_list members, int ruleIndex) {
+void InserRules(int terminal, int nonTerminal, int memberCount, va_list memberProgramBody, int ruleIndex) {
     rule *r = (rule *) malloc(sizeof(rule));
     checkNullPointer(r);
     static int counter = 0;
@@ -109,7 +109,7 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
         int i;
         for (i = 0; i < MAX_RULES_IN_CELL; ++i) {
             if (i < memberCount) {
-                AddToRightSide(terminal, nonTerminal, i, va_arg(members, PSAStackMember * ), ruleIndex);
+                AddToRightSide(terminal, nonTerminal, i, va_arg(memberProgramBody, PSAStackMember * ), ruleIndex);
             } else {
                 AddToRightSide(terminal, nonTerminal, i, NULL, ruleIndex);
 
@@ -126,7 +126,7 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
 
 void insertMember(lexType terminal, nonTerminalType nonTerminal, int memberCount, ...) {
     va_list members;
-    va_start(members, memberCount);
+    va_start(memberProgramBody, memberCount);
 
     if (memberCount > MAX_RULE_LEN) {
         InternalError("Trying to insert more rules than possible. (Low MAX_RULE_LEN).");
@@ -139,7 +139,7 @@ void insertMember(lexType terminal, nonTerminalType nonTerminal, int memberCount
         int i;
         for (i = 1; i < MAX_RULES_IN_CELL; ++i) {
             if (Table[nonTerminal][terminal]->rules[i] == NULL) {
-                InserRules(terminal, nonTerminal, memberCount, members, i);
+                InserRules(terminal, nonTerminal, memberCount, memberProgramBody, i);
                 break;
             }
         }
@@ -151,7 +151,7 @@ void insertMember(lexType terminal, nonTerminalType nonTerminal, int memberCount
 
         Table[nonTerminal][terminal] = member;
         int ruleIndex = 0;
-        InserRules(terminal, nonTerminal, memberCount, members, ruleIndex);
+        InserRules(terminal, nonTerminal, memberCount, memberProgramBody, ruleIndex);
         va_end(members);
     }
 }
@@ -203,6 +203,45 @@ void createLLTable() {
     if (onlyOneCallAllowed++ > 0)
         return;
 
+    insertMember(ending, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(semicolon, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(functionKey, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(identifierFunc, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(leftPar, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(identifierVar, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(floatLiteral, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(stringLiteral, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(integerLiteral, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(nullKey, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(ifKey, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(whileKey, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
+    insertMember(returnKey, ProgramBody, 2,
+                 partOfRulesRightSide(ProgramBody),
+                 partOfRulesRightSide(ending));
     insertMember(ending, ProgramBody, 0);
     insertMember(semicolon, ProgramBody, 2,
                  partOfRulesRightSide(Command),
@@ -243,22 +282,28 @@ void createLLTable() {
     insertMember(semicolon, Command, 1,
                  partOfRulesRightSide(semicolon));
     insertMember(identifierFunc, Command, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(leftPar, Command, 1,
-                 partOfRulesRightSide(Exp));
+                 partOfRulesRightSide(FceCall));
+    insertMember(leftPar, Command, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
     insertMember(identifierVar, Command, 2,
                  partOfRulesRightSide(DeclareVariable),
                  partOfRulesRightSide(Command));
-    insertMember(identifierVar, Command, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(floatLiteral, Command, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(stringLiteral, Command, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(integerLiteral, Command, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(nullKey, Command, 1,
-                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, Command, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(floatLiteral, Command, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(stringLiteral, Command, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(integerLiteral, Command, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(nullKey, Command, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
     insertMember(ifKey, Command, 1,
                  partOfRulesRightSide(Condition));
     insertMember(whileKey, Command, 1,
@@ -278,27 +323,27 @@ void createLLTable() {
                  partOfRulesRightSide(rightPar),
                  partOfRulesRightSide(colon),
                  partOfRulesRightSide(FuncReturnColonType));
-    insertMember(rightPar, FunctionDeclareParams, 0);
-    insertMember(stringNullKey, FunctionDeclareParams, 2,
+    insertMember(rightPar, FunctionDeclareParamProgramBody, 0);
+    insertMember(stringNullKey, FunctionDeclareParamProgramBody, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(floatNullKey, FunctionDeclareParams, 2,
+    insertMember(floatNullKey, FunctionDeclareParamProgramBody, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(intNullKey, FunctionDeclareParams, 2,
+    insertMember(intNullKey, FunctionDeclareParamProgramBody, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(stringKey, FunctionDeclareParams, 2,
+    insertMember(stringKey, FunctionDeclareParamProgramBody, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(floatKey, FunctionDeclareParams, 2,
+    insertMember(floatKey, FunctionDeclareParamProgramBody, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(intKey, FunctionDeclareParams, 2,
+    insertMember(intKey, FunctionDeclareParamProgramBody, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(rightPar, CommaOrEpsParams, 0);
-    insertMember(comma, CommaOrEpsParams, 3,
+    insertMember(rightPar, CommaOrEpsParamProgramBody, 0);
+    insertMember(comma, CommaOrEpsParamProgramBody, 3,
                  partOfRulesRightSide(comma),
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
@@ -339,48 +384,32 @@ void createLLTable() {
                  partOfRulesRightSide(leftPar),
                  partOfRulesRightSide(FirstFceParam),
                  partOfRulesRightSide(rightPar));
-    insertMember(identifierFunc, FirstFceParam, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(leftPar, FirstFceParam, 1,
-                 partOfRulesRightSide(Exp));
     insertMember(rightPar, FirstFceParam, 0);
-    insertMember(identifierVar, FirstFceParam, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(floatLiteral, FirstFceParam, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(stringLiteral, FirstFceParam, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(integerLiteral, FirstFceParam, 1,
-                 partOfRulesRightSide(Exp));
-    insertMember(nullKey, FirstFceParam, 1,
-                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, FirstFceParam, 2,
+                 partOfRulesRightSide(Statement),
+                 partOfRulesRightSide(CommaOrEpsParam));
+    insertMember(floatLiteral, FirstFceParam, 2,
+                 partOfRulesRightSide(Statement),
+                 partOfRulesRightSide(CommaOrEpsParam));
+    insertMember(stringLiteral, FirstFceParam, 2,
+                 partOfRulesRightSide(Statement),
+                 partOfRulesRightSide(CommaOrEpsParam));
+    insertMember(integerLiteral, FirstFceParam, 2,
+                 partOfRulesRightSide(Statement),
+                 partOfRulesRightSide(CommaOrEpsParam));
     insertMember(rightPar, CommaOrEpsParam, 0);
     insertMember(comma, CommaOrEpsParam, 3,
                  partOfRulesRightSide(comma),
-                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(Statement),
                  partOfRulesRightSide(CommaOrEpsParam));
-    insertMember(identifierFunc, Exp, 2,
-                 partOfRulesRightSide(FceCall),
-                 partOfRulesRightSide(Exp));
-    insertMember(identifierFunc, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(minusOp),
-                 partOfRulesRightSide(Exp));
-    insertMember(identifierFunc, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(plusOp),
-                 partOfRulesRightSide(Exp));
-    insertMember(identifierFunc, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(divisionOp),
-                 partOfRulesRightSide(Exp));
-    insertMember(identifierFunc, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(multiplicationOp),
-                 partOfRulesRightSide(Exp));
-    insertMember(identifierFunc, Exp, 2,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(concatenationOp));
+    insertMember(identifierVar, Statement, 1,
+                 partOfRulesRightSide(identifierVar));
+    insertMember(floatLiteral, Statement, 1,
+                 partOfRulesRightSide(floatLiteral));
+    insertMember(stringLiteral, Statement, 1,
+                 partOfRulesRightSide(stringLiteral));
+    insertMember(integerLiteral, Statement, 1,
+                 partOfRulesRightSide(integerLiteral));
     insertMember(leftPar, Exp, 3,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(minusOp),
@@ -406,7 +435,7 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(rightPar));
     insertMember(identifierVar, Exp, 2,
-                 partOfRulesRightSide(identifierVar),
+                 partOfRulesRightSide(Statement),
                  partOfRulesRightSide(Exp));
     insertMember(identifierVar, Exp, 3,
                  partOfRulesRightSide(Exp),
@@ -424,33 +453,35 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(multiplicationOp),
                  partOfRulesRightSide(Exp));
-    insertMember(identifierVar, Exp, 2,
+    insertMember(identifierVar, Exp, 3,
                  partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(concatenationOp));
-    insertMember(floatLiteral, Exp, 2,
-                 partOfRulesRightSide(floatLiteral),
-                 partOfRulesRightSide(Exp));
-    insertMember(floatLiteral, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(minusOp),
-                 partOfRulesRightSide(Exp));
-    insertMember(floatLiteral, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(plusOp),
-                 partOfRulesRightSide(Exp));
-    insertMember(floatLiteral, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(divisionOp),
-                 partOfRulesRightSide(Exp));
-    insertMember(floatLiteral, Exp, 3,
-                 partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(multiplicationOp),
+                 partOfRulesRightSide(concatenationOp),
                  partOfRulesRightSide(Exp));
     insertMember(floatLiteral, Exp, 2,
+                 partOfRulesRightSide(Statement),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
                  partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(concatenationOp));
+                 partOfRulesRightSide(minusOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(plusOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(divisionOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(multiplicationOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(concatenationOp),
+                 partOfRulesRightSide(Exp));
     insertMember(stringLiteral, Exp, 2,
-                 partOfRulesRightSide(stringLiteral),
+                 partOfRulesRightSide(Statement),
                  partOfRulesRightSide(Exp));
     insertMember(stringLiteral, Exp, 3,
                  partOfRulesRightSide(Exp),
@@ -468,11 +499,12 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(multiplicationOp),
                  partOfRulesRightSide(Exp));
-    insertMember(stringLiteral, Exp, 2,
+    insertMember(stringLiteral, Exp, 3,
                  partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(concatenationOp));
+                 partOfRulesRightSide(concatenationOp),
+                 partOfRulesRightSide(Exp));
     insertMember(integerLiteral, Exp, 2,
-                 partOfRulesRightSide(integerLiteral),
+                 partOfRulesRightSide(Statement),
                  partOfRulesRightSide(Exp));
     insertMember(integerLiteral, Exp, 3,
                  partOfRulesRightSide(Exp),
@@ -490,9 +522,10 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(multiplicationOp),
                  partOfRulesRightSide(Exp));
-    insertMember(integerLiteral, Exp, 2,
+    insertMember(integerLiteral, Exp, 3,
                  partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(concatenationOp));
+                 partOfRulesRightSide(concatenationOp),
+                 partOfRulesRightSide(Exp));
     insertMember(nullKey, Exp, 2,
                  partOfRulesRightSide(nullKey),
                  partOfRulesRightSide(Exp));
@@ -512,9 +545,10 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(multiplicationOp),
                  partOfRulesRightSide(Exp));
-    insertMember(nullKey, Exp, 2,
+    insertMember(nullKey, Exp, 3,
                  partOfRulesRightSide(Exp),
-                 partOfRulesRightSide(concatenationOp));
+                 partOfRulesRightSide(concatenationOp),
+                 partOfRulesRightSide(Exp));
     insertMember(stringNullKey, DataType, 1,
                  partOfRulesRightSide(stringNullKey));
     insertMember(floatNullKey, DataType, 1,
@@ -527,13 +561,31 @@ void createLLTable() {
                  partOfRulesRightSide(floatKey));
     insertMember(intKey, DataType, 1,
                  partOfRulesRightSide(intKey));
-    insertMember(identifierVar, DeclareVariable, 2,
+    insertMember(identifierVar, DeclareVariable, 3,
                  partOfRulesRightSide(identifierVar),
-                 partOfRulesRightSide(DefVarAss));
-    insertMember(semicolon, DefVarAss, 1,
-                 partOfRulesRightSide(semicolon));
-    insertMember(equals, DefVarAss, 3,
                  partOfRulesRightSide(equals),
+                 partOfRulesRightSide(DefVarAss));
+    insertMember(semicolon, DefVarAsProgramBody, 1,
+                 partOfRulesRightSide(semicolon));
+    insertMember(identifierFunc, DefVarAsProgramBody, 2,
+                 partOfRulesRightSide(FceCall),
+                 partOfRulesRightSide(semicolon));
+    insertMember(leftPar, DefVarAsProgramBody, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(identifierVar, DefVarAsProgramBody, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(floatLiteral, DefVarAsProgramBody, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(stringLiteral, DefVarAsProgramBody, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(integerLiteral, DefVarAsProgramBody, 2,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(semicolon));
+    insertMember(nullKey, DefVarAsProgramBody, 2,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(semicolon));
     insertMember(ifKey, Condition, 8,
@@ -577,13 +629,18 @@ void createLLTable() {
                  partOfRulesRightSide(ReturnExp),
                  partOfRulesRightSide(semicolon));
     insertMember(semicolon, ReturnExp, 0);
-    insertMember(identifierFunc, ReturnExp, 0);
-    insertMember(leftPar, ReturnExp, 0);
-    insertMember(identifierVar, ReturnExp, 0);
-    insertMember(floatLiteral, ReturnExp, 0);
-    insertMember(stringLiteral, ReturnExp, 0);
-    insertMember(integerLiteral, ReturnExp, 0);
-    insertMember(nullKey, ReturnExp, 0);
+    insertMember(leftPar, ReturnExp, 1,
+                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, ReturnExp, 1,
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, ReturnExp, 1,
+                 partOfRulesRightSide(Exp));
+    insertMember(stringLiteral, ReturnExp, 1,
+                 partOfRulesRightSide(Exp));
+    insertMember(integerLiteral, ReturnExp, 1,
+                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, ReturnExp, 1,
+                 partOfRulesRightSide(Exp));
     insertMember(semicolon, FunctionBody, 2,
                  partOfRulesRightSide(Command),
                  partOfRulesRightSide(FunctionBody));
