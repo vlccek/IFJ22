@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import requests
 
 with open("LL(1) Parser Generator.html") as fp:
     df_list = pd.read_html(fp, encoding='ISO-8859-1')  # this parses all the tables in webpages to a list
@@ -17,14 +16,15 @@ with open("LL(1) Parser Generator.html") as fp:
                     for k in rule:
                         k = k.split()
                         if (k[0] == "Exp"):
-                            del k[-1]
+                            if rule[-1].split() != k:
+                                del k[-1]
                         if k == ["ε"]:
                             print(f"insertMember({x}, {y}, 0);")
                             continue
                         print(f"insertMember({x}, {y}, {len(k)}", end="")
                         for l in k:
                             l = l.replace("ε", "eps").replace("$", "ending")
-                            print(f", {l}", end="")
+                            print(f",\n\t\tpartOfRulesRightSide({l})", end="")
                         print(");")
                 except:
                     pass
