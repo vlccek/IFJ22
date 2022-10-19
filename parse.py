@@ -9,9 +9,9 @@ with open("LL(1) Parser Generator.html") as fp:
         for i in df.head():
             r = row[i]
             if not (pd.isnull(r)):
-                x = i.replace("$", "ending").replace("S", "ProgramBody").strip()
+                x = i.replace("$", "ending").strip()
                 try:
-                    y = r.split("::=")[0].replace("S", "ProgramBody").strip()
+                    y = r.split("::=")[0].strip()
                     rule = r.split("::=")[1:]
                     for k in rule:
                         k = k.split()
