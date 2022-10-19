@@ -202,7 +202,6 @@ void createLLTable() {
     static int onlyOneCallAllowed = 0;
     if (onlyOneCallAllowed++ > 0)
         return;
-
     insertMember(ending, ProgramBody, 2,
                  partOfRulesRightSide(ProgramBody),
                  partOfRulesRightSide(ending));
@@ -323,27 +322,27 @@ void createLLTable() {
                  partOfRulesRightSide(rightPar),
                  partOfRulesRightSide(colon),
                  partOfRulesRightSide(FuncReturnColonType));
-    insertMember(rightPar, FunctionDeclareParamProgramBody, 0);
-    insertMember(stringNullKey, FunctionDeclareParamProgramBody, 2,
+    insertMember(rightPar, FunctionDeclareParams, 0);
+    insertMember(stringNullKey, FunctionDeclareParams, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(floatNullKey, FunctionDeclareParamProgramBody, 2,
+    insertMember(floatNullKey, FunctionDeclareParams, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(intNullKey, FunctionDeclareParamProgramBody, 2,
+    insertMember(intNullKey, FunctionDeclareParams, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(stringKey, FunctionDeclareParamProgramBody, 2,
+    insertMember(stringKey, FunctionDeclareParams, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(floatKey, FunctionDeclareParamProgramBody, 2,
+    insertMember(floatKey, FunctionDeclareParams, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(intKey, FunctionDeclareParamProgramBody, 2,
+    insertMember(intKey, FunctionDeclareParams, 2,
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
-    insertMember(rightPar, CommaOrEpsParamProgramBody, 0);
-    insertMember(comma, CommaOrEpsParamProgramBody, 3,
+    insertMember(rightPar, CommaOrEpsParams, 0);
+    insertMember(comma, CommaOrEpsParams, 3,
                  partOfRulesRightSide(comma),
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
@@ -565,27 +564,27 @@ void createLLTable() {
                  partOfRulesRightSide(identifierVar),
                  partOfRulesRightSide(equals),
                  partOfRulesRightSide(DefVarAss));
-    insertMember(semicolon, DefVarAsProgramBody, 1,
+    insertMember(semicolon, DefVarAss, 1,
                  partOfRulesRightSide(semicolon));
-    insertMember(identifierFunc, DefVarAsProgramBody, 2,
+    insertMember(identifierFunc, DefVarAss, 2,
                  partOfRulesRightSide(FceCall),
                  partOfRulesRightSide(semicolon));
-    insertMember(leftPar, DefVarAsProgramBody, 2,
+    insertMember(leftPar, DefVarAss, 2,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(semicolon));
-    insertMember(identifierVar, DefVarAsProgramBody, 2,
+    insertMember(identifierVar, DefVarAss, 2,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(semicolon));
-    insertMember(floatLiteral, DefVarAsProgramBody, 2,
+    insertMember(floatLiteral, DefVarAss, 2,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(semicolon));
-    insertMember(stringLiteral, DefVarAsProgramBody, 2,
+    insertMember(stringLiteral, DefVarAss, 2,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(semicolon));
-    insertMember(integerLiteral, DefVarAsProgramBody, 2,
+    insertMember(integerLiteral, DefVarAss, 2,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(semicolon));
-    insertMember(nullKey, DefVarAsProgramBody, 2,
+    insertMember(nullKey, DefVarAss, 2,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(semicolon));
     insertMember(ifKey, Condition, 8,
