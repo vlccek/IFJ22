@@ -9,9 +9,9 @@ with open("LL(1) Parser Generator.html") as fp:
         for i in df.head():
             r = row[i]
             if not (pd.isnull(r)):
-                x = i.replace("$", "ending")
+                x = i.replace("$", "ending").replace("S", "ProgramBody").strip()
                 try:
-                    y = r.split("::=")[0]
+                    y = r.split("::=")[0].replace("S", "ProgramBody").strip()
                     rule = r.split("::=")[1:]
                     for k in rule:
                         k = k.split()
@@ -23,7 +23,7 @@ with open("LL(1) Parser Generator.html") as fp:
                             continue
                         print(f"insertMember({x}, {y}, {len(k)}", end="")
                         for l in k:
-                            l = l.replace("ε", "eps").replace("$", "ending")
+                            l = l.replace("ε", "eps").replace("$", "ending").replace("S,", "ProgramBody,")
                             print(f",\n\t\tpartOfRulesRightSide({l})", end="")
                         print(");")
                 except:
