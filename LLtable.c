@@ -11,7 +11,7 @@
 table Table;
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal) {
-    if(nonterm >= nonTerminalCount || terminal >= lexTypeCount)
+    if (nonterm >= nonTerminalCount || terminal >= lexTypeCount)
         InternalError("Trying to access Table[%d][%d]\n"
                       "Max nonTerminal is %d and max terminal: %d ",
                       nonterm, terminal, nonTerminalCount, lexTypeCount);
@@ -23,9 +23,9 @@ bool stackMemberCmp(PSAStackMember *memberA, PSAStackMember *memberB) {
 }
 
 /*
- * Returns negative number when comparing failed
- * Returns rule index otherwise
- * */
+* Returns negative number when comparing failed
+* Returns rule index otherwise
+* */
 int findHandleInTableMember(tableMember *tMember, PSAStackMember **rightSideOfRule) {
     for (int i = 0; i < MAX_RULES_IN_CELL; ++i) {
         for (int j = 0; j < MAX_RULE_LEN; ++j) {
@@ -65,7 +65,7 @@ rule *findInTable(PSAStackMember *handleToFind[10], nonTerminalType tableRow) {
 }
 
 rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
-    nonTerminalType tableRows[] = {Exp, Statement}; // looking only in this rows
+    nonTerminalType tableRows[] = {Exp, Statement};// looking only in this rows
     int multiRuleLen = sizeof(tableRows) / sizeof(nonTerminalType);
     rule *found;
     for (int i = 0; i < multiRuleLen; ++i) {
@@ -79,7 +79,7 @@ rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]) {
 //endregion
 //region Table Creation
 PSAStackMember *createPSAStackMember(int value, PSADataType type) {
-    make_var(member, PSAStackMember *, sizeof (PSAStackMember));
+    make_var(member, PSAStackMember *, sizeof(PSAStackMember));
     member->data = value;
     member->type = type;
     return member;
@@ -96,7 +96,7 @@ tableMember *getMember(int terminal, int nonTerminal) {
 }
 
 
-void InserRules(int terminal, int nonTerminal, int memberCount, va_list memberProgramBody, int ruleIndex) {
+void InserRules(int terminal, int nonTerminal, int memberCount, va_list members, int ruleIndex) {
     rule *r = (rule *) malloc(sizeof(rule));
     checkNullPointer(r);
     static int counter = 0;
@@ -109,10 +109,9 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list memberPr
         int i;
         for (i = 0; i < MAX_RULES_IN_CELL; ++i) {
             if (i < memberCount) {
-                AddToRightSide(terminal, nonTerminal, i, va_arg(memberProgramBody, PSAStackMember * ), ruleIndex);
+                AddToRightSide(terminal, nonTerminal, i, va_arg(members, PSAStackMember *), ruleIndex);
             } else {
                 AddToRightSide(terminal, nonTerminal, i, NULL, ruleIndex);
-
             }
             // Table[nonTerminal][terminal]->rules[ruleIndex]->to[i] = ((extendedStackMember *) members);
         }
@@ -126,20 +125,20 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list memberPr
 
 void insertMember(lexType terminal, nonTerminalType nonTerminal, int memberCount, ...) {
     va_list members;
-    va_start(memberProgramBody, memberCount);
+    va_start(members, memberCount);
 
     if (memberCount > MAX_RULE_LEN) {
         InternalError("Trying to insert more rules than possible. (Low MAX_RULE_LEN).");
     }
 
     if (Table[nonTerminal][terminal] != NULL) {
-        if (Table[nonTerminal][terminal]->rules[0] == NULL) // this should never happen
+        if (Table[nonTerminal][terminal]->rules[0] == NULL)// this should never happen
             InternalError("No rules in initialized member!");
 
         int i;
         for (i = 1; i < MAX_RULES_IN_CELL; ++i) {
             if (Table[nonTerminal][terminal]->rules[i] == NULL) {
-                InserRules(terminal, nonTerminal, memberCount, memberProgramBody, i);
+                InserRules(terminal, nonTerminal, memberCount, members, i);
                 break;
             }
         }
@@ -151,7 +150,7 @@ void insertMember(lexType terminal, nonTerminalType nonTerminal, int memberCount
 
         Table[nonTerminal][terminal] = member;
         int ruleIndex = 0;
-        InserRules(terminal, nonTerminal, memberCount, memberProgramBody, ruleIndex);
+        InserRules(terminal, nonTerminal, memberCount, members, ruleIndex);
         va_end(members);
     }
 }
@@ -188,10 +187,10 @@ PSADataType getDataType(char *name) {
     return terminal;
 }
 
-char* getStringPSAMember(PSAStackMember m){
-    if(m.type == terminal)
+char *getStringPSAMember(PSAStackMember m) {
+    if (m.type == terminal)
         return getTerminalName(m.data);
-    if(m.type == nonTerminal)
+    if (m.type == nonTerminal)
         return getNonTerminalName(m.data);
     return "EndOfProgram";
 }
