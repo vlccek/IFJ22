@@ -59,6 +59,26 @@ namespace ifj22 {
 
             expAnal();
         }
+        TEST_F(expParserTest, basicTestExp2) {
+            tokensForParser({integerLiteral, minusOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
+        TEST_F(expParserTest, basicTestExp5) {
+            tokensForParser({integerLiteral, multiplicationOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
+        TEST_F(expParserTest, basicTestExp4) {
+            tokensForParser({integerLiteral, divisionOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
+        TEST_F(expParserTest, basicTestExp3) {
+            tokensForParser({integerLiteral, concatenationOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
 
     }// namespace parsertest
 }// namespace ifj22
