@@ -40,6 +40,9 @@ add_library(parser
         lex.h
         lex.c)
 
+add_library(semanticActions
+        semanticActions.c
+        semanticActions.h)
 
 add_library(common
         common.c
