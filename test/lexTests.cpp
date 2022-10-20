@@ -59,7 +59,7 @@ namespace ifj22 {
                 rewind(fp);
                 for (auto i: checkTokens) {
                     token_t t = getToken(fp);
-                    ASSERT_STREQ(getTerminalName(t.type), getTerminalName(i));
+                    EXPECT_STREQ(getTerminalName(t.type), getTerminalName(i));
                 }
             }
         };
@@ -92,9 +92,9 @@ namespace ifj22 {
                                    identifierVar,
                            });
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestSimple, function_names) {
@@ -107,18 +107,18 @@ namespace ifj22 {
                            {identifierFunc, identifierFunc, identifierFunc, identifierFunc, identifierFunc,
                             identifierFunc});
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestSimple, function_param) {
@@ -176,7 +176,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
 
         }
 
@@ -189,7 +189,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
         }
 
         TEST_F(LexTestTokenData, string_long_tabs) {
@@ -201,7 +201,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
         }
 
         TEST_F(LexTestTokenData, string_verry_long) {
@@ -223,7 +223,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
         }
 
         TEST_F(LexTestTokenData, string_verry_long_newLine) {
@@ -247,7 +247,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            ASSERT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
         }
 
         TEST_F(LexTestTokenData, string_verry_long_newLine_comment) {
@@ -284,7 +284,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            ASSERT_STREQ(dstrGet(token.data.valueString), rstr.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), rstr.c_str());
         }
 
         TEST_F(LexTestTokenData, string_escape) {
@@ -298,7 +298,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            ASSERT_STREQ(dstrGet(token.data.valueString), rstr.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), rstr.c_str());
         }
         // endregion
 
@@ -318,7 +318,7 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             for (auto i: nums)
-                ASSERT_EQ(token.data.valueInteger, i);
+                EXPECT_EQ(token.data.valueInteger, i);
         }
 
         TEST_F(LexTestTokenData, int_data_comments) {
@@ -337,7 +337,7 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             for (auto i: nums)
-                ASSERT_EQ(token.data.valueInteger, i);
+                EXPECT_EQ(token.data.valueInteger, i);
         }
 
         TEST_F(LexTestTokenData, float_data_exponencial) {
@@ -349,7 +349,7 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             for (auto i: nums)
-                ASSERT_EQ(token.data.valueInteger, i);
+                EXPECT_EQ(token.data.valueInteger, i);
         }
 
         TEST_F(LexTestTokenData, float_data_basic_comments) {
@@ -368,7 +368,7 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             for (auto i: nums)
-                ASSERT_EQ(token.data.valueInteger, i);
+                EXPECT_EQ(token.data.valueInteger, i);
         }
 
         TEST_F(LexTestTokenData, float_data_basic) {
@@ -387,7 +387,7 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             for (auto i: nums)
-                ASSERT_EQ(token.data.valueInteger, i);
+                EXPECT_EQ(token.data.valueInteger, i);
         }
 
 
@@ -423,7 +423,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);;
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars2) {
@@ -434,7 +434,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars3) {
@@ -446,7 +446,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars4) {
@@ -457,7 +457,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars_comments1) {
@@ -468,7 +468,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars_comments2) {
@@ -479,7 +479,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars5) {
@@ -490,7 +490,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars6) {
@@ -501,7 +501,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars7) {
@@ -512,7 +512,7 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, function_declare_more_args) {
@@ -531,7 +531,7 @@ namespace ifj22 {
                                            curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
-                ASSERT_EQ(t.type, i);
+                EXPECT_EQ(t.type, i);
             }
         }
 
@@ -550,7 +550,7 @@ namespace ifj22 {
                                            curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
-                ASSERT_EQ(t.type, i);
+                EXPECT_EQ(t.type, i);
             }
         }
 
@@ -564,7 +564,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(text);
 
             getToken(fp);// function key
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, function_declare_name_with_num) {
@@ -583,7 +583,7 @@ namespace ifj22 {
 
             for (auto i: tokens) {
                 token_t t = getToken(fp);
-                ASSERT_EQ(t.type, i);
+                EXPECT_EQ(t.type, i);
             }
         }
 
@@ -601,7 +601,7 @@ namespace ifj22 {
                                            returnKey, identifierFunc, identifierVar, semicolon, curlyBraceLeft};
             for (auto i: tokens) {
                 token_t t = getToken(fp);
-                ASSERT_EQ(t.type, i);
+                EXPECT_EQ(t.type, i);
             }
         }
 
@@ -697,7 +697,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.e44");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail2) {
@@ -705,7 +705,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.e44");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
 
         }
 
@@ -714,7 +714,7 @@ namespace ifj22 {
             auto text = PhpPrologString(".5e44");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail4) {
@@ -722,7 +722,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0e+-44");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
 
@@ -731,7 +731,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0e-+44");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail6) {
@@ -747,7 +747,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0e");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail8) {
@@ -755,7 +755,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0e+");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail9) {
@@ -763,7 +763,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0e-");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail10) {
@@ -771,7 +771,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0E");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail11) {
@@ -779,7 +779,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0E+");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, floatFail12) {
@@ -787,7 +787,7 @@ namespace ifj22 {
             auto text = PhpPrologString("0.0E-");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestSimple, varTypeKeywords) {
@@ -892,7 +892,7 @@ namespace ifj22 {
             auto text = PhpPrologString("function 48sadf_ds() : int {\n");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, functionIdentifier5) {
@@ -900,7 +900,7 @@ namespace ifj22 {
             auto text = PhpPrologString("function 6_6() : int {\n");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestSimple, functionIdentifier6) {
@@ -1039,7 +1039,7 @@ namespace ifj22 {
             auto text = PhpPrologString("/*");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, expression1) {
@@ -1047,7 +1047,7 @@ namespace ifj22 {
             auto text = PhpPrologString("/+");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, expression2) {
@@ -1055,14 +1055,14 @@ namespace ifj22 {
             auto text = PhpPrologString("+/*-");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, expression3) {
             auto text = PhpPrologString(R"($cookie + 998 / "bruhie" *-)");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, expression4) {
@@ -1139,56 +1139,56 @@ namespace ifj22 {
             auto text = PhpPrologString(R"(?int ?float ?string ?> ?int ?float ?string)");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd1) {
             auto text = PhpPrologString(R"(?int ?float ?string ?> ?int ?float ?string)");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd2) {
             auto text = PhpPrologString(R"(?int ?float ?string ?>>)");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd3) {
             auto text = PhpPrologString(R"(?int ?float ?string ?> /* not even comment is legit here*/ )");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd4) {
             auto text = PhpPrologString(R"(//how dare you ?> ">>>> hehe <<<<<")");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd5) {
             auto text = PhpPrologString(R"(?int ?float ?string ?> ?>)");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd6) {
             auto text = PhpPrologString(R"(int float $nothing_interesting ?>\t)");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd7) {
             auto text = PhpPrologString(R"(int float $nothing_interesting ?>\n)");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, prologAtTheEndIsNotEnd8) {
@@ -1196,7 +1196,7 @@ namespace ifj22 {
             auto text = PhpPrologString(R"(int float $nothing_interesting ?> )");
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces1) {
@@ -1262,7 +1262,7 @@ namespace ifj22 {
 
             FILE *fp = prepareFile(text.get());
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces10) {
