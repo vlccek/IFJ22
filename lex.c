@@ -497,6 +497,30 @@ token_t getToken(FILE *stream)
                 }
                 break;
             // TODO special characters
+            case ';':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = semicolon_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
+                break;
             case '(':
                 switch (currentState)
                 {
@@ -530,6 +554,52 @@ token_t getToken(FILE *stream)
                 {
                     case init_s:
                         currentState = right_par_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case '{':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = left_curly_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case '}':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = right_curly_f_s;
                         stop = true;
                         break;
                     case string_lit_s:
@@ -934,6 +1004,17 @@ token_t getToken(FILE *stream)
             break;
         case right_par_f_s:
             outputToken.type = rightPar;
+            break;
+        // curly braces states
+        case right_curly_f_s:
+            outputToken.type = curlyBraceRight;
+            break;
+        case left_curly_f_s:
+            outputToken.type = curlyBraceLeft;
+            break;
+        // semicolon state
+        case semicolon_f_s:
+            outputToken.type = semicolon;
             break;
         // commentary state
         case com_line_f_s:

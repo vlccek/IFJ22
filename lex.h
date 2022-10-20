@@ -122,6 +122,16 @@ typedef enum
     com_block_s,
     com_block_ast_s,
 
+    // curly braces states
+    left_curly_f_s,
+    right_curly_f_s,
+
+    // assignment states
+    equals_f_s,
+    colon_f_s,
+    semicolon_f_s,
+    comma_f_s,
+
     // TODO
 
     // nullable type state
