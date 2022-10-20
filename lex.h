@@ -5,16 +5,17 @@
  * Implementace překladače jazyka IFJ22
  */
 
+#include "dynstring.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "dynstring.h"
 
+extern bool php;
+extern bool declare;
 #ifndef LUAINTERPRET_LEX_H
 #define LUAINTERPRET_LEX_H
 
 // represents the type of lexical item
-typedef enum
-{
+typedef enum {
     // keywords
     elseKey,
     functionKey,

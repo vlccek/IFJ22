@@ -256,10 +256,10 @@ void decrementCounters(char c)
 }
 
 // gets next char and automatically increments counters
-int getNextChar(FILE *stream)
-{
+int getNextChar(FILE *stream) {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
+    loging("Next char: %c", outputChar);
     return outputChar;
 }
 
@@ -374,6 +374,8 @@ token_t getToken(FILE *stream)
 
     int charCounter = 0;
     int currentChar = getc(stream);
+    loging("Next char: %c", currentChar);
+
 
     int bufferLevel = 1;
     bool stop = false;
@@ -1098,8 +1100,7 @@ token_t getToken(FILE *stream)
         // unknown state and default
         case unknown_f_s:
         default:
-            fprintf(stderr, "Lexical error on ln %d, col %d!\n", outputToken.rowNumber, outputToken.rowPosNumber);
-            exit(1);
+            PrintErrorExit(ERR_LEX, "Lexical error on ln %d, col %d!\n", outputToken.rowNumber, outputToken.rowPosNumber);
             break;
     }
 
