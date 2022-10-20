@@ -2,7 +2,7 @@
 // Created by tonda on 05/10/22.
 //
 #include "parser.h"
-#include "LLtable.h"
+#include "semanticActions.h"
 
 void gStackPushStackToStack(genericStack *original, genericStack *toEmpty) {
     while (gStackTop(toEmpty) != NULL) {
@@ -54,6 +54,7 @@ ParserMemory *initializeMemory() {
     PSAStackInit(mem);
     stackViewInit(mem);
     createLLTable();
+    semanticActionsInit();
     return mem;
 }
 
@@ -117,6 +118,9 @@ void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, t
     if (newRule->epsRule == false) {
         gStackPushReversed(memory->PSAStack, newRule->to);
     }
+
+    semanticActionInfo info;
+    // newRule->semanticAction(info);
 }
 
 void checkTopAndLastMatch(const PSAStackMember *topOfStack, token_t *lastToken) {
