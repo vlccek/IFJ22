@@ -70,7 +70,8 @@ typedef enum
     unknown,
 
     // EOF type
-    ending
+    ending,
+    lexTypeCount
 } lexType;
 
 // FSM states
@@ -116,7 +117,7 @@ typedef enum
     null_f_s,
 
     // unknown state
-    unknown_f_s
+    unknown_f_s,
 } state;
 
 // represents the value of the token
