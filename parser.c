@@ -120,7 +120,7 @@ void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, t
     }
 
     semanticActionInfo info;
-    // newRule->semanticAction(info);
+    newRule->semanticAction(info);
 }
 
 void checkTopAndLastMatch(const PSAStackMember *topOfStack, token_t *lastToken) {
