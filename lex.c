@@ -525,6 +525,32 @@ token_t getToken(FILE *stream)
                 }
                 break;
             // TODO special characters
+            case '=':
+                // TODO
+                break;
+            case ':':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = colon_f_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
+                break;
             case ';':
                 switch (currentState)
                 {
@@ -548,6 +574,9 @@ token_t getToken(FILE *stream)
                         stop = true;
                         break;
                 }
+                break;
+            case ',':
+                // TODO
                 break;
             case '(':
                 switch (currentState)
@@ -1045,9 +1074,18 @@ token_t getToken(FILE *stream)
         case left_curly_f_s:
             outputToken.type = curlyBraceLeft;
             break;
-        // semicolon state
+        // assignment states
+        case equals_f_s:
+            outputToken.type = equals;
+            break;
+        case colon_f_s:
+            outputToken.type = colon;
+            break;
         case semicolon_f_s:
             outputToken.type = semicolon;
+            break;
+        case comma_f_s:
+            outputToken.type = comma;
             break;
         // commentary state
         case com_line_f_s:
