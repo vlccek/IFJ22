@@ -34,7 +34,7 @@ add_library(dstring
         dynstring.c
         dynstring.c)
 
-        
+
 add_library(parser
         parser.c
         parser.h)
@@ -46,7 +46,9 @@ add_library(common
 
 add_library(lex
         lex.c
-        lex.h)
+        lex.h
+        dynstring.h
+        dynstring.c)
 
 add_library(LLtable
         LLtable.c
