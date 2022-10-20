@@ -27,8 +27,8 @@ struct dynStr {
 typedef struct dynStr dynStr_t;
 
 /**
- * Inicalizaton
- * @return incalized string
+ * Initialization
+ * @return initialized string
  */
 dynStr_t *dstrInit();
 

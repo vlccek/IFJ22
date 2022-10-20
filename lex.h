@@ -70,8 +70,7 @@ typedef enum
     unknown,
 
     // EOF type
-    ending,
-    lexTypeCount
+    ending
 } lexType;
 
 // FSM states
@@ -112,8 +111,6 @@ typedef enum
     not_eq_1_s,
     not_eq_2_s,
     not_eq_f_s,
-
-    // TODO
 
     // nullable type state
     null_f_s,
