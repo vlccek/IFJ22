@@ -44,6 +44,10 @@ add_library(semanticActions
         semanticActions.c
         semanticActions.h)
 
+add_library(expParse
+        expParse.c
+        expParse.h)
+
 add_library(common
         common.c
         common.h)
