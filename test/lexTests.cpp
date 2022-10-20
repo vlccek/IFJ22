@@ -80,13 +80,20 @@ namespace ifj22 {
                     "$hovno $hPvnpS $HOVNO $HOVNO $HOVNO6 $HO999VNO $hovno_kod $hovnokod_ $_hovno $6HOVNO $6hovno");
             FILE *fp = prepareFile(text.get());
             assertTokensEq(fp,
-                           {identifierVar, identifierVar, identifierVar, identifierVar, identifierVar, identifierVar,
-                            identifierVar, identifierVar,});
+                           {
+                                   identifierVar,
+                                   identifierVar,
+                                   identifierVar,
+                                   identifierVar,
+                                   identifierVar,
+                                   identifierVar,
+                                   identifierVar,
+                                   identifierVar,
+                           });
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestSimple, function_names) {
@@ -99,19 +106,18 @@ namespace ifj22 {
                            {identifierFunc, identifierFunc, identifierFunc, identifierFunc, identifierFunc,
                             identifierFunc});
 
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
-
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestSimple, function_param) {
@@ -342,7 +348,7 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             for (auto i: nums)
-                ASSERT_EQ(token.data.valueNumber, i);
+                ASSERT_EQ(token.data.valueInteger, i);
         }
 
         TEST_F(LexTestTokenData, float_data_basic_comments) {
@@ -556,8 +562,8 @@ namespace ifj22 {
                           "}";
             FILE *fp = prepareFile(text);
 
-            getToken(fp); // function key
-            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(lexEr), ".*");
+            getToken(fp);// function key
+            ASSERT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
         }
 
         TEST_F(LexTestAdvanced, function_declare_name_with_num) {
