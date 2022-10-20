@@ -20,6 +20,9 @@ int rowPos = 0;
 bool php = false;
 bool declare = false;
 
+// to differentiate if getToken() is inside recursion
+bool internal = false;
+
 // represents current position in current row
 unsigned long position = 0;
 
@@ -324,7 +327,29 @@ void headerCheck(FILE *stream)
     // declare check
     if (declare == false)
     {
-        // TODO
+        internal = true;
+        token_t checkToken = getToken(stream);
+        if (checkToken.type == declareHeader)
+        {
+            char str[18];
+            fgets(str, 18, stream);
+            if (strcmp(str, "(strict_types=1);") == 0)
+            {
+                declare = true;
+                internal = false;
+                return;
+            }
+            else
+            {
+                fprintf(stderr, "Syntax error: incorrect header!\n");
+                exit(2);
+            }
+        }
+        else
+        {
+            fprintf(stderr, "Syntax error: incorrect header!\n");
+            exit(2);
+        }
     }
 }
 
@@ -332,7 +357,10 @@ void headerCheck(FILE *stream)
 token_t getToken(FILE *stream)
 {
     // header check, first part
-    headerCheck(stream);
+    if (internal == false)
+    {
+        headerCheck(stream);
+    }
 
     // initial declarations
     state currentState = init_s;
@@ -968,6 +996,11 @@ token_t getToken(FILE *stream)
             else if (strcmp(buffer, "int") == 0)
             {
                 outputToken.type = intKey;
+            }
+            // special case - header check for declare
+            else if (strcmp(buffer, "declare") == 0)
+            {
+                outputToken.type = declareHeader;
             }                                                                                                                      
             else
             {
