@@ -47,8 +47,7 @@ add_library(common
 add_library(lex
         lex.c
         lex.h
-        dynstring.h
-        dynstring.c)
+        dynstring)
 
 add_library(LLtable
         LLtable.c

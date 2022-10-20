@@ -17,7 +17,6 @@ add_executable(${This} ${Sources})
 target_link_libraries(${This} gtest_main dstring)
 add_test(dynStrTest dynStrTest)
 
-
 set(This lexerTest)
 set(Sources lexTests.cpp)
 add_executable(${This} ${Sources})
