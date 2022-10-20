@@ -56,6 +56,7 @@ namespace ifj22 {
             }
 
             void assertTokensEq(FILE *fp, const std::vector<lexType> &checkTokens) {
+                rewind(fp);
                 for (auto i: checkTokens) {
                     token_t t = getToken(fp);
                     ASSERT_STREQ(getTerminalName(t.type), getTerminalName(i));
