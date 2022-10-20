@@ -9,15 +9,15 @@
 
 
 dynStr_t *dstrInit() {
-    make_var(str, dynStr_t *, sizeof(dynStr_t));
+    make_var(str, dynStr_t*, sizeof(dynStr_t));
     if (str == NULL) {
-        exit(malloc_err);
+        exit(ERR_RUNTIME);
     }
 
 
     str->string = (char *) malloc(sizeof(char) * default_str_size);
     if (str->string == NULL) {
-        exit(malloc_err);
+        exit(ERR_RUNTIME);
     }
     str->string[0] = '\0';
     str->size = 0;
@@ -41,7 +41,7 @@ void dstrRealloc(dynStr_t *str, int necessarySize) {
     str->maxSize = newSz;
     char *tmp = realloc(str->string, newSz);
     if (tmp == NULL) {
-        exit(malloc_err);
+        exit(ERR_RUNTIME);
     }
     str->string = tmp;
     str->string[str->size] = '\0';
@@ -96,7 +96,7 @@ void dstrPrepend(dynStr_t *dstr, char *newStr) {
     free(tmpStr);
 }
 
-dynStr_t *dstrInitChar(char *text) {
+dynStr_t *dstrInitChar(const char *text) {
     dynStr_t *nstring = dstrInit();
     dstrAppend(nstring, text);
     return nstring;

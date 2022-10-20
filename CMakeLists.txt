@@ -14,6 +14,8 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+add_compile_definitions("DEBUG=$<CONFIG:Debug>")
+
 
 set(CMAKE_C_STANDARD 11)
 add_executable(main
@@ -35,12 +37,42 @@ add_library(dstring
 add_library(lex
         lex.c
         lex.h)
+        
+add_library(parser
+        parser.c
+        parser.h)
+
+
+add_library(common
+        common.c
+        common.h)
+
+add_library(lex
+        lex.c
+        lex.h)
+
+add_library(LLtable
+        LLtable.c
+        LLtable.h)
+
+add_library(expParseTests
+        expParse.c
+        expParse.h
+        LLtable
+        parser
+        common
+        stack
+        lex)
+
+
+target_compile_definitions(expParseTests PUBLIC TESTING=1)
 
 add_subdirectory(test)
 
 target_link_libraries(main
         stack
         queue
-        dstring)
+        dstring
+        LLtable)
 
 
