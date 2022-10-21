@@ -59,90 +59,195 @@ namespace ifj22 {
         class LexTestTokenData : public lexTest {
         };
 
-        TEST_F(LexTestSimple, variable) {
-            FILE *fp = prepareFile(
-                    "$hovno $hPvnpS $HOVNO $HOVNO $HOVNO6 $HO999VNO $hovno_kod $hovnokod_ $_hovno $6HOVNO $6hovno");
-            assertTokensEq(fp,
-                           {
-                                   identifierVar,
-                                   identifierVar,
-                                   identifierVar,
-                                   identifierVar,
-                                   identifierVar,
-                                   identifierVar,
-                                   identifierVar,
-                                   identifierVar,
-                           });
+        class testCorrect : public testing::TestWithParam<std::string> {
+            // You can implement all the usual fixture class members here.
+            // To access the test parameter, call GetParam() from class
+            // TestWithParam<T>.
+            FILE *fileForTest = NULL;
 
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            void SetUp() override {
+                fileForTest = fopen("test.txt", "ab+");
+                php = true;
+                declare = true;
+            }
+
+            void TearDown() override {
+                fclose(fileForTest);
+                fclose(fopen("test.txt", "w"));
+            }
+
+        public:
+            FILE *prepareFile(const char *text) {
+                fprintf(fileForTest, "%s", text);
+                rewind(fileForTest);
+                fclose(fileForTest);
+                fileForTest = fopen("test.txt", "r");
+                return fileForTest;
+            }
+        };
+        TEST_P(testCorrect, varTestCorrect) {
+
+            const char *string = GetParam().c_str();
+            // const std::vector<lexType> checkTokens = std::get<1>(GetParam());
+
+            FILE *fp = prepareFile(string);
+
+            token_t t = getToken(fp);
+            // EXPECT_STREQ(getTerminalName(t.type), getTerminalName(identifierVar));
+            EXPECT_EQ((t.type), identifierVar);
         }
 
-        TEST_F(LexTestSimple, function_names) {
-            FILE *fp = prepareFile(
-                    "hovno() hovnokodjesuper() hocnoko55d() hovnokod556655() jehovnokodsuper_skeropes() _hovno()"
-                    "6hovno() skeropes_() else() float() function() if() int() null() return() string()"
-                    "void(), while()");
 
-            assertTokensEq(fp,
-                           {identifierFunc, identifierFunc, identifierFunc, identifierFunc, identifierFunc,
-                            identifierFunc});
+        INSTANTIATE_TEST_SUITE_P(varTestCorrect, testCorrect, ::testing::Values("$hovno", "$hPvnpS", "$HOVNO", "$HOVNO", "$HOVNO6", "$HO999VNO", "$hovno_kod", "$hovnokod_"));
+        INSTANTIATE_TEST_SUITE_P(functiongTestCorrect, testCorrect, ::testing::Values("hovno()", "hovnokodjesuper()", "hocnoko55d()", "hovnokod556655()", "jehovnokodsuper_skeropes()", "_hovno()"));
+
+
+        class TestExiting : public testing::TestWithParam<std::string> {
+            // You can implement all the usual fixture class members here.
+            // To access the test parameter, call GetParam() from class
+            // TestWithParam<T>.
+            FILE *fileForTest;
+
+            void SetUp() override {
+                fileForTest = fopen("test.txt", "ab+");
+                php = true;
+                declare = true;
+            }
+
+            void TearDown() override {
+                fclose(fileForTest);
+                fclose(fopen("test.txt", "w"));
+            }
+
+        public:
+            FILE *prepareFile(const char *text) {
+                fprintf(fileForTest, "%s", text);
+                rewind(fileForTest);
+                fclose(fileForTest);
+                fileForTest = fopen("test.txt", "r");
+                return fileForTest;
+            }
+        };
+
+        TEST_P(TestExiting, TestExiting) {
+            const char *string = GetParam().c_str();
+            // const std::vector<lexType> checkTokens = std::get<1>(GetParam());
+
+            FILE *fp = this->prepareFile(string);
 
             EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
-            EXPECT_EXIT(getToken(fp);, ::testing::ExitedWithCode(ERR_LEX), ".*");
+            //EXPECT_EQ((t.type), (i));
         }
 
-        TEST_F(LexTestSimple, function_param) {
-            FILE *fp = prepareFile(
-                    "hovno(string $a) hovno(int $a) hovno(float $a) "
-                    "hovno(string? $a) hovno(int? $a) hovno(float? $a) "
-                    "hovno(string $a, float $a) hovno(string $a, int $a, float $a)");
 
-            assertTokensEq(fp,
-                           {identifierFunc, leftPar, stringKey, identifierVar, rightPar,
-                            identifierFunc, leftPar, intKey, identifierVar, rightPar,
-                            identifierFunc, leftPar, floatKey, identifierVar, rightPar,
-                            identifierFunc, leftPar, stringNullKey, identifierVar, rightPar,
-                            identifierFunc, leftPar, intNullKey, identifierVar, rightPar,
-                            identifierFunc, leftPar, floatNullKey, identifierVar, rightPar,
-                            identifierFunc, leftPar, stringKey, identifierVar, floatKey, identifierVar, rightPar,
-                            identifierFunc, leftPar, stringKey, identifierVar, floatKey, identifierVar,
-                            floatKey,// \n
-                            identifierVar, rightPar});
+        INSTANTIATE_TEST_SUITE_P(variableTest, TestExiting, ::testing::Values("$_hovno", "$6HOVNO", "$6hovno"));
+        INSTANTIATE_TEST_SUITE_P(functionTest, TestExiting, ::testing::Values("6hovno()", "skeropes_()", "else()", "float()", "function()", "if()", "int()", "null()", "return()", "string()", "void(),", "while()"));
+
+
+        class TestComparing : public testing::TestWithParam<std::pair<std::string, std::vector<lexType>>> {
+            // You can implement all the usual fixture class members here.
+            // To access the test parameter, call GetParam() from class
+            // TestWithParam<T>.
+            FILE *fileForTest;
+
+            void SetUp() override {
+                fileForTest = fopen("test.txt", "ab+");
+                php = true;
+                declare = true;
+            }
+
+            void TearDown() override {
+                fclose(fileForTest);
+                fclose(fopen("test.txt", "w"));
+            }
+
+        public:
+            FILE *prepareFile(const char *text) {
+                fprintf(fileForTest, "%s", text);
+                rewind(fileForTest);
+                fclose(fileForTest);
+                fileForTest = fopen("test.txt", "r");
+                return fileForTest;
+            }
+        };
+
+        TEST_P(TestComparing, compareTest) {
+            const char *string = std::get<0>(GetParam()).c_str();
+            const std::vector<lexType> checkTokens = std::get<1>(GetParam());
+
+            FILE *fp = this->prepareFile(string);
+
+            for (auto i: checkTokens) {
+                token_t t = getToken(fp);
+                // EXPECT_STREQ(getTerminalName(t.type), getTerminalName(identifierVar));
+                EXPECT_EQ((t.type), i);
+                //EXPECT_EQ((t.type), (i));
+            }
         }
 
-        TEST_F(LexTestSimple, string_lit) {
-            FILE *fp = prepareFile(
-                    R"("Hovnodkod" "" "\n \t \034" "Ahoj\n\"Sve'te \\\034 \x00")");
+        INSTANTIATE_TEST_SUITE_P(functionParamTest, TestComparing, ::testing::Values(std::make_pair(std::string("hovno(string $a)"), std::vector({
+                                                                                                                                             identifierFunc,
+                                                                                                                                             leftPar,
+                                                                                                                                             stringKey,
+                                                                                                                                             identifierVar,
+                                                                                                                                             rightPar,
+                                                                                                                                     })),
+                                                                                     std::make_pair(std::string("hovno(int $a)"), std::vector({
+                                                                                                                                          identifierFunc,
+                                                                                                                                          leftPar,
+                                                                                                                                          intKey,
+                                                                                                                                          identifierVar,
+                                                                                                                                          rightPar,
+                                                                                                                                  })),
+                                                                                     std::make_pair(std::string("hovno(float $a)"), std::vector({
+                                                                                                                                            identifierFunc,
+                                                                                                                                            leftPar,
+                                                                                                                                            floatKey,
+                                                                                                                                            identifierVar,
+                                                                                                                                            rightPar,
+                                                                                                                                    })),
+                                                                                     std::make_pair(std::string("hovno(string? $a)"), std::vector({
+                                                                                                                                              identifierFunc,
+                                                                                                                                              leftPar,
+                                                                                                                                              stringNullKey,
+                                                                                                                                              identifierVar,
+                                                                                                                                              rightPar,
+                                                                                                                                      })),
+                                                                                     std::make_pair(std::string("hovno(int? $a)"), std::vector({
+                                                                                                                                           identifierFunc,
+                                                                                                                                           leftPar,
+                                                                                                                                           intNullKey,
+                                                                                                                                           identifierVar,
+                                                                                                                                           rightPar,
+                                                                                                                                   })),
+                                                                                     std::make_pair(std::string("hovno(float? $a)"), std::vector({
+                                                                                                                                             identifierFunc,
+                                                                                                                                             leftPar,
+                                                                                                                                             floatNullKey,
+                                                                                                                                             identifierVar,
+                                                                                                                                             rightPar,
+                                                                                                                                     })),
+                                                                                     std::make_pair(std::string("hovno(string $a, float $a)"), std::vector({
+                                                                                                                                                       identifierFunc,
+                                                                                                                                                       leftPar,
+                                                                                                                                                       floatNullKey,
+                                                                                                                                                       identifierVar,
+                                                                                                                                                       rightPar,
+                                                                                                                                               })),
+                                                                                     std::make_pair(std::string("hovno(string $a, int $a, float $a)"), std::vector({identifierFunc, leftPar, stringKey, identifierVar, floatKey, identifierVar, floatKey, identifierVar, rightPar}))));
 
-            assertTokensEq(fp,
-                           {stringLiteral, stringLiteral, stringLiteral});
-        }
 
-        TEST_F(LexTestSimple, comment) {
-            // jestli ti neprojde tak gl :)
-            FILE *fp = prepareFile(
-                    "//skeropes"
-                    "int "
-                    "// int $a \n"
-                    "// */ \t \t                                              //hovno \n"
-                    "\t \t \t                                                "
-                    "/*hovnokod******************je///////////* super tvl*/ int ");
+INSTANTIATE_TEST_SUITE_P(comments, TestComparing, ::testing::Values(std::make_pair(std::string(
+                                                                  "//skeropes"
+                                                                  "int "
+                                                                  "// int $a \n"
+                                                                  "// */ \t \t                                              //hovno \n"
+                                                                  "\t \t \t                                                "
+                                                                  "/*hovnokod******************je///////////* super tvl*/ int "),
+                                                                                           std::vector({intKey, intKey})
+                                                                                                   )));
 
-            assertTokensEq(fp,
-                           {intKey, intKey});
-        }
+
 
         //region LexTestTokenData_stringLit
         TEST_F(LexTestTokenData, string_data) {
@@ -154,7 +259,6 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
-
         }
 
         TEST_F(LexTestTokenData, string_data_long_newline_tabs) {
