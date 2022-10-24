@@ -1,9 +1,10 @@
 /**
- * @file symtable.h
+ * @file common.c
  * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
  * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
  * @author Jindřich Vodák (xvodak06@fit.vutbr.cz)
+ * 
  * @brief Zdrojový soubor pomocných funkcí a maker
  * Implementace překladače imperativního jazyka IFJ21
  *
