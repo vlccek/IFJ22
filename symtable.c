@@ -224,9 +224,9 @@ void saveBuildInFunctions(symtable_t *symtable) {
 
 void symInit(symtable_t *symtable) {
     htInit(&(symtable->functions));
-    htInit(&(symtable->table[0]));
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         htInit(&(symtable->table[i]));
+        htInit(&(symtable->second[i]));
     }
     symtable->last = -1;
     saveBuildInFunctions(symtable);
@@ -234,9 +234,9 @@ void symInit(symtable_t *symtable) {
 
 void symDestroy(symtable_t *symtable) {
     htDestroy(&(symtable->functions));
-    htDestroy(&(symtable->table[0]));
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         htDestroy(&(symtable->table[i]));
+        htDestroy(&(symtable->second[i]));
     }
     symtable->last = -1;
 }
@@ -263,14 +263,14 @@ void symInsert(symtable_t *symtable, symbol_t symbol) {
     // hodnota v symtabulce krom globalní je celkem irelevantní,
     // protože reprezentuje jak moc daleko je od aktuálního lokálního kontextu
     if (symtable->last == -1) {
-        htInsertItem(&(symtable->global), symbol.identifier, symbol);
+        htInsertItem(&(symtable->table[0]), symbol.identifier, symbol);
         return;
     }
 
     htInsertItem(&(symtable->table[symtable->last]), symbol.identifier, symbol);
 }
-void symIPrototype(symtable_t *symtable, symbol_t symbol) {
-    htInsertItem(&(symtable->prototypes), symbol.identifier, symbol);
+void symIFunction(symtable_t *symtable, symbol_t symbol) {
+    htInsertItem(&(symtable->functions), symbol.identifier, symbol);
 }
 
 symbol_t *symSearch(symtable_t *symtable, char *identifier) {
@@ -282,9 +282,9 @@ symbol_t *symSearch(symtable_t *symtable, char *identifier) {
             return &(found->value);
         }
     }
-    found = htSearch(&(symtable->global), identifier);
+    found = htSearch(&(symtable->table[0]), identifier);
     if(found == NULL){
-        found = htSearch(&(symtable->prototypes), identifier);
+        found = htSearch(&(symtable->functions), identifier);
     }
     if (found) {
         return &(found->value);
@@ -342,8 +342,7 @@ void printSymbol(symbol_t *symbol) {
 }
 
 void printSymtable(symtable_t *symtable) {
-    printHashtable(&(symtable->global), "global");
-    printHashtable(&(symtable->prototypes), "prototypes");
+    printHashtable(&(symtable->functions), "functions");
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         char number[16];
         sprintf(number, "%d", i);

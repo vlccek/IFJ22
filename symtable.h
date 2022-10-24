@@ -21,6 +21,7 @@
 // musí být 2^n
 #define MAX_HTSIZE 128
 
+// definuje maximální zanoření v programu (kolik může být zanořených rámců)
 #define MAX_SYMTABLES 128
 
 // konstanty pro FNV-1a
@@ -59,6 +60,7 @@ typedef htItem_t *htTable_t[MAX_HTSIZE];
 typedef struct symtable {
     htTable_t functions;
     htTable_t table[MAX_SYMTABLES];
+    htTable_t second[MAX_SYMTABLES];
     int last;
 } symtable_t;
 
@@ -103,7 +105,7 @@ void symDestroy(symtable_t *symtable);
 void symNewLocal(symtable_t *symtable);
 void symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
-void symIPrototype(symtable_t *symtable, symbol_t symbol);
+void symIFunction(symtable_t *symtable, symbol_t symbol);
 symbol_t *symSearch(symtable_t *symtable, char *identifier);
 
 void initSStack(symStack_T *stack);
