@@ -173,15 +173,15 @@ void htDestroy(htTable_t *table) {
 // endregion
 // region SymTable
 
-symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, DTList_T *returnList) {
+symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType) {
     symbol_t *newSymbol = (symbol_t *) malloc(sizeof(symbol_t));
     if(newSymbol == NULL){
         InternalError("Malloc failed.");
     }
     newSymbol->type = type;
     newSymbol->identifier = name;
+    newSymbol->returnType = returnType;
     DTList_T *newPList = createDTL(0);
-    DTList_T *newRList =  createDTL(0);
     if(paramList != NULL){
         DTListMem_T *tmp = paramList->first;
         while(tmp != NULL){
@@ -189,18 +189,7 @@ symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, DTLis
             tmp = tmp->next;
         }
     }
-    if(paramList != NULL){
-        DTListMem_T *tmp = returnList->first;
-        while(tmp != NULL){
-            insDTList(newRList, tmp->type);
-            tmp = tmp->next;
-        }
-    }
-
-
-
     newSymbol->firstParam = newPList;
-    newSymbol->firstReturn = newPList;
     return newSymbol;
 }
 
@@ -208,34 +197,34 @@ symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, DTLis
 void saveBuildInFunctions(symtable_t *symtable) {
     symInsert(symtable, *createSymbol("reads",function,
                                       createDTL(0),
-                                      createDTL(1, string)));
+                                      string));
     symInsert(symtable, *createSymbol("readi",function,
                                       createDTL(0),
-                                      createDTL(1, integer)));
+                                      integer));
     symInsert(symtable, *createSymbol("readn",function,
                                       createDTL(0),
-                                      createDTL(1, number)));
+                                      number));
     symInsert(symtable, *createSymbol("write",function,
                                       createDTL(1, undefined),
-                                      createDTL(0)));
+                                      undefined));
     symInsert(symtable, *createSymbol("tointeger",function,
                                       createDTL(1, number),
-                                      createDTL(1, integer)));
+                                      integer));
     symInsert(symtable, *createSymbol("substr",function,
                                       createDTL(3, string, number, number),
-                                      createDTL(1, string)));
+                                      string));
     symInsert(symtable, *createSymbol("ord",function,
                                       createDTL(2, string, integer),
-                                      createDTL(1, integer)));
+                                      integer));
     symInsert(symtable, *createSymbol("chr",function,
                                       createDTL(1, integer),
-                                      createDTL(1, string)));
+                                      string));
 
 }
 
 void symInit(symtable_t *symtable) {
-    htInit(&(symtable->global));
-    htInit(&(symtable->prototypes));
+    htInit(&(symtable->functions));
+    htInit(&(symtable->table[0]));
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         htInit(&(symtable->table[i]));
     }
@@ -244,8 +233,8 @@ void symInit(symtable_t *symtable) {
 }
 
 void symDestroy(symtable_t *symtable) {
-    htDestroy(&(symtable->global));
-    htDestroy(&(symtable->prototypes));
+    htDestroy(&(symtable->functions));
+    htDestroy(&(symtable->table[0]));
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         htDestroy(&(symtable->table[i]));
     }

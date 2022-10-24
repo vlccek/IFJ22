@@ -7,8 +7,8 @@
  * Implementace překladače imperativního jazyka IFJ21
  *
  */
-#ifndef LUA_INTERPRET_SYMTABLE_H
-#define LUA_INTERPRET_SYMTABLE_H
+#ifndef IFJ22_SYMTABLE_H
+#define IFJ22_SYMTABLE_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -37,15 +37,6 @@ typedef enum symbolType {
 
 } symbolType_t;
 
-typedef enum variableType {
-    integer,
-    floating,
-    string,
-    boolean,
-    nil,
-    undefined
-} variableType_t;
-
 typedef struct symbol {
     char *identifier;
     symbolType_t type;
@@ -53,7 +44,7 @@ typedef struct symbol {
     int rowPosNumber;
     int symtablePos;
     struct DTList *firstParam;
-    variableType_t firstReturn;
+    symbolType_t returnType;
 
 } symbol_t;
 
@@ -120,7 +111,7 @@ void pushSStack(symStack_T *stack, symbol_t *member);
 symbol_t *popSStack(symStack_T *stack);
 
 DTList_T *createDTL(int count, ...);
-symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, DTList_T *returnList);
-void initDTList(DTList_T * list);
+symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
+void initDTList(DTList_T *list);
 void insDTList(DTList_T *list, enum symbolType typ);
-#endif //LUA_INTERPRET_SYMTABLE_H
+#endif //IFJ22_SYMTABLE_H
