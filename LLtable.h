@@ -70,6 +70,8 @@ typedef enum {
 
 // semantic actions
 typedef struct semanticActionInfo {
+    lexType lexType;
+
 
 } semanticActionInfo;
 

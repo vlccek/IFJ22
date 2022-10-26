@@ -62,8 +62,9 @@ typedef htItem_t *htTable_t[MAX_HTSIZE];
 
 typedef struct symtable {
     htTable_t functions;
+    htTable_t *current;
     htTable_t main[MAX_SYMTABLES];
-    htTable_t second[MAX_SYMTABLES];
+    htTable_t infunc[MAX_SYMTABLES];
     bool isInFunction;
     int last;
 } symtable_t;

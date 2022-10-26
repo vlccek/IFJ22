@@ -229,11 +229,12 @@ void saveBuildInFunctions(symtable_t *symtable) {
 }
 
 void symInit(symtable_t *symtable) {
+    symtable->current = symtable->main;
     symtable->isInFunction = false;
     htInit(&(symtable->functions));
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         htInit(&(symtable->main[i]));
-        htInit(&(symtable->second[i]));
+        htInit(&(symtable->infunc[i]));
     }
     symtable->last = -1;
     saveBuildInFunctions(symtable);
@@ -243,7 +244,7 @@ void symDestroy(symtable_t *symtable) {
     htDestroy(&(symtable->functions));
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         htDestroy(&(symtable->main[i]));
-        htDestroy(&(symtable->second[i]));
+        htDestroy(&(symtable->infunc[i]));
     }
     symtable->last = -1;
 }
@@ -311,7 +312,7 @@ void symSwitch(symtable_t *symtable){
     {
         InternalError("Attempted to define function in function");
     }
-    symtable->second = symtable->main;
+    symtable->current = symtable->infunc;
     symtable->isInFunction = true;
     return;
 }
