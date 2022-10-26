@@ -194,7 +194,7 @@ void freeToken(token_t *input)
 }
 
 // TODO edge cases, finish the function
-void incrementCounters(char c)
+void incrementCounters(int c)
 {
     switch (c)
     {
@@ -225,7 +225,7 @@ void incrementCounters(char c)
 }
 
 // TODO edge cases, finish the function
-void decrementCounters(char c)
+void decrementCounters(int c)
 {
     switch (c)
     {
