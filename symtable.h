@@ -10,13 +10,13 @@
 #ifndef IFJ22_SYMTABLE_H
 #define IFJ22_SYMTABLE_H
 
+#include "common.h"
+#include "lex.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "lex.h"
-#include "common.h"
 
 // musí být 2^n
 #define MAX_HTSIZE 128
@@ -31,8 +31,11 @@
 typedef enum symbolType {
     function,
     string,
-    number,
+    stringNullable,
+    floating,
+    floatingNullable,
     integer,
+    integerNullable,
     nil,
     undefined
 
@@ -59,8 +62,9 @@ typedef htItem_t *htTable_t[MAX_HTSIZE];
 
 typedef struct symtable {
     htTable_t functions;
-    htTable_t table[MAX_SYMTABLES];
+    htTable_t main[MAX_SYMTABLES];
     htTable_t second[MAX_SYMTABLES];
+    bool isInFunction;
     int last;
 } symtable_t;
 
@@ -107,6 +111,9 @@ void symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
 void symIFunction(symtable_t *symtable, symbol_t symbol);
 symbol_t *symSearch(symtable_t *symtable, char *identifier);
+symbol_t *symSFunction(symtable_t *symtable, char *identifier);
+void symSwitch(symtable_t *symtable);
+
 
 void initSStack(symStack_T *stack);
 void pushSStack(symStack_T *stack, symbol_t *member);
@@ -116,4 +123,4 @@ DTList_T *createDTL(int count, ...);
 symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
 void initDTList(DTList_T *list);
 void insDTList(DTList_T *list, enum symbolType typ);
-#endif //IFJ22_SYMTABLE_H
+#endif//IFJ22_SYMTABLE_H
