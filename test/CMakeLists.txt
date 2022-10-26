@@ -9,8 +9,14 @@ set(Sources stackTest.cpp)
 add_executable(${This} ${Sources})
 target_link_libraries(${This} gtest_main stack)
 add_test(stackTest stackTest)
+# symtable Tests
+set(This symtableTest)
+set(Sources symtableTest.cpp)
+add_executable(${This} ${Sources})
+target_link_libraries(${This} gtest_main symtable)
+add_test(symtableTest symtableTest)
 
-#
+# dynstring test
 set(This dynStrTest)
 set(Sources dynStrTest.cpp)
 add_executable(${This} ${Sources})

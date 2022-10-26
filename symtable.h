@@ -122,6 +122,7 @@ symbol_t *popSStack(symStack_T *stack);
 
 DTList_T *createDTL(int count, ...);
 symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
+void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);
 void insDTList(DTList_T *list, enum symbolType typ);
 #endif//IFJ22_SYMTABLE_H
