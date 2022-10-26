@@ -77,8 +77,7 @@ void exitWrongToken(token_t actualToken, lexType expectedLexType) {
 void gStackPushReversed(genericStack *stack, PSAStackMember **rule) {
     make_var(tmpStack, genericStack*, sizeof(genericStack));
     while (*rule != NULL) {
-        gStackPush(tmpStack, *rule);
-        *rule++;
+        gStackPush(tmpStack, *rule++);
     }
     gStackPushStackToStack(stack, tmpStack);
     free(tmpStack);
@@ -107,7 +106,8 @@ rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
         exitNoRule(lastToken, (nonTerminalType) topOfStack.data);
 
     rule *firstRule = *newRule;
-    if (firstRule->from == Command && lastToken.type == (int) identifierVar);
+    if (firstRule->from == Command && lastToken.type == (int) identifierVar)
+    ;
     // todo: solve LL1 problem
     return firstRule;
 }
