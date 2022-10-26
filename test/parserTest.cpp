@@ -45,7 +45,7 @@ namespace ifj22 {
                             newToken.data.valueInteger = 10;
                             break;
                         case floatLiteral:
-                            newToken.data.valueFloat = 10;
+                            newToken.data.valueFloat = 10.8;
                             break;
                         case stringLiteral:
                             newToken.data.valueString = dstrInitChar("hovnokod");
@@ -54,6 +54,8 @@ namespace ifj22 {
                         case identifierVar:
                             newToken.data.valueString = dstrInitChar(
                                     (std::string("hovnokod") + std::to_string(uID)).c_str());
+                            break;
+                        default:
                             break;
                     }
                     tokens->push_back(newToken);
