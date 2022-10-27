@@ -116,7 +116,10 @@ htItem_t *htSearch(htTable_t *table, char *key) {
 void htInsertItem(htTable_t *table, char *key, symbol_t value) {
     htItem_t *item = htSearch(table, key);
     if (item != NULL) {
+        printHashtable(table, "Original");
         item->value = value;
+        loging("Symbol %s already exists, overwriting", key);
+        printHashtable(table, "Overwritten");
         return;
     }
     int hash = ht_get_hash(key);
@@ -236,7 +239,8 @@ void symInit(symtable_t *symtable) {
         htInit(&(symtable->main[i]));
         htInit(&(symtable->infunc[i]));
     }
-    symtable->last = -1;
+    symtable->last = 0;
+    symtable->lastMain = 0;
     saveBuildInFunctions(symtable);
 }
 
@@ -250,7 +254,7 @@ void symDestroy(symtable_t *symtable) {
 }
 
 void symNewLocal(symtable_t *symtable) {
-    if (symtable->last == MAX_SYMTABLES - 1) {
+    if (symtable->last == MAX_SYMTABLES - 2) {
         fprintf(stderr, "ERROR: max number of local symtables exeeded.\n");
         return;
     }
@@ -258,42 +262,38 @@ void symNewLocal(symtable_t *symtable) {
 }
 
 void symDelLocal(symtable_t *symtable) {
-    if (symtable->last == -1) {
+    if (symtable->last == 0) {
+        if (symtable->isInFunction)
+        {
+            loging("INFO: Switching back to main symtable.");
+            symSwitchBack(symtable);
+            return;
+        }
         fprintf(stderr, "ERROR: attempted to delete non existent symtable.\n");
         return;
     }
-    htDestroy(&(symtable->main[symtable->last]));
+    htDestroy(&(symtable->current[symtable->last]));
     symtable->last--;
 }
 
 void symInsert(symtable_t *symtable, symbol_t symbol) {
     symbol.symtablePos = -1;
-    // hodnota v symtabulce krom globalní je celkem irelevantní,
-    // protože reprezentuje jak moc daleko je od aktuálního lokálního kontextu
-    if (symtable->last == -1) {
-        htInsertItem(&(symtable->main[0]), symbol.identifier, symbol);
-        return;
-    }
-
-    htInsertItem(&(symtable->main[symtable->last]), symbol.identifier, symbol);
+    htInsertItem(&(symtable->current[symtable->last]), symbol.identifier, symbol);
 }
+
 void symIFunction(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->functions), symbol.identifier, symbol);
 }
 
 symbol_t *symSearch(symtable_t *symtable, char *identifier) {
     htItem_t *found;
-    for (int i = symtable->last; i >= 0; i--) {
+    for (int i = 0; i <= symtable->last; i++)
+    {
         found = htSearch(&(symtable->main[i]), identifier);
         if (found) {
             found->value.symtablePos = symtable->last - i;
             return &(found->value);
         }
-    }
-    found = htSearch(&(symtable->main[0]), identifier);
-
-    if (found) {
-        return &(found->value);
     }
     return NULL;
 }
@@ -310,10 +310,30 @@ symbol_t *symSFunction(symtable_t *symtable, char *identifier) {
 void symSwitch(symtable_t *symtable){
     if (symtable->isInFunction)
     {
-        InternalError("Attempted to define function in function");
+        InternalError("Attempted to switch to infunc while in infunc.");
     }
+    if (symtable->last > 0)
+    {
+        InternalError("Attempted to switch to infunc while in a local symtable.");
+    }
+    
     symtable->current = symtable->infunc;
+    symtable->lastMain = symtable->last;
+    symtable->last = 0;
     symtable->isInFunction = true;
+    return;
+}
+
+void symSwitchBack(symtable_t *symtable)
+{
+    if (!symtable->isInFunction)
+    {
+        InternalError("Attempted to switch to main while in main.");
+    }
+    symtable->current = symtable->main;
+    symtable->last = symtable->lastMain;
+    symtable->lastMain = 0;
+    symtable->isInFunction = false;
     return;
 }
 
@@ -340,6 +360,12 @@ void printHashtable(htTable_t *table, char *index) {
 }
 
 void printSymbol(symbol_t *symbol) {
+    if (!symbol)
+    {
+        printlog("(NULL)", 1);
+        return;
+    }
+    
     char *type;
     switch (symbol->type) {
         case function:

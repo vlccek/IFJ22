@@ -37,7 +37,8 @@ typedef enum symbolType {
     integer,
     integerNullable,
     nil,
-    undefined
+    undefined, 
+    symbolTypeLenght
 
 } symbolType_t;
 
@@ -67,6 +68,7 @@ typedef struct symtable {
     htTable_t infunc[MAX_SYMTABLES];
     bool isInFunction;
     int last;
+    int lastMain;
 } symtable_t;
 
 typedef struct DTListMem DTListMem_T;
@@ -114,6 +116,7 @@ void symIFunction(symtable_t *symtable, symbol_t symbol);
 symbol_t *symSearch(symtable_t *symtable, char *identifier);
 symbol_t *symSFunction(symtable_t *symtable, char *identifier);
 void symSwitch(symtable_t *symtable);
+void symSwitchBack(symtable_t *symtable);
 
 
 void initSStack(symStack_T *stack);
