@@ -259,7 +259,7 @@ void decrementCounters(char c)
 int getNextChar(FILE *stream) {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
-    loging("Next char: %c", outputChar);
+    loging("Next char: %c", outputChar);    // TODO
     return outputChar;
 }
 
@@ -277,31 +277,11 @@ void ungetToken(FILE *stream)
     fseek(stream, position, SEEK_SET);
 }
 
-// reallocs the buffer if needed and then writes in the buffer
-void writeToBuffer(int *charCounter, int *bufferLevel, char *buffer, int currentChar)
+// writes in dynamic string serving as a buffer
+void writeToBuffer(dynStr_t *string, int currentChar)
 {
-    // temporary variables
-    int charCounterTemp = *charCounter;
-    int bufferLevelTemp = *bufferLevel;
-
-    // reallocs the buffer if needed
-    if (charCounterTemp > ((100 * bufferLevelTemp) - 2))
-    {
-        buffer = realloc(buffer, sizeof(char) * 100 * ++bufferLevelTemp);
-        if (buffer == NULL)
-        {
-            InternalError("Memory allocation failed.");
-        }
-    }
-
-    // writes to the buffer
-    buffer[charCounterTemp] = currentChar;
-    charCounterTemp++;
-
-    // updates values pointed at by pointers
-    *charCounter = charCounterTemp;
-    *bufferLevel = bufferLevelTemp;
-
+    char current = (char) currentChar;
+    dstrAppend(string, &current);
     return;
 }
 
@@ -372,21 +352,14 @@ token_t getToken(FILE *stream)
     fflush(stream);
     position = ftell(stream);
 
-    int charCounter = 0;
     int currentChar = getc(stream);
-    loging("Next char: %c", currentChar);
+    loging("Next char: %c", currentChar);   // TODO
 
-
-    int bufferLevel = 1;
     bool stop = false;
     int commentCounter = 0;
 
-    // sets up a buffer for saving chars inside a literal or identifier names
-    char *buffer = malloc(sizeof(char) * 100 * bufferLevel);
-    if (buffer == NULL)
-    {
-        InternalError("Memory allocation failed.");
-    }
+    // sets up a dynamic string (buffer) for saving chars inside a literal or identifier names
+    dynStr_t *buffer = dstrInit();
 
     // EOF token
     if (currentChar == EOF)
@@ -964,7 +937,7 @@ token_t getToken(FILE *stream)
         // writes to buffer if the buffer switch is on
         if (bufferOn)
         {
-            writeToBuffer(&charCounter, &bufferLevel, buffer, currentChar);
+            writeToBuffer(buffer, currentChar);
         }
     }
 
@@ -973,63 +946,63 @@ token_t getToken(FILE *stream)
     {
         // literal states
         case integer_lit_f_s:
-            outputToken.data.valueInteger = atoi(buffer);
+            outputToken.data.valueInteger = atoi(dstrGet(buffer));
             outputToken.type = integerLiteral;
             break;
         case float_lit_f_s:
         case float_lit_exp_f_s:
-            outputToken.data.valueFloat = strtod(buffer, NULL);
+            outputToken.data.valueFloat = strtod(dstrGet(buffer), NULL);
             outputToken.type = floatLiteral;
             break;
         case string_lit_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
+            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
             outputToken.type = stringLiteral;
             break;
         // identifier states
         case identifier_func_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
-            if (strcmp(buffer, "else") == 0)
+            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+            if (strcmp(dstrGet(buffer), "else") == 0)
             {
                 outputToken.type = elseKey;
             }
-            else if (strcmp(buffer, "function") == 0)
+            else if (strcmp(dstrGet(buffer), "function") == 0)
             {
                 outputToken.type = functionKey;
             }
-            else if (strcmp(buffer, "if") == 0)
+            else if (strcmp(dstrGet(buffer), "if") == 0)
             {
                 outputToken.type = ifKey;
             }
-            else if (strcmp(buffer, "null") == 0)
+            else if (strcmp(dstrGet(buffer), "null") == 0)
             {
                 outputToken.type = nullKey;
             }
-            else if (strcmp(buffer, "return") == 0)
+            else if (strcmp(dstrGet(buffer), "return") == 0)
             {
                 outputToken.type = returnKey;
             }
-            else if (strcmp(buffer, "void") == 0)
+            else if (strcmp(dstrGet(buffer), "void") == 0)
             {
                 outputToken.type = voidKey;
             }
-            else if (strcmp(buffer, "while") == 0)
+            else if (strcmp(dstrGet(buffer), "while") == 0)
             {
                 outputToken.type = whileKey;
             }
-            else if (strcmp(buffer, "string") == 0)
+            else if (strcmp(dstrGet(buffer), "string") == 0)
             {
                 outputToken.type = stringKey;
             }
-            else if (strcmp(buffer, "float") == 0)
+            else if (strcmp(dstrGet(buffer), "float") == 0)
             {
                 outputToken.type = floatKey;
             }
-            else if (strcmp(buffer, "int") == 0)
+            else if (strcmp(dstrGet(buffer), "int") == 0)
             {
                 outputToken.type = intKey;
             }
             // special case - header check for declare
-            else if (strcmp(buffer, "declare") == 0)
+            else if (strcmp(dstrGet(buffer), "declare") == 0)
             {
                 outputToken.type = declareHeader;
             }                                                                                                                      
@@ -1039,21 +1012,21 @@ token_t getToken(FILE *stream)
             }
             break;
         case identifier_var_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
+            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
             outputToken.type = identifierVar;
             break;
         // null type state
         case null_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
-            if (strcmp(buffer, "string") == 0)
+            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+            if (strcmp(dstrGet(buffer), "string") == 0)
             {
                 outputToken.type = stringNullKey;
             }
-            else if (strcmp(buffer, "float") == 0)
+            else if (strcmp(dstrGet(buffer), "float") == 0)
             {
                 outputToken.type = floatNullKey;
             }
-            else if (strcmp(buffer, "int") == 0)
+            else if (strcmp(dstrGet(buffer), "int") == 0)
             {
                 outputToken.type = intNullKey;
             }
@@ -1104,6 +1077,7 @@ token_t getToken(FILE *stream)
             break;
     }
 
-    // returns the output token
+    // frees the buffer and returns the output token
+    dstrFree(buffer);
     return outputToken;
 }
