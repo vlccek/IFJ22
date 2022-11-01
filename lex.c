@@ -259,7 +259,7 @@ void decrementCounters(char c)
 int getNextChar(FILE *stream) {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
-    loging("Next char: %c", outputChar);    // TODO
+    loging("Next char: %c %d", outputChar, outputChar);// TODO
     return outputChar;
 }
 
@@ -280,7 +280,7 @@ void ungetToken(FILE *stream)
 // writes in dynamic string serving as a buffer
 void writeToBuffer(dynStr_t *string, int currentChar)
 {
-    char tmp[2] = {currentChar, 0};
+    char tmp[2] = {(char) currentChar, 0};
     dstrAppend(string, &tmp);
     return;
 }
@@ -373,25 +373,22 @@ token_t getToken(FILE *stream)
     }
 
     // parsing loop and FSM
-    while (stop != true)
-    {
+    while (stop != true) {
         // gets next char and increments counters
         currentChar = getNextChar(stream);
-
         // buffer switch
         bool bufferOn = false;
 
         // checking for EOF
-        if (currentChar == EOF)
-        {
+        if (currentChar == EOF) {
+            loging("Found EOF");
             break;
         }
 
         // checking if the current state is the initial state
         // (row position of token is set when transitioning from init_s to a different state)
         bool isInit = false;
-        if (currentState == init_s)
-        {
+        if (currentState == init_s) {
             isInit = true;
         }
 
@@ -1073,7 +1070,7 @@ token_t getToken(FILE *stream)
         // unknown state and default
         case unknown_f_s:
         default:
-            PrintErrorExit(ERR_LEX, "Lexical error on ln %d, col %d!\n", outputToken.rowNumber, outputToken.rowPosNumber);
+            PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
             break;
     }
 
