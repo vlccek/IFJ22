@@ -20,6 +20,7 @@ namespace ifj22 {
             FILE *fileForTest;
 
             void SetUp() override {
+                fclose(fopen("test.txt", "w"));
                 fileForTest = fopen("test.txt", "ab+");
                 php = true;
                 declare = true;
@@ -66,6 +67,7 @@ namespace ifj22 {
             FILE *fileForTest = NULL;
 
             void SetUp() override {
+                fclose(fopen("test.txt", "w"));
                 fileForTest = fopen("test.txt", "ab+");
                 php = true;
                 declare = true;
@@ -97,9 +99,50 @@ namespace ifj22 {
             EXPECT_EQ((t.type), identifierVar);
         }
 
-
         INSTANTIATE_TEST_SUITE_P(varTestCorrect, testCorrect, ::testing::Values("$hovno", "$hPvnpS", "$HOVNO", "$HOVNO", "$HOVNO6", "$HO999VNO", "$hovno_kod", "$hovnokod_"));
-        INSTANTIATE_TEST_SUITE_P(functiongTestCorrect, testCorrect, ::testing::Values("hovno()", "hovnokodjesuper()", "hocnoko55d()", "hovnokod556655()", "jehovnokodsuper_skeropes()", "_hovno()"));
+
+
+        class testCorrectFunction : public testing::TestWithParam<std::string> {
+            // You can implement all the usual fixture class members here.
+            // To access the test parameter, call GetParam() from class
+            // TestWithParam<T>.
+            FILE *fileForTest = NULL;
+
+            void SetUp() override {
+                fclose(fopen("test.txt", "w"));
+                fileForTest = fopen("test.txt", "ab+");
+                php = true;
+                declare = true;
+            }
+
+            void TearDown() override {
+                fclose(fileForTest);
+                fclose(fopen("test.txt", "w"));
+            }
+
+        public:
+            FILE *prepareFile(const char *text) {
+                fprintf(fileForTest, "%s", text);
+                rewind(fileForTest);
+                fclose(fileForTest);
+                fileForTest = fopen("test.txt", "r");
+                return fileForTest;
+            }
+        };
+        TEST_P(testCorrectFunction, FuncTestCorrect) {
+
+            const char *string = GetParam().c_str();
+            // const std::vector<lexType> checkTokens = std::get<1>(GetParam());
+
+            FILE *fp = prepareFile(string);
+
+            token_t t = getToken(fp);
+            // EXPECT_STREQ(getTerminalName(t.type), getTerminalName(identifierVar));
+            EXPECT_EQ((t.type), identifierFunc);
+        }
+
+
+        INSTANTIATE_TEST_SUITE_P(functiongTestCorrect, testCorrectFunction, ::testing::Values("hovno()", "hovnokodjesuper()", "hocnoko55d()", "hovnokod556655()", "jehovnokodsuper_skeropes()", "_hovno()"));
 
 
         class TestExiting : public testing::TestWithParam<std::string> {
@@ -109,6 +152,7 @@ namespace ifj22 {
             FILE *fileForTest;
 
             void SetUp() override {
+                fclose(fopen("test.txt", "w"));
                 fileForTest = fopen("test.txt", "ab+");
                 php = true;
                 declare = true;
@@ -151,6 +195,7 @@ namespace ifj22 {
             FILE *fileForTest;
 
             void SetUp() override {
+                fclose(fopen("test.txt", "w"));
                 fileForTest = fopen("test.txt", "ab+");
                 php = true;
                 declare = true;
