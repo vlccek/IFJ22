@@ -140,7 +140,7 @@ namespace ifj22 {
         }
 
 
-        INSTANTIATE_TEST_SUITE_P(variableTest, TestExiting, ::testing::Values("$_hovno", "$6HOVNO", "$6hovno"));
+        INSTANTIATE_TEST_SUITE_P(variableTest, TestExiting, ::testing::Values("$6HOVNO", "$6hovno"));
         INSTANTIATE_TEST_SUITE_P(functionTest, TestExiting, ::testing::Values("6hovno()", "skeropes_()", "else()", "float()", "function()", "if()", "int()", "null()", "return()", "string()", "void(),", "while()"));
 
 
@@ -237,16 +237,22 @@ namespace ifj22 {
                                                                                      std::make_pair(std::string("hovno(string $a, int $a, float $a)"), std::vector({identifierFunc, leftPar, stringKey, identifierVar, floatKey, identifierVar, floatKey, identifierVar, rightPar}))));
 
 
-INSTANTIATE_TEST_SUITE_P(comments, TestComparing, ::testing::Values(std::make_pair(std::string(
-                                                                  "//skeropes"
-                                                                  "int "
-                                                                  "// int $a \n"
-                                                                  "// */ \t \t                                              //hovno \n"
-                                                                  "\t \t \t                                                "
-                                                                  "/*hovnokod******************je///////////* super tvl*/ int "),
-                                                                                           std::vector({intKey, intKey})
-                                                                                                   )));
+        INSTANTIATE_TEST_SUITE_P(comments, TestComparing, ::testing::Values(std::make_pair(std::string("//skeropes"
+                                                                                                       "int "
+                                                                                                       "// int $a \n"
+                                                                                                       "// */ \t \t                                              //hovno \n"
+                                                                                                       "\t \t \t                                                "
+                                                                                                       "/*hovnokod******************je///////////* super tvl*/ int "),
+                                                                                           std::vector({intKey, intKey}))));
 
+        INSTANTIATE_TEST_SUITE_P(variableMore2, TestComparing, ::testing::Values(
+                                                                       std::make_pair(std::string("$hovno"), std::vector({identifierVar})),
+                                                                       std::make_pair(std::string("$hPvnpS"), std::vector({identifierVar})),
+                                                                       std::make_pair(std::string("$HOVNO"), std::vector({identifierVar})),
+                                                                       std::make_pair(std::string("$HO999VNO"), std::vector({identifierVar})),
+                                                                       std::make_pair(std::string("$hovno_kod"), std::vector({identifierVar})),
+                                                                       std::make_pair(std::string("$hovnokod_"), std::vector({identifierVar}))
+                                                                                 ));
 
 
         //region LexTestTokenData_stringLit
