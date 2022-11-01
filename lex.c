@@ -280,8 +280,8 @@ void ungetToken(FILE *stream)
 // writes in dynamic string serving as a buffer
 void writeToBuffer(dynStr_t *string, int currentChar)
 {
-    char current = (char) currentChar;
-    dstrAppend(string, &current);
+    char tmp[2] = {currentChar, 0};
+    dstrAppend(string, &tmp);
     return;
 }
 
