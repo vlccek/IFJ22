@@ -333,6 +333,15 @@ void headerCheck(FILE *stream)
     }
 }
 
+// TODO checks for possible escape sequences in string
+void checkEscSeq(dynStr_t *string)
+{
+    char *originalString = dstrGet(string);
+    /*char *result = strstr(originalString, "sadsdfsd");
+    fprintf(stderr, "%s\n", result);*/
+    return;
+}
+
 // gets the next token and advances the pointer TODO
 token_t getToken(FILE *stream)
 {
@@ -952,6 +961,7 @@ token_t getToken(FILE *stream)
             outputToken.type = floatLiteral;
             break;
         case string_lit_f_s:
+            checkEscSeq(buffer);
             outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
             outputToken.type = stringLiteral;
             break;
