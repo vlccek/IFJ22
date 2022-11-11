@@ -336,7 +336,14 @@ void headerCheck(FILE *stream)
 void flushEscSeqBuffer(dynStr_t *buffer, dynStr_t *escSeqBuffer)
 {
     dstrAppend(buffer, dstrGet(escSeqBuffer));
+    clearBuffer(escSeqBuffer);
     return;
+}
+
+void clearBuffer(dynStr_t *buffer)
+{
+    dstrFree(buffer);
+    buffer = dstrInit();
 }
 
 // gets the next token and advances the pointer TODO
@@ -451,15 +458,19 @@ token_t getToken(FILE *stream)
                     case string_lit_backslash_s:
                         if (currentChar == 'n')
                         {
-                            // TODO
+                            writeToBuffer(buffer, '\n');
+                            currentState = string_lit_s;
                         }
                         else if (currentChar == 't')
                         {
-                            // TODO
+                            writeToBuffer(buffer, '\t');
+                            currentState = string_lit_s;
                         }
                         else
                         {
-                            // TODO
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
                         }
                         break;
                     default:
@@ -882,6 +893,7 @@ token_t getToken(FILE *stream)
                 switch (currentState)
                 {
                     case string_lit_s:
+                        clearBuffer(escSeqBuffer);
                         escBufferOn = true;
                         currentState = string_lit_backslash_s;
                         break;
@@ -1124,7 +1136,8 @@ token_t getToken(FILE *stream)
             break;
     }
 
-    // frees the buffer and returns the output token
+    // frees all buffers and returns the output token
     dstrFree(buffer);
+    dstrFree(escSeqBuffer);
     return outputToken;
 }
