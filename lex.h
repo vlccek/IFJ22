@@ -119,6 +119,8 @@ typedef enum
 
     // escape sequences states
     string_lit_backslash_s,
+    string_lit_backslash_x_s,
+    string_lit_backslash_x_1_s,
     
     // parentheses states
     left_par_f_s,
