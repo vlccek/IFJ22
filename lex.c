@@ -689,16 +689,16 @@ token_t getToken(FILE *stream)
                     case init_s:
                         currentState = identifier_var_dollar_s;
                         break;
-                    case string_lit_s:
-                        bufferOn = true;
-                        currentState = string_lit_s;
-                        break;
                     case com_line_f_s:
                         currentState = com_line_f_s;
                         break;
                     case com_block_s:
                     case com_block_ast_s:
                         currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
                         break;
                     default:
                         currentState = unknown_f_s;
