@@ -117,6 +117,8 @@ typedef enum
     not_eq_2_s,
     not_eq_f_s,
 
+    // escape sequences states
+    string_lit_backslash_s,
     
     // parentheses states
     left_par_f_s,

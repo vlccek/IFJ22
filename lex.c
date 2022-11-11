@@ -333,6 +333,12 @@ void headerCheck(FILE *stream)
     }
 }
 
+void flushEscSeqBuffer(dynStr_t *buffer, dynStr_t *escSeqBuffer)
+{
+    dstrAppend(buffer, dstrGet(escSeqBuffer));
+    return;
+}
+
 // gets the next token and advances the pointer TODO
 token_t getToken(FILE *stream)
 {
@@ -360,6 +366,9 @@ token_t getToken(FILE *stream)
 
     // sets up a dynamic string (buffer) for saving chars inside a literal or identifier names
     dynStr_t *buffer = dstrInit();
+    
+    // sets up a dynamic string (buffer) for saving chars while in a potential escape sequence
+    dynStr_t *escSeqBuffer = dstrInit();
 
     // EOF token
     if (currentChar == EOF)
@@ -376,8 +385,9 @@ token_t getToken(FILE *stream)
     while (stop != true) {
         // gets next char and increments counters
         currentChar = getNextChar(stream);
-        // buffer switch
+        // buffer switches
         bool bufferOn = false;
+        bool escBufferOn = false;
 
         // checking for EOF
         if (currentChar == EOF) {
@@ -438,6 +448,20 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                        if (currentChar == 'n')
+                        {
+                            // TODO
+                        }
+                        else if (currentChar == 't')
+                        {
+                            // TODO
+                        }
+                        else
+                        {
+                            // TODO
+                        }
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -491,6 +515,7 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    // TODO escape sequences
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -740,6 +765,10 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -853,7 +882,12 @@ token_t getToken(FILE *stream)
                 switch (currentState)
                 {
                     case string_lit_s:
-                        // TODO
+                        escBufferOn = true;
+                        currentState = string_lit_backslash_s;
+                        break;
+                    case string_lit_backslash_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
                         break;
                     default:
                         currentState = unknown_f_s;
@@ -943,10 +977,14 @@ token_t getToken(FILE *stream)
             }
         }
 
-        // writes to buffer if the buffer switch is on
+        // writes to the buffer if the buffer switch is on
         if (bufferOn)
         {
             writeToBuffer(buffer, currentChar);
+        }
+        if (escBufferOn)
+        {
+            writeToBuffer(escSeqBuffer, currentChar);
         }
     }
 
