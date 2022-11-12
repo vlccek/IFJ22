@@ -614,7 +614,15 @@ token_t getToken(FILE *stream)
 
                             currentState = string_lit_s;
                         break;
-                    // TODO escape sequences
+                    case string_lit_backslash_s:
+                        // TODO
+                        break;
+                    case string_lit_backslash_1_s:
+                        // TODO
+                        break;
+                    case string_lit_backslash_2_s:
+                        // TODO
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -641,6 +649,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     default:
                         ungetNextChar(stream, currentChar);
                         stop = true;
@@ -664,6 +681,15 @@ token_t getToken(FILE *stream)
                     case com_block_s:
                     case com_block_ast_s:
                         currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
                         break;
                     default:
                         ungetNextChar(stream, currentChar);
@@ -697,6 +723,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -720,6 +755,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;               
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -743,6 +787,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -766,6 +819,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -788,6 +850,14 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -820,6 +890,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -842,6 +921,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -868,6 +956,14 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -895,6 +991,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -923,6 +1028,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -950,6 +1064,15 @@ token_t getToken(FILE *stream)
                     case com_block_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -971,6 +1094,15 @@ token_t getToken(FILE *stream)
                     case com_line_f_s:
                         currentState = com_line_f_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -989,6 +1121,14 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -1013,6 +1153,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         stop = true;
                         break;
@@ -1036,6 +1185,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         stop = true;
                         break;
@@ -1060,6 +1218,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
