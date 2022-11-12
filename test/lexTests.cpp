@@ -542,8 +542,7 @@ namespace ifj22 {
         TEST_F(LexTestAdvanced, prolog_unallowChars) {
 
             char text[] = "randomcharejjeojeoeojejojeojeojeojeoejeoj"
-                          "<?php\n"
-                          "declare(strict_types=1);"
+                          
                           "function bar(string $param) : string {\n"
                           "return foo($param);\n"
                           "}";
@@ -643,8 +642,7 @@ namespace ifj22 {
 
         TEST_F(LexTestAdvanced, function_declare_more_args) {
 
-            char text[] = "<?php\n"
-                          "declare(strict_types=1);\n"
+            char text[] = 
                           "function concat(string $x, string $y): string {"
                           "return $x . \" \" . $y;\n"
                           "}";
@@ -663,8 +661,7 @@ namespace ifj22 {
 
         TEST_F(LexTestAdvanced, function_declare_empty_param) {
 
-            char text[] = "<?php\n"
-                          "declare(strict_types=1);\n"
+            char text[] = 
                           "function concat():string {"
                           "return \" \" \n;"
                           "}";
@@ -682,8 +679,7 @@ namespace ifj22 {
 
         TEST_F(LexTestAdvanced, function_declare_name) {
 
-            char text[] = "<?php\n"
-                          "declare(strict_types=1);\n"
+            char text[] = 
                           "function 2concat():string {"
                           "return \" \" \n;"
                           "}";
@@ -695,9 +691,7 @@ namespace ifj22 {
 
         TEST_F(LexTestAdvanced, function_declare_name_with_num) {
 
-            char text[] = "<?php\n"
-                          "declare(strict_types=1);\n"
-                          "function concat2():string {"
+            char text[] = "function concat2():string {"
                           "return \" \" \n;"
                           "}";
             FILE *fp = prepareFile(text);
@@ -715,8 +709,7 @@ namespace ifj22 {
 
         TEST_F(LexTestAdvanced, function_declare) {
 
-            char text[] = "<?php\n"
-                          "declare(strict_types=1);"
+            char text[] = 
                           "function bar(string $param) : string {\n"
                           "return foo($param);\n"
                           "}";
