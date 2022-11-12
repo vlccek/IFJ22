@@ -466,6 +466,64 @@ token_t getToken(FILE *stream)
                             writeToBuffer(buffer, '\t');
                             currentState = string_lit_s;
                         }
+                        else if (currentChar == 'x')
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_x_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
+                    case string_lit_backslash_x_s:
+                        if (currentChar == 'a' ||
+                        currentChar == 'A' ||
+                        currentChar == 'b' ||
+                        currentChar == 'B' ||
+                        currentChar == 'c' ||
+                        currentChar == 'C' ||
+                        currentChar == 'd' ||
+                        currentChar == 'D' ||
+                        currentChar == 'e' ||
+                        currentChar == 'E' ||
+                        currentChar == 'f' ||
+                        currentChar == 'F')
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_x_1_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
+                    case string_lit_backslash_x_1_s:
+                        if (currentChar == 'a' ||
+                        currentChar == 'A' ||
+                        currentChar == 'b' ||
+                        currentChar == 'B' ||
+                        currentChar == 'c' ||
+                        currentChar == 'C' ||
+                        currentChar == 'd' ||
+                        currentChar == 'D' ||
+                        currentChar == 'e' ||
+                        currentChar == 'E' ||
+                        currentChar == 'f' ||
+                        currentChar == 'F')
+                        {
+                            // converting to the correct format
+                            writeToBuffer(escSeqBuffer, currentChar);
+                            dynStr_t *number = dstrSubstring(escSeqBuffer, 1, 4);
+                            dstrPrepend(number, "0");
+                            // converting from hex string to int
+                            int res = (int) strtol(dstrGet(number), NULL, 0);
+                            // converting back to string
+                        }
                         else
                         {
                             flushEscSeqBuffer(buffer, escSeqBuffer);
