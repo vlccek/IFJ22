@@ -527,6 +527,7 @@ token_t getToken(FILE *stream)
                             sprintf(string, "%d", res);
                             // writing the number to the buffer
                             dstrAppend(buffer, string);
+                            dstrFree(number);
 
                             currentState = string_lit_s;
                         }
@@ -611,17 +612,76 @@ token_t getToken(FILE *stream)
                             sprintf(string, "%d", res);
                             // writing the number to the buffer
                             dstrAppend(buffer, string);
+                            dstrFree(number);
 
                             currentState = string_lit_s;
                         break;
                     case string_lit_backslash_s:
-                        // TODO
+                        if (currentChar >= 48 && currentChar <= 55)
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_1_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
                         break;
                     case string_lit_backslash_1_s:
-                        // TODO
+                        if (currentChar >= 48 && currentChar <= 55)
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_2_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
                         break;
                     case string_lit_backslash_2_s:
-                        // TODO
+                        if (currentChar >= 48 && currentChar <= 55)
+                        {
+                            // converting to the correct format
+                            writeToBuffer(escSeqBuffer, currentChar);
+                            dynStr_t *number = dstrSubstring(escSeqBuffer, 1, 4);
+                            // converting from octal string to int
+                            char *octal = dstrGet(number);
+                            char octalArray[3];
+                            for (int i = 0; i < 3; i++)
+                            {
+                                octalArray[i] = octal[i];
+                            }
+                            int res = (octalArray[0] - 48) * (8 * 8) + (octalArray[1] - 48) * (8) + (octalArray[2] - 48);
+                            // checking if the number is in range
+                            if (res < 1 || res > 255)
+                            {
+                                printf("test\n");
+                                flushEscSeqBuffer(buffer, escSeqBuffer);
+                                currentState = string_lit_s;
+                            }
+                            else
+                            {
+                                printf("test2\n");
+                                // converting back to string
+                                char string[4];
+                                sprintf(string, "%d", res);
+                                // writing the number to the buffer
+                                dstrAppend(buffer, string);
+                                currentState = string_lit_s;
+                            }
+                            // freeing the support buffer
+                            dstrFree(number);
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
                         break;
                     default:
                         currentState = unknown_f_s;
