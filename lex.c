@@ -659,13 +659,11 @@ token_t getToken(FILE *stream)
                             // checking if the number is in range
                             if (res < 1 || res > 255)
                             {
-                                printf("test\n");
                                 flushEscSeqBuffer(buffer, escSeqBuffer);
                                 currentState = string_lit_s;
                             }
                             else
                             {
-                                printf("test2\n");
                                 // converting back to string
                                 char string[4];
                                 sprintf(string, "%d", res);
@@ -757,9 +755,6 @@ token_t getToken(FILE *stream)
                         break;
                 }
                 break;
-            case ',':
-                // TODO
-                break;
             case '(':
                 switch (currentState)
                 {
@@ -793,7 +788,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -825,7 +821,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;               
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1033,7 +1030,7 @@ token_t getToken(FILE *stream)
                 switch (currentState)
                 {
                     case init_s:
-                        currentState = dot_f_s;
+                        currentState = concatenation_f_s;
                         stop = true;
                         break;
                     case integer_lit_f_s:
@@ -1062,6 +1059,39 @@ token_t getToken(FILE *stream)
                         break;                        
                     default:
                         currentState = unknown_f_s;
+                        break;
+                }
+                break;
+            case ',':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = comma_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1134,7 +1164,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1435,6 +1466,36 @@ token_t getToken(FILE *stream)
             break;
         case comma_f_s:
             outputToken.type = comma;
+            break;
+        // operator states
+        case multiplication_f_s:
+            outputToken.type = multiplicationOp;
+            break;
+        case division_f_s:
+            outputToken.type = divisionOp;
+            break;
+        case plus_f_s:
+            outputToken.type = plusOp;
+            break;
+        case minus_f_s:
+            outputToken.type = minusOp;
+            break;
+        case concatenation_f_s:
+            outputToken.type = concatenationOp;
+            break;
+        case lesser_than_f_s:
+            outputToken.type = lesserThanOp;
+            break;
+        case lesser_eq_f_s:
+            outputToken.type = lesserEqOp;
+            break;
+        case greater_than_f_s:
+            outputToken.type = greaterThanOp;
+        case greater_eq_f_s:
+            outputToken.type = greaterEqOp;
+            break;
+        case not_eq_f_s:
+            outputToken.type = notEqOp;
             break;
         // commentary state
         case com_line_f_s:
