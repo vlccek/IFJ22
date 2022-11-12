@@ -121,6 +121,8 @@ typedef enum
     string_lit_backslash_s,
     string_lit_backslash_x_s,
     string_lit_backslash_x_1_s,
+    string_lit_backslash_1_s,
+    string_lit_backslash_2_s,
     
     // parentheses states
     left_par_f_s,

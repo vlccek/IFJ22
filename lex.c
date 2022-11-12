@@ -523,6 +523,12 @@ token_t getToken(FILE *stream)
                             // converting from hex string to int
                             int res = (int) strtol(dstrGet(number), NULL, 0);
                             // converting back to string
+                            char string[4];
+                            sprintf(string, "%d", res);
+                            // writing the number to the buffer
+                            dstrAppend(buffer, string);
+
+                            currentState = string_lit_s;
                         }
                         else
                         {
@@ -530,6 +536,11 @@ token_t getToken(FILE *stream)
                             bufferOn = true;
                             currentState = string_lit_s;
                         }
+                        break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
                         break;
                     default:
                         currentState = unknown_f_s;
@@ -583,6 +594,25 @@ token_t getToken(FILE *stream)
                     case com_block_s:
                     case com_block_ast_s:
                         currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_x_s:
+                        escBufferOn = true;
+                        currentState = string_lit_backslash_x_1_s;
+                        break;
+                    case string_lit_backslash_x_1_s:
+                            // converting to the correct format
+                            writeToBuffer(escSeqBuffer, currentChar);
+                            dynStr_t *number = dstrSubstring(escSeqBuffer, 1, 4);
+                            dstrPrepend(number, "0");
+                            // converting from hex string to int
+                            int res = (int) strtol(dstrGet(number), NULL, 0);
+                            // converting back to string
+                            char string[4];
+                            sprintf(string, "%d", res);
+                            // writing the number to the buffer
+                            dstrAppend(buffer, string);
+
+                            currentState = string_lit_s;
                         break;
                     // TODO escape sequences
                     default:
