@@ -653,10 +653,8 @@ namespace ifj22 {
                                            identifierVar, rightPar, colon, stringKey, curlyBraceRight,
                                            returnKey, identifierVar, concatenationOp, stringLiteral,
                                            curlyBraceLeft};
-            for (auto i: tokens) {
-                token_t t = getToken(fp);
-                EXPECT_EQ(t.type, i);
-            }
+
+            assertTokensEq(fp, tokens);
         }
 
         TEST_F(LexTestAdvanced, function_declare_empty_param) {
@@ -671,10 +669,7 @@ namespace ifj22 {
                                            curlyBraceRight,
                                            returnKey, stringLiteral, semicolon,
                                            curlyBraceLeft};
-            for (auto i: tokens) {
-                token_t t = getToken(fp);
-                EXPECT_EQ(t.type, i);
-            }
+            assertTokensEq(fp, tokens);
         }
 
         TEST_F(LexTestAdvanced, function_declare_name) {
@@ -701,10 +696,7 @@ namespace ifj22 {
                                            returnKey, stringLiteral, semicolon,
                                            curlyBraceLeft};
 
-            for (auto i: tokens) {
-                token_t t = getToken(fp);
-                EXPECT_EQ(t.type, i);
-            }
+            assertTokensEq(fp, tokens);
         }
 
         TEST_F(LexTestAdvanced, function_declare) {
@@ -718,10 +710,7 @@ namespace ifj22 {
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringKey,
                                            identifierVar, rightPar, colon, stringKey, curlyBraceRight,
                                            returnKey, identifierFunc, identifierVar, semicolon, curlyBraceLeft};
-            for (auto i: tokens) {
-                token_t t = getToken(fp);
-                EXPECT_EQ(t.type, i);
-            }
+            assertTokensEq(fp, tokens);
         }
 
 
@@ -741,6 +730,7 @@ namespace ifj22 {
             assertTokensEq(fp, {ifKey, leftPar, integerLiteral, rightPar,
                                 curlyBraceLeft, intKey, semicolon, curlyBraceRight,
                                 elseKey, curlyBraceLeft, intKey, semicolon, curlyBraceRight});
+
         }
 
         // literál je tvořen celou a desetinnou částí,
