@@ -129,7 +129,6 @@ typedef enum
     right_par_f_s,
 
     // commentary states
-    com_slash_s,
     com_line_f_s,
     com_block_s,
     com_block_ast_s,

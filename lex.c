@@ -543,6 +543,9 @@ token_t getToken(FILE *stream)
                         flushEscSeqBuffer(buffer, escSeqBuffer);
                         bufferOn = true;
                         break;
+                    case colon_f_s:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -695,6 +698,7 @@ token_t getToken(FILE *stream)
                 {
                     case init_s:
                         currentState = colon_f_s;
+                        stop = true;
                         break;
                     case string_lit_s:
                         bufferOn = true;
@@ -1136,13 +1140,13 @@ token_t getToken(FILE *stream)
                 switch (currentState)
                 {
                     case init_s:
-                        currentState = com_slash_s;
+                        currentState = division_f_s;
                         break;
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
-                    case com_slash_s:
+                    case division_f_s:
                         currentState = com_line_f_s;
                         break;
                     case com_block_ast_s:
@@ -1176,7 +1180,7 @@ token_t getToken(FILE *stream)
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
-                    case com_slash_s:
+                    case division_f_s:
                         currentState = com_block_s;
                         break;
                     case com_block_s:
