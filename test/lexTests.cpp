@@ -729,7 +729,7 @@ namespace ifj22 {
 
             assertTokensEq(fp, {ifKey, leftPar, integerLiteral, rightPar,
                                 curlyBraceLeft, intKey, semicolon, curlyBraceRight,
-                                elseKey, curlyBraceLeft, intKey, semicolon, curlyBraceRight});
+                                elseKey, curlyBraceLeft, integerLiteral, semicolon, curlyBraceRight});
 
         }
 
@@ -739,10 +739,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
         // nebo celou částí a exponen-tem,
@@ -751,10 +751,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
 
@@ -763,10 +763,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
 
@@ -775,10 +775,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
 
@@ -787,10 +787,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
 
@@ -799,10 +799,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
 
@@ -811,10 +811,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
         // nebo celou a desetinnou částí a exponentem.
@@ -824,10 +824,10 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
 
@@ -838,12 +838,12 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
-                                       floatKey,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
+                                       floatLiteral,
                                });
         }
 
