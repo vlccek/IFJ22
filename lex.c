@@ -691,7 +691,8 @@ token_t getToken(FILE *stream)
                         }
                         break;
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1138,7 +1139,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1182,6 +1184,10 @@ token_t getToken(FILE *stream)
             case '*':
                 switch (currentState)
                 {
+                    case init_s:
+                        currentState = multiplication_f_s;
+                        stop = true;
+                        break;
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
@@ -1205,7 +1211,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;

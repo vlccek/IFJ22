@@ -240,7 +240,7 @@ namespace ifj22 {
                                                                                      std::make_pair(std::string("hovno(int $a)"), std::vector({
                                                                                                                                           identifierFunc,
                                                                                                                                           leftPar,
-                                                                                                                                          intKey,
+                                                                                                                                           intKey,
                                                                                                                                           identifierVar,
                                                                                                                                           rightPar,
                                                                                                                                   })),
@@ -302,7 +302,7 @@ namespace ifj22 {
 
         //region LexTestTokenData_stringLit
         TEST_F(LexTestTokenData, string_data) {
-            std::string str = "\"Uplne jednoduchy ale delsi text\"";
+            std::string str = R"("Uplne jednoduchy ale delsi text")";
 
             FILE *fp = prepareFile(str.c_str());
 
@@ -747,7 +747,7 @@ namespace ifj22 {
         }
         // nebo celou částí a exponen-tem,
         TEST_F(LexTestSimple, floatTestExponents1) {
-            FILE *fp = prepareFile("0.e0 00000.e0000 1.e0005 61561615.e15161561 ");
+            FILE *fp = prepareFile("00e0 000000e0000 10e0005 615616150e15161561 ");
 
 
             assertTokensEq(fp, {
@@ -759,7 +759,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, floatTestExponents2) {
-            FILE *fp = prepareFile("0.e+0 00000.e+0000 1.e+0005 61561615.e+15161561 ");
+            FILE *fp = prepareFile("00e+0 000000e+0000 10e+0005 615616150e+15161561 ");
 
 
             assertTokensEq(fp, {
@@ -771,7 +771,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, floatTestExponents3) {
-            FILE *fp = prepareFile("0.e-0 00000.e-0000 1.e-0005 61561615.e-15161561 ");
+            FILE *fp = prepareFile("00e-0 000000e-0000 10e-0005 615616150e-15161561 ");
 
 
             assertTokensEq(fp, {
@@ -783,7 +783,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, floatTestExponents4) {
-            FILE *fp = prepareFile("0.E0 00000.E0000 1.E0005 61561615.E15161561 ");
+            FILE *fp = prepareFile("00E0 000000E0000 10E0005 615616150E15161561 ");
 
 
             assertTokensEq(fp, {
@@ -795,7 +795,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, floatTestExponents5) {
-            FILE *fp = prepareFile("0.E+0 00000.E+0000 1.E+0005 61561615.E+15161561 ");
+            FILE *fp = prepareFile("00E+0 000000E+0000 10E+0005 615616150E+15161561 ");
 
 
             assertTokensEq(fp, {
@@ -807,7 +807,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, floatTestExponents6) {
-            FILE *fp = prepareFile("0.E-0 00000.E-0000 1.E-0005 61561615.E-15161561 ");
+            FILE *fp = prepareFile("00E-0 000000E-0000 10E-0005 615616150E-15161561 ");
 
 
             assertTokensEq(fp, {
@@ -945,7 +945,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, varTypeKeywords) {
-            FILE *fp = prepareFile("float int string"
+            FILE *fp = prepareFile("float int string\n"
                                    "?float ?int ?string");
 
 
