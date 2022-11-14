@@ -16,6 +16,9 @@
 int row = 1;
 int rowPos = 0;
 
+// logging switch
+bool log = false;
+
 // header conditions
 bool php = false;
 bool declare = false;
@@ -259,7 +262,8 @@ void decrementCounters(char c)
 int getNextChar(FILE *stream) {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
-    loging("Next char: %c %d", outputChar, outputChar);// TODO
+    if (log)
+        loging("Next char: %c %d", outputChar, outputChar);// TODO
     return outputChar;
 }
 
@@ -366,7 +370,8 @@ token_t getToken(FILE *stream)
     position = ftell(stream);
 
     int currentChar = getc(stream);
-    loging("Next char: %c", currentChar);   // TODO
+    if (log)
+        loging("Next char: %c", currentChar);   // TODO
 
     bool stop = false;
     int commentCounter = 0;
@@ -398,7 +403,8 @@ token_t getToken(FILE *stream)
 
         // checking for EOF
         if (currentChar == EOF) {
-            loging("Found EOF");
+            if (log)
+                loging("Found EOF");
             break;
         }
 
