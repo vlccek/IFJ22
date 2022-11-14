@@ -927,7 +927,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1033,7 +1034,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;

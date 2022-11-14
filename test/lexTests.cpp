@@ -1148,7 +1148,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, expressionsSimple7) {
-            FILE *fp = prepareFile(R"("69696"* /* jak se mas */ / "6969" \n * "6969"/)");
+            FILE *fp = prepareFile(R"("69696"* /* jak se mas */ / "6969" 
+                                                            * "6969"/)");
 
 
             assertTokensEq(fp, {stringLiteral, multiplicationOp, divisionOp,
