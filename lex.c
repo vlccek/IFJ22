@@ -26,6 +26,9 @@ bool declare = false;
 // to differentiate if getToken() is inside recursion
 bool internal = false;
 
+// ending mark check
+bool endingMark = false;
+
 // represents current position in current row
 unsigned long position = 0;
 
@@ -1004,6 +1007,38 @@ token_t getToken(FILE *stream)
                         break;
                 }
                 break;
+            case '>':
+                switch (currentState)
+                {
+                    case null_f_s:
+                        endingMark = true;
+                        currentState = init_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
+                    default:
+                        currentState = unknown_f_s;
+                        break;
+                }
+                break;
             case '\"':
                 switch (currentState)
                 {
@@ -1366,169 +1401,186 @@ token_t getToken(FILE *stream)
     }
 
     // TODO assigns correct lexType to the output token
-    switch (currentState)
+    if (!endingMark)
     {
-        // literal states
-        case integer_lit_f_s:
-            outputToken.data.valueInteger = atoi(dstrGet(buffer));
-            outputToken.type = integerLiteral;
-            break;
-        case float_lit_f_s:
-        case float_lit_exp_f_s:
-            outputToken.data.valueFloat = strtod(dstrGet(buffer), NULL);
-            outputToken.type = floatLiteral;
-            break;
-        case string_lit_f_s:
-            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
-            outputToken.type = stringLiteral;
-            break;
-        // identifier states
-        case identifier_func_f_s:
-            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
-            if (strcmp(dstrGet(buffer), "else") == 0)
-            {
-                outputToken.type = elseKey;
-            }
-            else if (strcmp(dstrGet(buffer), "function") == 0)
-            {
-                outputToken.type = functionKey;
-            }
-            else if (strcmp(dstrGet(buffer), "if") == 0)
-            {
-                outputToken.type = ifKey;
-            }
-            else if (strcmp(dstrGet(buffer), "null") == 0)
-            {
-                outputToken.type = nullKey;
-            }
-            else if (strcmp(dstrGet(buffer), "return") == 0)
-            {
-                outputToken.type = returnKey;
-            }
-            else if (strcmp(dstrGet(buffer), "void") == 0)
-            {
-                outputToken.type = voidKey;
-            }
-            else if (strcmp(dstrGet(buffer), "while") == 0)
-            {
-                outputToken.type = whileKey;
-            }
-            else if (strcmp(dstrGet(buffer), "string") == 0)
-            {
-                outputToken.type = stringKey;
-            }
-            else if (strcmp(dstrGet(buffer), "float") == 0)
-            {
-                outputToken.type = floatKey;
-            }
-            else if (strcmp(dstrGet(buffer), "int") == 0)
-            {
-                outputToken.type = intKey;
-            }
-            // special case - header check for declare
-            else if (strcmp(dstrGet(buffer), "declare") == 0)
-            {
-                outputToken.type = declareHeader;
-            }                                                                                                                      
-            else
-            {
-                outputToken.type = identifierFunc;
-            }
-            break;
-        case identifier_var_f_s:
-            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
-            outputToken.type = identifierVar;
-            break;
-        // null type state
-        case null_f_s:
-            outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
-            if (strcmp(dstrGet(buffer), "string") == 0)
-            {
-                outputToken.type = stringNullKey;
-            }
-            else if (strcmp(dstrGet(buffer), "float") == 0)
-            {
-                outputToken.type = floatNullKey;
-            }
-            else if (strcmp(dstrGet(buffer), "int") == 0)
-            {
-                outputToken.type = intNullKey;
-            }
-            else
-            {
-                outputToken.type = unknown;
-            }
-            break;
-        // parentheses states
-        case left_par_f_s:
-            outputToken.type = leftPar;
-            break;
-        case right_par_f_s:
-            outputToken.type = rightPar;
-            break;
-        // curly braces states
-        case right_curly_f_s:
-            outputToken.type = curlyBraceRight;
-            break;
-        case left_curly_f_s:
-            outputToken.type = curlyBraceLeft;
-            break;
-        // assignment states
-        case equals_f_s:
-            outputToken.type = equals;
-            break;
-        case colon_f_s:
-            outputToken.type = colon;
-            break;
-        case semicolon_f_s:
-            outputToken.type = semicolon;
-            break;
-        case comma_f_s:
-            outputToken.type = comma;
-            break;
-        // operator states
-        case multiplication_f_s:
-            outputToken.type = multiplicationOp;
-            break;
-        case division_f_s:
-            outputToken.type = divisionOp;
-            break;
-        case plus_f_s:
-            outputToken.type = plusOp;
-            break;
-        case minus_f_s:
-            outputToken.type = minusOp;
-            break;
-        case concatenation_f_s:
-            outputToken.type = concatenationOp;
-            break;
-        case lesser_than_f_s:
-            outputToken.type = lesserThanOp;
-            break;
-        case lesser_eq_f_s:
-            outputToken.type = lesserEqOp;
-            break;
-        case greater_than_f_s:
-            outputToken.type = greaterThanOp;
-        case greater_eq_f_s:
-            outputToken.type = greaterEqOp;
-            break;
-        case not_eq_f_s:
-            outputToken.type = notEqOp;
-            break;
-        // commentary state
-        case com_line_f_s:
-            outputToken.type = ending;
-            break;
-        // init state (when stream ends with block commentary)
-        case init_s:
-            outputToken.type = ending;
-            break;
-        // unknown state and default
-        case unknown_f_s:
-        default:
-            PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
-            break;
+        switch (currentState)
+        {
+            // literal states
+            case integer_lit_f_s:
+                outputToken.data.valueInteger = atoi(dstrGet(buffer));
+                outputToken.type = integerLiteral;
+                break;
+            case float_lit_f_s:
+            case float_lit_exp_f_s:
+                outputToken.data.valueFloat = strtod(dstrGet(buffer), NULL);
+                outputToken.type = floatLiteral;
+                break;
+            case string_lit_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                outputToken.type = stringLiteral;
+                break;
+            // identifier states
+            case identifier_func_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                if (strcmp(dstrGet(buffer), "else") == 0)
+                {
+                    outputToken.type = elseKey;
+                }
+                else if (strcmp(dstrGet(buffer), "function") == 0)
+                {
+                    outputToken.type = functionKey;
+                }
+                else if (strcmp(dstrGet(buffer), "if") == 0)
+                {
+                    outputToken.type = ifKey;
+                }
+                else if (strcmp(dstrGet(buffer), "null") == 0)
+                {
+                    outputToken.type = nullKey;
+                }
+                else if (strcmp(dstrGet(buffer), "return") == 0)
+                {
+                    outputToken.type = returnKey;
+                }
+                else if (strcmp(dstrGet(buffer), "void") == 0)
+                {
+                    outputToken.type = voidKey;
+                }
+                else if (strcmp(dstrGet(buffer), "while") == 0)
+                {
+                    outputToken.type = whileKey;
+                }
+                else if (strcmp(dstrGet(buffer), "string") == 0)
+                {
+                    outputToken.type = stringKey;
+                }
+                else if (strcmp(dstrGet(buffer), "float") == 0)
+                {
+                    outputToken.type = floatKey;
+                }
+                else if (strcmp(dstrGet(buffer), "int") == 0)
+                {
+                    outputToken.type = intKey;
+                }
+                // special case - header check for declare
+                else if (strcmp(dstrGet(buffer), "declare") == 0)
+                {
+                    outputToken.type = declareHeader;
+                }                                                                                                                      
+                else
+                {
+                    outputToken.type = identifierFunc;
+                }
+                break;
+            case identifier_var_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                outputToken.type = identifierVar;
+                break;
+            // null type state
+            case null_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                if (strcmp(dstrGet(buffer), "string") == 0)
+                {
+                    outputToken.type = stringNullKey;
+                }
+                else if (strcmp(dstrGet(buffer), "float") == 0)
+                {
+                    outputToken.type = floatNullKey;
+                }
+                else if (strcmp(dstrGet(buffer), "int") == 0)
+                {
+                    outputToken.type = intNullKey;
+                }
+                else
+                {
+                    outputToken.type = unknown;
+                }
+                break;
+            // parentheses states
+            case left_par_f_s:
+                outputToken.type = leftPar;
+                break;
+            case right_par_f_s:
+                outputToken.type = rightPar;
+                break;
+            // curly braces states
+            case right_curly_f_s:
+                outputToken.type = curlyBraceRight;
+                break;
+            case left_curly_f_s:
+                outputToken.type = curlyBraceLeft;
+                break;
+            // assignment states
+            case equals_f_s:
+                outputToken.type = equals;
+                break;
+            case colon_f_s:
+                outputToken.type = colon;
+                break;
+            case semicolon_f_s:
+                outputToken.type = semicolon;
+                break;
+            case comma_f_s:
+                outputToken.type = comma;
+                break;
+            // operator states
+            case multiplication_f_s:
+                outputToken.type = multiplicationOp;
+                break;
+            case division_f_s:
+                outputToken.type = divisionOp;
+                break;
+            case plus_f_s:
+                outputToken.type = plusOp;
+                break;
+            case minus_f_s:
+                outputToken.type = minusOp;
+                break;
+            case concatenation_f_s:
+                outputToken.type = concatenationOp;
+                break;
+            case lesser_than_f_s:
+                outputToken.type = lesserThanOp;
+                break;
+            case lesser_eq_f_s:
+                outputToken.type = lesserEqOp;
+                break;
+            case greater_than_f_s:
+                outputToken.type = greaterThanOp;
+                break;
+            case greater_eq_f_s:
+                outputToken.type = greaterEqOp;
+                break;
+            case not_eq_f_s:
+                outputToken.type = notEqOp;
+                break;
+            // commentary state
+            case com_line_f_s:
+                outputToken.type = ending;
+                break;
+            // init state (when stream ends with block commentary)
+            case init_s:
+                outputToken.type = ending;
+                break;
+            // unknown state and default
+            case unknown_f_s:
+            default:
+                PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
+                break;
+        }
+    }
+    // after the ending mark has been set
+    else
+    {
+        switch (currentState)
+        {
+            case init_s:
+                outputToken.type = ending;
+                break;
+            default:
+                PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
+                break;
+        }
     }
 
     // frees all buffers and returns the output token
