@@ -24,6 +24,7 @@ namespace ifj22 {
                 fileForTest = fopen("test.txt", "ab+");
                 php = true;
                 declare = true;
+                endingMark = false;
             }
 
             void TearDown() override {

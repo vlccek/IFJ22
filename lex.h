@@ -11,6 +11,7 @@
 
 extern bool php;
 extern bool declare;
+extern bool endingMark;
 #ifndef LUAINTERPRET_LEX_H
 #define LUAINTERPRET_LEX_H
 
