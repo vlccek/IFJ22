@@ -309,7 +309,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.substr(1,str.length()-2).c_str());
         }
 
         TEST_F(LexTestTokenData, string_data_long_newline_tabs) {
@@ -320,7 +320,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.substr(1,str.length()-2).c_str());
         }
 
         TEST_F(LexTestTokenData, string_long_tabs) {
@@ -331,7 +331,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.substr(1,str.length()-2).c_str());
         }
 
         TEST_F(LexTestTokenData, string_verry_long) {
@@ -352,7 +352,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.substr(1,str.length()-2).c_str());
         }
 
         TEST_F(LexTestTokenData, string_verry_long_newLine) {
@@ -375,7 +375,7 @@ namespace ifj22 {
 
             auto token = getToken(fp);
 
-            EXPECT_STREQ(dstrGet(token.data.valueString), str.c_str());
+            EXPECT_STREQ(dstrGet(token.data.valueString), str.substr(1,str.length()-2).c_str());
         }
 
         TEST_F(LexTestTokenData, string_verry_long_newLine_comment) {
