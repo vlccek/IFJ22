@@ -891,7 +891,7 @@ namespace ifj22 {
 
         TEST_F(LexTestEdgeCase, floatFail6) {
             // funguje nejvetsi mozne cislo
-            auto text = std::string(PhpPrologString().get()) + std::to_string(INTMAX_MAX) + std::string(".69");
+            auto text = std::to_string(INTMAX_MAX) + std::string(".69");
             FILE *fp = prepareFile(text.c_str());
 
             assertTokensEq(fp, {floatKey,});

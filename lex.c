@@ -218,6 +218,8 @@ void incrementCounters(char c)
             rowPos = 0;
             break;
         case '\t':
+            rowPos += 4;
+            break;
         case '\r':
         case '\v':
         case '\f':
@@ -1003,7 +1005,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1106,7 +1109,8 @@ token_t getToken(FILE *stream)
                         currentState = string_lit_s;
                         break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
