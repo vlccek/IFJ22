@@ -1213,7 +1213,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestEdgeCase, weirdStringWithComments) {
-            FILE *fp = prepareFile(R"("\"\"\"\"\"susenky\"\"\"\"\multiplicationOp"" / /*Huh how r u**// "\"\"huhu\"\"")");
+            FILE *fp = prepareFile(R"("\"\"\"\"\"susenky\"\"\"\"\multiplicationOp"" / /*Huh how r u**// ""\"huhu\"\"")");
 
 
             assertTokensEq(fp, {stringLiteral, divisionOp, divisionOp, stringLiteral});
