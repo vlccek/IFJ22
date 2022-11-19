@@ -23,6 +23,12 @@ add_executable(${This} ${Sources})
 target_link_libraries(${This} gtest_main dstring)
 add_test(dynStrTest dynStrTest)
 
+set(This lexerTest)
+set(Sources lexTests.cpp)
+add_executable(${This} ${Sources})
+target_link_libraries(${This} gtest_main lex common)
+add_test(lexerTest lexerTest)
+
 # Parser test
 set(This parserTest)
 set(Sources parserTest.cpp)
@@ -35,5 +41,10 @@ add_test(parserTest parserTest)
 set(This expparserTest)
 set(Sources expParser.cpp)
 add_executable(${This} ${Sources})
+
 target_link_libraries(${This} gtest_main expParseTests lex)
 add_test(expparserTest expparserTest)
+
+target_link_libraries(${This} gtest_main expParseTests)
+target_compile_definitions(${This} PUBLIC TESTING=1)
+add_test(parserTest parserTest)

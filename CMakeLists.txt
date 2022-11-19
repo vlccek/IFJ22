@@ -36,6 +36,7 @@ add_library(dstring
         dynstring.c
         dynstring.h)
 
+
 add_library(parser
         parser.c
         parser.h
@@ -56,7 +57,8 @@ add_library(common
 
 add_library(lex
         lex.c
-        lex.h)
+        lex.h
+        dynstring)
 
 add_library(lextest
         lex.c
@@ -83,7 +85,6 @@ add_library(expParseTests
 
 
 target_compile_definitions(expParseTests PUBLIC)
-
 
 add_subdirectory(test)
 
