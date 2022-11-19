@@ -62,7 +62,6 @@ DataType ::= intKey
 DeclareVariable ::=  identifierVar equals DefVarAss
 DefVarAss ::= Exp semicolon
 DefVarAss ::= FceCall semicolon
-DefVarAss ::= semicolon
 
 ## Podmínky
 Condition ::= ifKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight ElseCond

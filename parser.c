@@ -2,7 +2,7 @@
 // Created by tonda on 05/10/22.
 //
 #include "parser.h"
-#include "LLtable.h"
+#include "semanticActions.h"
 
 void gStackPushStackToStack(genericStack *original, genericStack *toEmpty) {
     while (gStackTop(toEmpty) != NULL) {
@@ -54,6 +54,7 @@ ParserMemory *initializeMemory() {
     PSAStackInit(mem);
     stackViewInit(mem);
     createLLTable();
+    semanticActionsInit();
     return mem;
 }
 
@@ -76,8 +77,7 @@ void exitWrongToken(token_t actualToken, lexType expectedLexType) {
 void gStackPushReversed(genericStack *stack, PSAStackMember **rule) {
     make_var(tmpStack, genericStack*, sizeof(genericStack));
     while (*rule != NULL) {
-        gStackPush(tmpStack, *rule);
-        *rule++;
+        gStackPush(tmpStack, *rule++);
     }
     gStackPushStackToStack(stack, tmpStack);
     free(tmpStack);
@@ -92,7 +92,9 @@ PSAStackMember *getTopStack(ParserMemory *memory) {
 
 bool expressionParsing(PSAStackMember *topOfStack, lexType lastTokenTypy) {
     if (topOfStack->data == (int) Exp) {
-        InternalError("Top of stack: %s\nExpression parser is not ready yet.\n", getTerminalName(lastTokenTypy));
+        preToken(stdin);
+        expAnal();
+        preToken(stdin);
         return 1;
     }
     return 0;
@@ -104,7 +106,8 @@ rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
         exitNoRule(lastToken, (nonTerminalType) topOfStack.data);
 
     rule *firstRule = *newRule;
-    if (firstRule->from == Command && lastToken.type == (int) identifierVar);
+    if (firstRule->from == Command && lastToken.type == (int) identifierVar)
+    ;
     // todo: solve LL1 problem
     return firstRule;
 }
@@ -115,6 +118,9 @@ void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, t
     if (newRule->epsRule == false) {
         gStackPushReversed(memory->PSAStack, newRule->to);
     }
+
+    semanticActionInfo info;
+    newRule->semanticAction(info);
 }
 
 void checkTopAndLastMatch(const PSAStackMember *topOfStack, token_t *lastToken) {
@@ -127,7 +133,7 @@ bool parserEnding(token_t lastToken) {
     if (lastToken.type == ending)
         return 1;
     exitUnexpectedEnd(lastToken);
-
+    return 0;
 }
 
 int parser() {
@@ -151,9 +157,11 @@ int parser() {
                 lastToken = nextToken(stdin);
                 break;
             case nonTerminal:;
-                if (expressionParsing(topOfStack, lastToken.type))
+                if (expressionParsing(topOfStack, lastToken.type)) {
+                    gStackPop(memory->PSAStack);
+                    lastToken = nextToken(stdin);
                     continue;
-
+                }
                 deriveNonTerminal(memory, topOfStack, &lastToken);
                 break;
         }

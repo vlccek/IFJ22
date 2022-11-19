@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "lex.h"
+
 #include "common.h"
 
 // row and row position counters

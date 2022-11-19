@@ -180,4 +180,12 @@ void resetCounters();
 // sets the file pointer one token back
 void ungetToken(FILE *stream);
 
+
+extern bool teston;
+extern token_t *testTokens;
+
+
+token_t nextToken(FILE *a) ;
+void preToken(FILE *a);
+
 #endif

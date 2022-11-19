@@ -1,9 +1,10 @@
 /**
- * @file symtable.h
+ * @file common.c
  * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
  * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
  * @author Jindřich Vodák (xvodak06@fit.vutbr.cz)
+ * 
  * @brief Zdrojový soubor pomocných funkcí a maker
  * Implementace překladače imperativního jazyka IFJ21
  *
@@ -153,7 +154,7 @@ void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_l
     fprintf(stderr, "ERR_CODE: %d \n", ERR_SYNTAX);
 }
 
-void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, char *format, ...) {
+void pErrSyntaxExit(int terminalEnum, int rowNum, int rowPos, const char *format, ...) {
     va_list args;
     va_start (args, format);
     printArgsEnd(format, args);

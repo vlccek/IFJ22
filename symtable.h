@@ -7,20 +7,21 @@
  * Implementace překladače imperativního jazyka IFJ21
  *
  */
-#ifndef LUA_INTERPRET_SYMTABLE_H
-#define LUA_INTERPRET_SYMTABLE_H
+#ifndef IFJ22_SYMTABLE_H
+#define IFJ22_SYMTABLE_H
 
+#include "common.h"
+#include "lex.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "lex.h"
-#include "common.h"
 
 // musí být 2^n
 #define MAX_HTSIZE 128
 
+// definuje maximální zanoření v programu (kolik může být zanořených rámců)
 #define MAX_SYMTABLES 128
 
 // konstanty pro FNV-1a
@@ -30,10 +31,14 @@
 typedef enum symbolType {
     function,
     string,
-    number,
+    stringNullable,
+    floating,
+    floatingNullable,
     integer,
+    integerNullable,
     nil,
-    undefined
+    undefined, 
+    symbolTypeLenght
 
 } symbolType_t;
 
@@ -44,7 +49,7 @@ typedef struct symbol {
     int rowPosNumber;
     int symtablePos;
     struct DTList *firstParam;
-    struct DTList *firstReturn;
+    symbolType_t returnType;
 
 } symbol_t;
 
@@ -57,10 +62,13 @@ typedef struct htItem {
 typedef htItem_t *htTable_t[MAX_HTSIZE];
 
 typedef struct symtable {
-    htTable_t prototypes;
-    htTable_t global;
-    htTable_t table[MAX_SYMTABLES];
+    htTable_t functions;
+    htTable_t *current;
+    htTable_t main[MAX_SYMTABLES];
+    htTable_t infunc[MAX_SYMTABLES];
+    bool isInFunction;
     int last;
+    int lastMain;
 } symtable_t;
 
 typedef struct DTListMem DTListMem_T;
@@ -104,15 +112,20 @@ void symDestroy(symtable_t *symtable);
 void symNewLocal(symtable_t *symtable);
 void symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
-void symIPrototype(symtable_t *symtable, symbol_t symbol);
+void symIFunction(symtable_t *symtable, symbol_t symbol);
 symbol_t *symSearch(symtable_t *symtable, char *identifier);
+symbol_t *symSFunction(symtable_t *symtable, char *identifier);
+void symSwitch(symtable_t *symtable);
+void symSwitchBack(symtable_t *symtable);
+
 
 void initSStack(symStack_T *stack);
 void pushSStack(symStack_T *stack, symbol_t *member);
 symbol_t *popSStack(symStack_T *stack);
 
 DTList_T *createDTL(int count, ...);
-symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, DTList_T *returnList);
-void initDTList(DTList_T * list);
+symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
+void saveBuildInFunctions(symtable_t *symtable);
+void initDTList(DTList_T *list);
 void insDTList(DTList_T *list, enum symbolType typ);
-#endif //LUA_INTERPRET_SYMTABLE_H
+#endif//IFJ22_SYMTABLE_H

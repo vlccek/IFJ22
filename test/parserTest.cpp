@@ -7,9 +7,9 @@
 
 // Hide the io function since this will segfault in testing
 extern "C" {
-#include "../parser.h" // DON'T TOUCH THIS!
-#include "../parser.c" // DON'T TOUCH THIS!
 #include "../dynstring.h"
+#include "../lex.h"
+#include "../parser.h"// DON'T TOUCH THIS!
 
 #include <stdio.h>
 };
@@ -45,7 +45,7 @@ namespace ifj22 {
                             newToken.data.valueInteger = 10;
                             break;
                         case floatLiteral:
-                            newToken.data.valueFloat = 10;
+                            newToken.data.valueFloat = 10.8;
                             break;
                         case stringLiteral:
                             newToken.data.valueString = dstrInitChar("hovnokod");
@@ -54,6 +54,8 @@ namespace ifj22 {
                         case identifierVar:
                             newToken.data.valueString = dstrInitChar(
                                     (std::string("hovnokod") + std::to_string(uID)).c_str());
+                            break;
+                        default:
                             break;
                     }
                     tokens->push_back(newToken);
@@ -72,6 +74,7 @@ namespace ifj22 {
             }
 
             void SetUp() override {
+                teston = true;
                 tokens = new std::vector<token_t>;
             }
 
@@ -1201,48 +1204,48 @@ namespace ifj22 {
         }
 
         // Assignment without id
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId1) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId1) {
             tokensForParser(
                     {floatLiteral, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId2) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId2) {
             tokensForParser(
                     {integerLiteral, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId3) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId3) {
             tokensForParser(
                     {stringLiteral, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId4) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId4) {
             genVar("kokos");
             tokensForParserNoEnding({equals, stringLiteral, semicolon});
             genVar("kokos");
             tokensForParser({semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId5) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId5) {
             tokensForParser(
                     {leftPar, stringLiteral, rightPar, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
 
-        TEST_F(ParserTestSyntaxError, AssignmentWithoutId6) {
+        TEST_F(ParserTestSuccess, AssignmentWithoutId6) {
             tokensForParser(
                     {leftPar, integerLiteral, plusOp, integerLiteral, rightPar, semicolon});
 
-            ASSERT_EXIT_SYNTAX(parser())
+            ASSERT_NO_EXIT(parser())
         }
         // function calls
         TEST_F(ParserTestSuccess, functionDeclaration_GoodFuncCall1) {

@@ -8,8 +8,8 @@
 // Hide the io function since this will segfault in testing
 extern "C" {
 #include "../expParse.h"
+#include "../lex.h"
 // DON'T TOUCH THIS!
-
 #include <stdio.h>
 }
 
@@ -45,6 +45,7 @@ namespace ifj22 {
             }
 
             void SetUp() override {
+                teston = true;
                 tokens = new std::vector<token_t>;
             }
 
@@ -55,6 +56,26 @@ namespace ifj22 {
 
         TEST_F(expParserTest, basicTestExp) {
             tokensForParser({integerLiteral, plusOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
+        TEST_F(expParserTest, basicTestExp2) {
+            tokensForParser({integerLiteral, minusOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
+        TEST_F(expParserTest, basicTestExp5) {
+            tokensForParser({integerLiteral, multiplicationOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
+        TEST_F(expParserTest, basicTestExp4) {
+            tokensForParser({integerLiteral, divisionOp, integerLiteral, semicolon});
+
+            expAnal();
+        }
+        TEST_F(expParserTest, basicTestExp3) {
+            tokensForParser({integerLiteral, concatenationOp, integerLiteral, semicolon});
 
             expAnal();
         }

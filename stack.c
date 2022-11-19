@@ -15,6 +15,7 @@ genericStack *gStackInit() {
 //
 
 int gStackPush(genericStack *s, void *nm) {
+    loging("start of push");
     if (!s || !nm) {
         //Stack is null
         return ERR_RUNTIME;
@@ -29,21 +30,19 @@ int gStackPush(genericStack *s, void *nm) {
     s->top->next = oldtop;// point from old top to new top
     ///////////////////////// could be null!!!!
     s->c++;// update counter
+    loging("End of push");
     return 0;
 }
 
 void *gStackPop(genericStack *s) {
-    if (!s->top) {
-        // return NULL;
-    }
-
+    loging("start of pop");
     if (s->top == NULL) {
         exit(ERR_RUNTIME);
     }
-
     void *r = s->top->data;// saves old top
     s->top = s->top->next;
     s->c--;
+    loging("End of pop");
     return r;
 }
 
@@ -94,10 +93,14 @@ void *gStackPopBack(genericStack *s) {
 }
 
 void *gStackTop(genericStack *s) {
-    if (s->top == NULL)
+    loging("start of Top");
+    if (s->top == NULL) {
+        loging("end of Top");
         return NULL;
-    else
+    } else {
+        loging("end of Top");
         return s->top->data;
+    }
 }
 
 

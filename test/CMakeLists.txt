@@ -9,8 +9,14 @@ set(Sources stackTest.cpp)
 add_executable(${This} ${Sources})
 target_link_libraries(${This} gtest_main stack)
 add_test(stackTest stackTest)
+# symtable Tests
+set(This symtableTest)
+set(Sources symtableTest.cpp)
+add_executable(${This} ${Sources})
+target_link_libraries(${This} gtest_main symtable)
+add_test(symtableTest symtableTest)
 
-#
+# dynstring test
 set(This dynStrTest)
 set(Sources dynStrTest.cpp)
 add_executable(${This} ${Sources})
@@ -27,7 +33,7 @@ add_test(lexerTest lexerTest)
 set(This parserTest)
 set(Sources parserTest.cpp)
 add_executable(${This} ${Sources})
-target_link_libraries(${This} gtest_main parser lex common stack LLtable dstring    )
+target_link_libraries(${This} gtest_main parser lex common stack LLtable dstring semanticActions expParse)
 target_compile_definitions(${This} PUBLIC TESTING=1)
 add_test(parserTest parserTest)
 
@@ -35,6 +41,10 @@ add_test(parserTest parserTest)
 set(This expparserTest)
 set(Sources expParser.cpp)
 add_executable(${This} ${Sources})
+
+target_link_libraries(${This} gtest_main expParseTests lex)
+add_test(expparserTest expparserTest)
+
 target_link_libraries(${This} gtest_main expParseTests)
 target_compile_definitions(${This} PUBLIC TESTING=1)
 add_test(parserTest parserTest)
