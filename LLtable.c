@@ -10,8 +10,13 @@
 
 table Table;
 
+void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*semanticAction)(semanticActionInfo)) {
+    Table[nonTerminal][terminal]->rules[0]->semanticAction = semanticAction;
+}
+
+
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal) {
-    if(nonterm >= nonTerminalCount || terminal >= lexTypeCount)
+    if (nonterm >= nonTerminalCount || terminal >= lexTypeCount)
         InternalError("Trying to access Table[%d][%d]\n"
                       "Max nonTerminal is %d and max terminal: %d ",
                       nonterm, terminal, nonTerminalCount, lexTypeCount);

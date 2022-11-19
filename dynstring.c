@@ -47,7 +47,7 @@ void dstrRealloc(dynStr_t *str, int necessarySize) {
     str->string[str->size] = '\0';
 }
 
-void dstrAppend(dynStr_t *dstr, char *t) {
+void dstrAppend(dynStr_t *dstr, const char *t) {
     if (t == NULL) {
         return;
     }
@@ -75,7 +75,7 @@ void dstrfprint(dynStr_t *dstr, FILE *fp) {
     fprintf(fp, "%s", dstr->string);
 }
 
-void dstrPrepend(dynStr_t *dstr, char *newStr) {
+void dstrPrepend(dynStr_t *dstr, const char *newStr) {
     int appendStrSize = (int) strlen(newStr);
     if (dstr->size + appendStrSize + 1 >= dstr->maxSize) {
         // if size of concat strings is big then allocated reallocated new one
