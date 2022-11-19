@@ -61,7 +61,7 @@ dkms.conf
 # testing
 /lexTest.c
 /lexTest
-/test1
+/test*
 /Makefile
 =======
 /cmake-build-release/

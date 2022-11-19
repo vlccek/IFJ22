@@ -5,16 +5,18 @@
  * Implementace překladače jazyka IFJ22
  */
 
+#include "dynstring.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "dynstring.h"
 
+extern bool php;
+extern bool declare;
+extern bool endingMark;
 #ifndef LUAINTERPRET_LEX_H
 #define LUAINTERPRET_LEX_H
 
 // represents the type of lexical item
-typedef enum
-{
+typedef enum {
     // keywords
     elseKey,
     functionKey,
@@ -116,13 +118,18 @@ typedef enum
     not_eq_2_s,
     not_eq_f_s,
 
+    // escape sequences states
+    string_lit_backslash_s,
+    string_lit_backslash_x_s,
+    string_lit_backslash_x_1_s,
+    string_lit_backslash_1_s,
+    string_lit_backslash_2_s,
     
     // parentheses states
     left_par_f_s,
     right_par_f_s,
 
     // commentary states
-    com_slash_s,
     com_line_f_s,
     com_block_s,
     com_block_ast_s,

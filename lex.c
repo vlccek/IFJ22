@@ -17,12 +17,18 @@
 int row = 1;
 int rowPos = 0;
 
+// logging switch
+bool log = false;
+
 // header conditions
 bool php = false;
 bool declare = false;
 
 // to differentiate if getToken() is inside recursion
 bool internal = false;
+
+// ending mark check
+bool endingMark = false;
 
 // represents current position in current row
 unsigned long position = 0;
@@ -213,6 +219,8 @@ void incrementCounters(int c)
             rowPos = 0;
             break;
         case '\t':
+            rowPos += 4;
+            break;
         case '\r':
         case '\v':
         case '\f':
@@ -257,10 +265,11 @@ void decrementCounters(int c)
 }
 
 // gets next char and automatically increments counters
-int getNextChar(FILE *stream)
-{
+int getNextChar(FILE *stream) {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
+    if (log)
+        loging("Next char: %c %d", outputChar, outputChar);// TODO
     return outputChar;
 }
 
@@ -278,31 +287,11 @@ void ungetToken(FILE *stream)
     fseek(stream, position, SEEK_SET);
 }
 
-// reallocs the buffer if needed and then writes in the buffer
-void writeToBuffer(int *charCounter, int *bufferLevel, char *buffer, int currentChar)
+// writes in dynamic string serving as a buffer
+void writeToBuffer(dynStr_t *string, int currentChar)
 {
-    // temporary variables
-    int charCounterTemp = *charCounter;
-    int bufferLevelTemp = *bufferLevel;
-
-    // reallocs the buffer if needed
-    if (charCounterTemp > ((100 * bufferLevelTemp) - 2))
-    {
-        buffer = realloc(buffer, sizeof(char) * 100 * ++bufferLevelTemp);
-        if (buffer == NULL)
-        {
-            InternalError("Memory allocation failed.");
-        }
-    }
-
-    // writes to the buffer
-    buffer[charCounterTemp] = currentChar;
-    charCounterTemp++;
-
-    // updates values pointed at by pointers
-    *charCounter = charCounterTemp;
-    *bufferLevel = bufferLevelTemp;
-
+    char tmp[2] = {(char) currentChar, 0};
+    dstrAppend(string, &tmp);
     return;
 }
 
@@ -354,6 +343,19 @@ void headerCheck(FILE *stream)
     }
 }
 
+void flushEscSeqBuffer(dynStr_t *buffer, dynStr_t *escSeqBuffer)
+{
+    dstrAppend(buffer, dstrGet(escSeqBuffer));
+    clearBuffer(escSeqBuffer);
+    return;
+}
+
+void clearBuffer(dynStr_t *buffer)
+{
+    dstrFree(buffer);
+    buffer = dstrInit();
+}
+
 // gets the next token and advances the pointer TODO
 token_t getToken(FILE *stream)
 {
@@ -373,19 +375,18 @@ token_t getToken(FILE *stream)
     fflush(stream);
     position = ftell(stream);
 
-    int charCounter = 0;
     int currentChar = getc(stream);
+    if (log)
+        loging("Next char: %c", currentChar);   // TODO
 
-    int bufferLevel = 1;
     bool stop = false;
     int commentCounter = 0;
 
-    // sets up a buffer for saving chars inside a literal or identifier names
-    char *buffer = malloc(sizeof(char) * 100 * bufferLevel);
-    if (buffer == NULL)
-    {
-        InternalError("Memory allocation failed.");
-    }
+    // sets up a dynamic string (buffer) for saving chars inside a literal or identifier names
+    dynStr_t *buffer = dstrInit();
+    
+    // sets up a dynamic string (buffer) for saving chars while in a potential escape sequence
+    dynStr_t *escSeqBuffer = dstrInit();
 
     // EOF token
     if (currentChar == EOF)
@@ -399,25 +400,24 @@ token_t getToken(FILE *stream)
     }
 
     // parsing loop and FSM
-    while (stop != true)
-    {
+    while (stop != true) {
         // gets next char and increments counters
         currentChar = getNextChar(stream);
-
-        // buffer switch
+        // buffer switches
         bool bufferOn = false;
+        bool escBufferOn = false;
 
         // checking for EOF
-        if (currentChar == EOF)
-        {
+        if (currentChar == EOF) {
+            if (log)
+                loging("Found EOF");
             break;
         }
 
         // checking if the current state is the initial state
         // (row position of token is set when transitioning from init_s to a different state)
         bool isInit = false;
-        if (currentState == init_s)
-        {
+        if (currentState == init_s) {
             isInit = true;
         }
 
@@ -467,6 +467,97 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                        if (currentChar == 'n')
+                        {
+                            writeToBuffer(buffer, '\n');
+                            currentState = string_lit_s;
+                        }
+                        else if (currentChar == 't')
+                        {
+                            writeToBuffer(buffer, '\t');
+                            currentState = string_lit_s;
+                        }
+                        else if (currentChar == 'x')
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_x_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
+                    case string_lit_backslash_x_s:
+                        if (currentChar == 'a' ||
+                        currentChar == 'A' ||
+                        currentChar == 'b' ||
+                        currentChar == 'B' ||
+                        currentChar == 'c' ||
+                        currentChar == 'C' ||
+                        currentChar == 'd' ||
+                        currentChar == 'D' ||
+                        currentChar == 'e' ||
+                        currentChar == 'E' ||
+                        currentChar == 'f' ||
+                        currentChar == 'F')
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_x_1_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
+                    case string_lit_backslash_x_1_s:
+                        if (currentChar == 'a' ||
+                        currentChar == 'A' ||
+                        currentChar == 'b' ||
+                        currentChar == 'B' ||
+                        currentChar == 'c' ||
+                        currentChar == 'C' ||
+                        currentChar == 'd' ||
+                        currentChar == 'D' ||
+                        currentChar == 'e' ||
+                        currentChar == 'E' ||
+                        currentChar == 'f' ||
+                        currentChar == 'F')
+                        {
+                            // converting to the correct format
+                            writeToBuffer(escSeqBuffer, currentChar);
+                            dynStr_t *number = dstrSubstring(escSeqBuffer, 1, 4);
+                            dstrPrepend(number, "0");
+                            // converting from hex string to int
+                            int res = (int) strtol(dstrGet(number), NULL, 0);
+                            // converting back to string
+                            char string[4];
+                            sprintf(string, "%d", res);
+                            // writing the number to the buffer
+                            dstrAppend(buffer, string);
+                            dstrFree(number);
+
+                            currentState = string_lit_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        break;
+                    case colon_f_s:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -520,8 +611,94 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_x_s:
+                        escBufferOn = true;
+                        currentState = string_lit_backslash_x_1_s;
+                        break;
+                    case string_lit_backslash_x_1_s:
+                            // converting to the correct format
+                            writeToBuffer(escSeqBuffer, currentChar);
+                            dynStr_t *number = dstrSubstring(escSeqBuffer, 1, 4);
+                            dstrPrepend(number, "0");
+                            // converting from hex string to int
+                            int res = (int) strtol(dstrGet(number), NULL, 0);
+                            // converting back to string
+                            char string[4];
+                            sprintf(string, "%d", res);
+                            // writing the number to the buffer
+                            dstrAppend(buffer, string);
+                            dstrFree(number);
+
+                            currentState = string_lit_s;
+                        break;
+                    case string_lit_backslash_s:
+                        if (currentChar >= 48 && currentChar <= 55)
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_1_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
+                    case string_lit_backslash_1_s:
+                        if (currentChar >= 48 && currentChar <= 55)
+                        {
+                            escBufferOn = true;
+                            currentState = string_lit_backslash_2_s;
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
+                    case string_lit_backslash_2_s:
+                        if (currentChar >= 48 && currentChar <= 55)
+                        {
+                            // converting to the correct format
+                            writeToBuffer(escSeqBuffer, currentChar);
+                            dynStr_t *number = dstrSubstring(escSeqBuffer, 1, 4);
+                            // converting from octal string to int
+                            char *octal = dstrGet(number);
+                            char octalArray[3];
+                            for (int i = 0; i < 3; i++)
+                            {
+                                octalArray[i] = octal[i];
+                            }
+                            int res = (octalArray[0] - 48) * (8 * 8) + (octalArray[1] - 48) * (8) + (octalArray[2] - 48);
+                            // checking if the number is in range
+                            if (res < 1 || res > 255)
+                            {
+                                flushEscSeqBuffer(buffer, escSeqBuffer);
+                                currentState = string_lit_s;
+                            }
+                            else
+                            {
+                                // converting back to string
+                                char string[4];
+                                sprintf(string, "%d", res);
+                                // writing the number to the buffer
+                                dstrAppend(buffer, string);
+                                currentState = string_lit_s;
+                            }
+                            // freeing the support buffer
+                            dstrFree(number);
+                        }
+                        else
+                        {
+                            flushEscSeqBuffer(buffer, escSeqBuffer);
+                            bufferOn = true;
+                            currentState = string_lit_s;
+                        }
+                        break;
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -534,6 +711,7 @@ token_t getToken(FILE *stream)
                 {
                     case init_s:
                         currentState = colon_f_s;
+                        stop = true;
                         break;
                     case string_lit_s:
                         bufferOn = true;
@@ -545,6 +723,15 @@ token_t getToken(FILE *stream)
                     case com_block_s:
                     case com_block_ast_s:
                         currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
                         break;
                     default:
                         ungetNextChar(stream, currentChar);
@@ -570,14 +757,20 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     default:
                         ungetNextChar(stream, currentChar);
                         stop = true;
                         break;
                 }
-                break;
-            case ',':
-                // TODO
                 break;
             case '(':
                 switch (currentState)
@@ -602,8 +795,18 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -625,8 +828,18 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;               
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -648,6 +861,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -671,6 +893,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -682,10 +913,6 @@ token_t getToken(FILE *stream)
                     case init_s:
                         currentState = identifier_var_dollar_s;
                         break;
-                    case string_lit_s:
-                        bufferOn = true;
-                        currentState = string_lit_s;
-                        break;
                     case com_line_f_s:
                         currentState = com_line_f_s;
                         break;
@@ -693,8 +920,21 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -725,6 +965,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -747,6 +996,48 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
+                break;
+            case '>':
+                switch (currentState)
+                {
+                    case null_f_s:
+                        endingMark = true;
+                        currentState = init_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -769,8 +1060,21 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -778,7 +1082,7 @@ token_t getToken(FILE *stream)
                 switch (currentState)
                 {
                     case init_s:
-                        currentState = dot_f_s;
+                        currentState = concatenation_f_s;
                         stop = true;
                         break;
                     case integer_lit_f_s:
@@ -796,8 +1100,51 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
+                break;
+            case ',':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = comma_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -824,8 +1171,18 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -833,13 +1190,13 @@ token_t getToken(FILE *stream)
                 switch (currentState)
                 {
                     case init_s:
-                        currentState = com_slash_s;
+                        currentState = division_f_s;
                         break;
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
-                    case com_slash_s:
+                    case division_f_s:
                         currentState = com_line_f_s;
                         break;
                     case com_block_ast_s:
@@ -851,19 +1208,33 @@ token_t getToken(FILE *stream)
                     case com_block_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
             case '*':
                 switch (currentState)
                 {
+                    case init_s:
+                        currentState = multiplication_f_s;
+                        stop = true;
+                        break;
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
-                    case com_slash_s:
+                    case division_f_s:
                         currentState = com_block_s;
                         break;
                     case com_block_s:
@@ -872,6 +1243,49 @@ token_t getToken(FILE *stream)
                     case com_line_f_s:
                         currentState = com_line_f_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
+                break;
+            // escape sequences
+            case '\\':
+                switch (currentState)
+                {
+                    case string_lit_s:
+                        clearBuffer(escSeqBuffer);
+                        escBufferOn = true;
+                        currentState = string_lit_backslash_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -896,6 +1310,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         stop = true;
                         break;
@@ -919,6 +1342,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         stop = true;
                         break;
@@ -943,6 +1375,15 @@ token_t getToken(FILE *stream)
                     case com_block_ast_s:
                         currentState = com_block_s;
                         break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;                        
                     default:
                         currentState = unknown_f_s;
                         break;
@@ -960,150 +1401,202 @@ token_t getToken(FILE *stream)
             }
         }
 
-        // writes to buffer if the buffer switch is on
+        // writes to the buffer if the buffer switch is on
         if (bufferOn)
         {
-            writeToBuffer(&charCounter, &bufferLevel, buffer, currentChar);
+            writeToBuffer(buffer, currentChar);
+        }
+        if (escBufferOn)
+        {
+            writeToBuffer(escSeqBuffer, currentChar);
         }
     }
 
     // TODO assigns correct lexType to the output token
-    switch (currentState)
+    if (!endingMark)
     {
-        // literal states
-        case integer_lit_f_s:
-            outputToken.data.valueInteger = atoi(buffer);
-            outputToken.type = integerLiteral;
-            break;
-        case float_lit_f_s:
-        case float_lit_exp_f_s:
-            outputToken.data.valueFloat = strtod(buffer, NULL);
-            outputToken.type = floatLiteral;
-            break;
-        case string_lit_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
-            outputToken.type = stringLiteral;
-            break;
-        // identifier states
-        case identifier_func_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
-            if (strcmp(buffer, "else") == 0)
-            {
-                outputToken.type = elseKey;
-            }
-            else if (strcmp(buffer, "function") == 0)
-            {
-                outputToken.type = functionKey;
-            }
-            else if (strcmp(buffer, "if") == 0)
-            {
-                outputToken.type = ifKey;
-            }
-            else if (strcmp(buffer, "null") == 0)
-            {
-                outputToken.type = nullKey;
-            }
-            else if (strcmp(buffer, "return") == 0)
-            {
-                outputToken.type = returnKey;
-            }
-            else if (strcmp(buffer, "void") == 0)
-            {
-                outputToken.type = voidKey;
-            }
-            else if (strcmp(buffer, "while") == 0)
-            {
-                outputToken.type = whileKey;
-            }
-            else if (strcmp(buffer, "string") == 0)
-            {
-                outputToken.type = stringKey;
-            }
-            else if (strcmp(buffer, "float") == 0)
-            {
-                outputToken.type = floatKey;
-            }
-            else if (strcmp(buffer, "int") == 0)
-            {
-                outputToken.type = intKey;
-            }
-            // special case - header check for declare
-            else if (strcmp(buffer, "declare") == 0)
-            {
-                outputToken.type = declareHeader;
-            }                                                                                                                      
-            else
-            {
-                outputToken.type = identifierFunc;
-            }
-            break;
-        case identifier_var_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
-            outputToken.type = identifierVar;
-            break;
-        // null type state
-        case null_f_s:
-            outputToken.data.valueString = dstrInitChar(buffer);
-            if (strcmp(buffer, "string") == 0)
-            {
-                outputToken.type = stringNullKey;
-            }
-            else if (strcmp(buffer, "float") == 0)
-            {
-                outputToken.type = floatNullKey;
-            }
-            else if (strcmp(buffer, "int") == 0)
-            {
-                outputToken.type = intNullKey;
-            }
-            else
-            {
-                outputToken.type = unknown;
-            }
-            break;
-        // parentheses states
-        case left_par_f_s:
-            outputToken.type = leftPar;
-            break;
-        case right_par_f_s:
-            outputToken.type = rightPar;
-            break;
-        // curly braces states
-        case right_curly_f_s:
-            outputToken.type = curlyBraceRight;
-            break;
-        case left_curly_f_s:
-            outputToken.type = curlyBraceLeft;
-            break;
-        // assignment states
-        case equals_f_s:
-            outputToken.type = equals;
-            break;
-        case colon_f_s:
-            outputToken.type = colon;
-            break;
-        case semicolon_f_s:
-            outputToken.type = semicolon;
-            break;
-        case comma_f_s:
-            outputToken.type = comma;
-            break;
-        // commentary state
-        case com_line_f_s:
-            outputToken.type = ending;
-            break;
-        // init state (when stream ends with block commentary)
-        case init_s:
-            outputToken.type = ending;
-            break;
-        // unknown state and default
-        case unknown_f_s:
-        default:
-            fprintf(stderr, "Lexical error on ln %d, col %d!\n", outputToken.rowNumber, outputToken.rowPosNumber);
-            exit(1);
-            break;
+        switch (currentState)
+        {
+            // literal states
+            case integer_lit_f_s:
+                outputToken.data.valueInteger = atoi(dstrGet(buffer));
+                outputToken.type = integerLiteral;
+                break;
+            case float_lit_f_s:
+            case float_lit_exp_f_s:
+                outputToken.data.valueFloat = strtod(dstrGet(buffer), NULL);
+                outputToken.type = floatLiteral;
+                break;
+            case string_lit_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                outputToken.type = stringLiteral;
+                break;
+            // identifier states
+            case identifier_func_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                if (strcmp(dstrGet(buffer), "else") == 0)
+                {
+                    outputToken.type = elseKey;
+                }
+                else if (strcmp(dstrGet(buffer), "function") == 0)
+                {
+                    outputToken.type = functionKey;
+                }
+                else if (strcmp(dstrGet(buffer), "if") == 0)
+                {
+                    outputToken.type = ifKey;
+                }
+                else if (strcmp(dstrGet(buffer), "null") == 0)
+                {
+                    outputToken.type = nullKey;
+                }
+                else if (strcmp(dstrGet(buffer), "return") == 0)
+                {
+                    outputToken.type = returnKey;
+                }
+                else if (strcmp(dstrGet(buffer), "void") == 0)
+                {
+                    outputToken.type = voidKey;
+                }
+                else if (strcmp(dstrGet(buffer), "while") == 0)
+                {
+                    outputToken.type = whileKey;
+                }
+                else if (strcmp(dstrGet(buffer), "string") == 0)
+                {
+                    outputToken.type = stringKey;
+                }
+                else if (strcmp(dstrGet(buffer), "float") == 0)
+                {
+                    outputToken.type = floatKey;
+                }
+                else if (strcmp(dstrGet(buffer), "int") == 0)
+                {
+                    outputToken.type = intKey;
+                }
+                // special case - header check for declare
+                else if (strcmp(dstrGet(buffer), "declare") == 0)
+                {
+                    outputToken.type = declareHeader;
+                }                                                                                                                      
+                else
+                {
+                    outputToken.type = identifierFunc;
+                }
+                break;
+            case identifier_var_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                outputToken.type = identifierVar;
+                break;
+            // null type state
+            case null_f_s:
+                outputToken.data.valueString = dstrInitChar(dstrGet(buffer));
+                if (strcmp(dstrGet(buffer), "string") == 0)
+                {
+                    outputToken.type = stringNullKey;
+                }
+                else if (strcmp(dstrGet(buffer), "float") == 0)
+                {
+                    outputToken.type = floatNullKey;
+                }
+                else if (strcmp(dstrGet(buffer), "int") == 0)
+                {
+                    outputToken.type = intNullKey;
+                }
+                else
+                {
+                    outputToken.type = unknown;
+                }
+                break;
+            // parentheses states
+            case left_par_f_s:
+                outputToken.type = leftPar;
+                break;
+            case right_par_f_s:
+                outputToken.type = rightPar;
+                break;
+            // curly braces states
+            case right_curly_f_s:
+                outputToken.type = curlyBraceRight;
+                break;
+            case left_curly_f_s:
+                outputToken.type = curlyBraceLeft;
+                break;
+            // assignment states
+            case equals_f_s:
+                outputToken.type = equals;
+                break;
+            case colon_f_s:
+                outputToken.type = colon;
+                break;
+            case semicolon_f_s:
+                outputToken.type = semicolon;
+                break;
+            case comma_f_s:
+                outputToken.type = comma;
+                break;
+            // operator states
+            case multiplication_f_s:
+                outputToken.type = multiplicationOp;
+                break;
+            case division_f_s:
+                outputToken.type = divisionOp;
+                break;
+            case plus_f_s:
+                outputToken.type = plusOp;
+                break;
+            case minus_f_s:
+                outputToken.type = minusOp;
+                break;
+            case concatenation_f_s:
+                outputToken.type = concatenationOp;
+                break;
+            case lesser_than_f_s:
+                outputToken.type = lesserThanOp;
+                break;
+            case lesser_eq_f_s:
+                outputToken.type = lesserEqOp;
+                break;
+            case greater_than_f_s:
+                outputToken.type = greaterThanOp;
+                break;
+            case greater_eq_f_s:
+                outputToken.type = greaterEqOp;
+                break;
+            case not_eq_f_s:
+                outputToken.type = notEqOp;
+                break;
+            // commentary state
+            case com_line_f_s:
+                outputToken.type = ending;
+                break;
+            // init state (when stream ends with block commentary)
+            case init_s:
+                outputToken.type = ending;
+                break;
+            // unknown state and default
+            case unknown_f_s:
+            default:
+                PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
+                break;
+        }
+    }
+    // after the ending mark has been set
+    else
+    {
+        switch (currentState)
+        {
+            case init_s:
+                outputToken.type = ending;
+                break;
+            default:
+                PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
+                break;
+        }
     }
 
-    // returns the output token
+    // frees all buffers and returns the output token
+    dstrFree(buffer);
+    dstrFree(escSeqBuffer);
     return outputToken;
 }

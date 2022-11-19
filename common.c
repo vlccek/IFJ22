@@ -78,6 +78,9 @@ char *allTerminalNames[] = {
         "floatNullKey",
         "intNullKey",
 
+        // declare header
+        "declareHeader",
+
         // curly braces
         "curlyBraceRight",
         "curlyBraceLeft",
