@@ -10,6 +10,7 @@ Command ::= While
 Command ::= Return
 Command ::= Exp semicolon
 Command ::= semicolon
+Command ::= FceCall
 
 ## Definice funkcí
 FceDefine ::= FceHeader curlyBraceLeft FunctionBody curlyBraceRight
@@ -27,16 +28,18 @@ FuncReturnColonType ::= voidKey
 ## Function call
 FceCall ::= identifierFunc leftPar FirstFceParam rightPar
 FirstFceParam ::=''
-FirstFceParam ::= Exp CommaOrEpsParam
+FirstFceParam ::= Statement CommaOrEpsParam
 CommaOrEpsParam ::=''
-CommaOrEpsParam ::= comma Exp CommaOrEpsParam
+CommaOrEpsParam ::= comma Statement CommaOrEpsParam
+
+## Statement (simple expression)
+Statement ::= identifierVar
+Statement ::= floatLiteral
+Statement ::= stringLiteral
+Statement ::= integerLiteral
 
 ## Exp
-Exp ::= identifierVar
-Exp ::= FceCall
-Exp ::= floatLiteral
-Exp ::= stringLiteral
-Exp ::= integerLiteral
+Exp ::= Statement
 Exp ::= nullKey
 Exp ::= Exp minusOp Exp
 Exp ::= Exp plusOp Exp
@@ -56,9 +59,9 @@ DataType ::= intKey
 
 
 ## Definice proměné
-DeclareVariable ::=  identifierVar DefVarAss
-DefVarAss ::= equals Exp semicolon
-DefVarAss ::= semicolon
+DeclareVariable ::=  identifierVar equals DefVarAss
+DefVarAss ::= Exp semicolon
+DefVarAss ::= FceCall semicolon
 
 ## Podmínky
 Condition ::= ifKey leftPar Exp rightPar curlyBraceLeft FunctionBody curlyBraceRight ElseCond

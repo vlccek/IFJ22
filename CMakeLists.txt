@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 project(stack C)
+
+cmake_policy(SET CMP0135 NEW)
 
 
 include(FetchContent)
@@ -32,12 +34,22 @@ add_library(queue
 
 add_library(dstring
         dynstring.c
-        dynstring.c)
+        dynstring.h)
+
 
 add_library(parser
         parser.c
-        parser.h)
+        parser.h
+        lex.h
+        lex.c)
 
+add_library(semanticActions
+        semanticActions.c
+        semanticActions.h)
+
+add_library(expParse
+        expParse.c
+        expParse.h)
 
 add_library(common
         common.c
@@ -45,12 +57,34 @@ add_library(common
 
 add_library(lex
         lex.c
+        lex.h
+        dynstring)
+
+add_library(lextest
+        lex.c
         lex.h)
 
 add_library(LLtable
         LLtable.c
         LLtable.h)
 
+add_library(symtable
+        symtable.c
+        symtable.h)
+
+add_library(expParseTests
+        expParse.c
+        expParse.h
+        dynstring.c
+        dynstring.h
+        LLtable
+        parser
+        common
+        stack
+        lex)
+
+
+target_compile_definitions(expParseTests PUBLIC)
 
 add_subdirectory(test)
 
@@ -58,6 +92,7 @@ target_link_libraries(main
         stack
         queue
         dstring
-        LLtable)
+        LLtable
+        lex)
 
 

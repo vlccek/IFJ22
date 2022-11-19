@@ -9,12 +9,7 @@
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
 
-struct ints2 {
-    int a;
-    int b;
-};
 
-typedef struct ints2 typeOfStoredData;
 
 struct stackMem;
 struct stackMem {
@@ -32,22 +27,28 @@ struct stack {
 
 typedef struct stack genericStack;
 
-genericStack *stackInit();
+genericStack *gStackInit();
 
-int push(genericStack *s, void *nm);
+int gStackPush(genericStack *s, void *nm);
 
-void *pop(genericStack *s);
+void *gStackPop(genericStack *s);
 
-bool sIsEmpty(genericStack *st);
+bool gStackIsEmpty(genericStack *st);
 
-stackMem_t *stackBottom(genericStack *s, stackMem_t **pLast);
+stackMem_t *gStackBottom(genericStack *s, stackMem_t **pLast);
 
-void *popBack(genericStack *s);
+void *gStackPopBack(genericStack *s);
 
-void printMember(void *data);
 
-void printStack(genericStack *s, void (*printMem)(void *));
+void gStackPrint(genericStack *s, void (*printMem)(void *));
 
-void* stackTop(genericStack *s);
+void *gStackGetNth(genericStack *s, unsigned int numberForTop);
 
-#endif //STACK_STACK_H
+void*gStackTop(genericStack *s);
+
+void gStackPushBefore(genericStack *s, unsigned elementNum, void *data);
+
+void *getFromTop(genericStack *s, unsigned int numberForTop);
+
+
+#endif//STACK_STACK_H

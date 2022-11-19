@@ -10,26 +10,18 @@
 #ifndef STACK_PARSER_H
 #define STACK_PARSER_H
 
-#include "lex.h"
-#include "symtable.h"
-#include "common.h"
-#include "stack.h"
-
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
+#include "expParse.h"
+#include "lex.h"
+#include "stack.h"
+#include "symtable.h"
 
-#if TESTING == 1
-token_t *testTokens;
-#define nextToken(FILE) *testTokens++;
-#define stderrToFileIfTesting() freopen("stderr.txt", "w", stderr)
-#else
-#define nextToken(FILE) getToken(FILE)
-#define stderrToFileIfTesting() ;
-#endif
 
 #define MAX_STACK_VIEWABLE 100
 typedef struct uniqueCounter {

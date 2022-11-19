@@ -27,8 +27,8 @@ struct dynStr {
 typedef struct dynStr dynStr_t;
 
 /**
- * Inicalizaton
- * @return incalized string
+ * Initialization
+ * @return initialized string
  */
 dynStr_t *dstrInit();
 
@@ -55,10 +55,10 @@ static int newSize(int actualsize, int necessarySize);
 
 static void dstrRealloc(dynStr_t *str, int necessarySize);
 
-void dstrAppend(dynStr_t *dstr, char *t);
+void dstrAppend(dynStr_t *dstr, const char *t);
 
 dynStr_t *dstrInitChar(const char *text) ;
-void dstrPrepend(dynStr_t *dstr, char *newStr);
+void dstrPrepend(dynStr_t *dstr, const char *newStr);
 
 inline bool dstrCmp(dynStr_t *dstr, dynStr_t *dstr2) {
     return strcmp(dstr->string, dstr2->string) == 0 ? true : false;

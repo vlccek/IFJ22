@@ -43,6 +43,7 @@ typedef enum {
 
     // Exp
     Exp,
+    Statement,
 
     // Data types DataType
     DataType,
@@ -67,7 +68,14 @@ typedef enum {
     nonTerminalCount
 } nonTerminalType;
 
+// semantic actions
+typedef struct semanticActionInfo {
+    lexType lexType;
 
+
+} semanticActionInfo;
+
+// Ll table
 typedef enum PSADataType {
     endOfFile, // special token to detect end of stack
     terminal,
@@ -79,9 +87,12 @@ typedef struct PSAStackMember {
     PSADataType type;
 } PSAStackMember;
 
-typedef struct rule{
+typedef struct rule {
     int id;
     bool epsRule;
+
+    void (*semanticAction)(semanticActionInfo);
+
     nonTerminalType from;
     PSAStackMember *to[MAX_RULE_LEN];
 }rule;
@@ -93,7 +104,7 @@ typedef struct tableMember{
 }tableMember;
 
 
-typedef tableMember* table[(int) nonTerminalCount][(int) lexTypeCount];
+typedef tableMember *table[(int) nonTerminalCount][(int) lexTypeCount];
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal);
 
@@ -103,5 +114,8 @@ rule *findRuleByHandle(PSAStackMember *handleToFind[MAX_RULE_LEN]);
 
 PSAStackMember *createPSAStackMember(int value, PSADataType type);
 
-char* getStringPSAMember(PSAStackMember m);
+char *getStringPSAMember(PSAStackMember m);
+
+void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*semanticAction)(semanticActionInfo));
+
 #endif //LUAINTERPRET_LLTABLE_H

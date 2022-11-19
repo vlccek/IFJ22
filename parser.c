@@ -2,11 +2,11 @@
 // Created by tonda on 05/10/22.
 //
 #include "parser.h"
-#include "LLtable.h"
+#include "semanticActions.h"
 
-void pushStackToStack(genericStack *original, genericStack *toEmpty) {
-    while (stackTop(toEmpty) != NULL) {
-        push(original, pop(toEmpty));
+void gStackPushStackToStack(genericStack *original, genericStack *toEmpty) {
+    while (gStackTop(toEmpty) != NULL) {
+        gStackPush(original, gStackPop(toEmpty));
     }
 }
 
@@ -15,7 +15,7 @@ void pushStackToStack(genericStack *original, genericStack *toEmpty) {
 /// \param stackLength
 /// \return Returns 0 if NULL inserted otherwise returns 1
 int updateStackViewMember(ParserMemory *memory, int stackLength) {
-    PSAStackMember *top = (PSAStackMember *) stackTop(memory->PSAStack);
+    PSAStackMember *top = (PSAStackMember *) gStackTop(memory->PSAStack);
     if (top == NULL) {
         memory->stackView[stackLength] = NULL;
         return 0;
@@ -30,16 +30,16 @@ void updateStackView(ParserMemory *memory) {
     for (int stackLength = 0; stackLength < MAX_STACK_VIEWABLE; ++stackLength) {
         if (updateStackViewMember(memory, stackLength) == 0)
             break;
-        push(tmpStack, pop(memory->PSAStack));
+        gStackPush(tmpStack, gStackPop(memory->PSAStack));
     }
-    pushStackToStack(memory->PSAStack, tmpStack);
+    gStackPushStackToStack(memory->PSAStack, tmpStack);
     free(tmpStack);
 }
 
 void PSAStackInit(ParserMemory *mem) {
-    mem->PSAStack = stackInit();
-    push(mem->PSAStack, createPSAStackMember(0, endOfFile));
-    push(mem->PSAStack, createPSAStackMember(ProgramBody, nonTerminal));
+    mem->PSAStack = gStackInit();
+    gStackPush(mem->PSAStack, createPSAStackMember(0, endOfFile));
+    gStackPush(mem->PSAStack, createPSAStackMember(ProgramBody, nonTerminal));
     updateStackView(mem);
 }
 
@@ -54,6 +54,7 @@ ParserMemory *initializeMemory() {
     PSAStackInit(mem);
     stackViewInit(mem);
     createLLTable();
+    semanticActionsInit();
     return mem;
 }
 
@@ -73,32 +74,70 @@ void exitWrongToken(token_t actualToken, lexType expectedLexType) {
 }
 
 
-void pushReversed(genericStack *stack, PSAStackMember **rule) {
+void gStackPushReversed(genericStack *stack, PSAStackMember **rule) {
     make_var(tmpStack, genericStack*, sizeof(genericStack));
     while (*rule != NULL) {
-        push(tmpStack, *rule);
-        *rule++;
+        gStackPush(tmpStack, *rule++);
     }
-    pushStackToStack(stack, tmpStack);
+    gStackPushStackToStack(stack, tmpStack);
     free(tmpStack);
 }
 
 
 PSAStackMember *getTopStack(ParserMemory *memory) {
-    PSAStackMember *m = (PSAStackMember *) stackTop(memory->PSAStack);
+    PSAStackMember *m = (PSAStackMember *) gStackTop(memory->PSAStack);
     updateStackView(memory);
     return m;
 }
 
+bool expressionParsing(PSAStackMember *topOfStack, lexType lastTokenTypy) {
+    if (topOfStack->data == (int) Exp) {
+        preToken(stdin);
+        expAnal();
+        preToken(stdin);
+        return 1;
+    }
+    return 0;
+}
 
-void initParser() {
-    stderrToFileIfTesting();
+rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
+    rule **newRule = (getLLMember((nonTerminalType) topOfStack.data, lastToken.type))->rules;
+    if (newRule == NULL)
+        exitNoRule(lastToken, (nonTerminalType) topOfStack.data);
+
+    rule *firstRule = *newRule;
+    if (firstRule->from == Command && lastToken.type == (int) identifierVar)
+    ;
+    // todo: solve LL1 problem
+    return firstRule;
+}
+
+void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, token_t *lastToken) {
+    rule *newRule = findRule((*lastToken), *topOfStack);
+    gStackPop(memory->PSAStack);
+    if (newRule->epsRule == false) {
+        gStackPushReversed(memory->PSAStack, newRule->to);
+    }
+
+    semanticActionInfo info;
+    newRule->semanticAction(info);
+}
+
+void checkTopAndLastMatch(const PSAStackMember *topOfStack, token_t *lastToken) {
+    if ((*lastToken).type != topOfStack->data) {
+        exitWrongToken((*lastToken), (lexType) topOfStack->data);
+    }
+}
+
+bool parserEnding(token_t lastToken) {
+    if (lastToken.type == ending)
+        return 1;
+    exitUnexpectedEnd(lastToken);
+    return 0;
 }
 
 int parser() {
-    initParser();
     ParserMemory *memory = initializeMemory();
-
 
     bool success = false;
     PSAStackMember *topOfStack;
@@ -109,32 +148,21 @@ int parser() {
         topOfStack = getTopStack(memory);
         switch (topOfStack->type) {
             case endOfFile:
-                if (lastToken.type == ending)
-                    success = true;
-                else
-                    exitUnexpectedEnd(lastToken);
+                success = parserEnding(lastToken);
                 break;
             case terminal:
-                if (lastToken.type == topOfStack->data) {
-                    pop(memory->PSAStack);
-                    lastToken = nextToken(stdin);
-                } else {
-                    exitWrongToken(lastToken, (lexType) topOfStack->data);
-                }
+                checkTopAndLastMatch(topOfStack, &lastToken);
+
+                gStackPop(memory->PSAStack);
+                lastToken = nextToken(stdin);
                 break;
             case nonTerminal:;
-                if (topOfStack->data == (int) Exp)
-                    InternalError("\nExpression parser is not ready yet.");
-
-                rule **newRule = (getLLMember((nonTerminalType) topOfStack->data, lastToken.type))->rules;
-                if (newRule == NULL)
-                    exitNoRule(lastToken, (nonTerminalType) topOfStack->data);
-                if ((*newRule)->epsRule) {
-                    pop(memory->PSAStack);
-                } else {
-                    pop(memory->PSAStack);
-                    pushReversed(memory->PSAStack, (*newRule)->to);
+                if (expressionParsing(topOfStack, lastToken.type)) {
+                    gStackPop(memory->PSAStack);
+                    lastToken = nextToken(stdin);
+                    continue;
                 }
+                deriveNonTerminal(memory, topOfStack, &lastToken);
                 break;
         }
     }

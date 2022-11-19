@@ -5,16 +5,18 @@
  * Implementace překladače jazyka IFJ22
  */
 
+#include "dynstring.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "dynstring.h"
 
+extern bool php;
+extern bool declare;
+extern bool endingMark;
 #ifndef LUAINTERPRET_LEX_H
 #define LUAINTERPRET_LEX_H
 
 // represents the type of lexical item
-typedef enum
-{
+typedef enum {
     // keywords
     elseKey,
     functionKey,
@@ -29,6 +31,9 @@ typedef enum
     stringNullKey,
     floatNullKey,
     intNullKey,
+
+    // declare header
+    declareHeader,
 
     // curly braces
     curlyBraceRight,
@@ -113,13 +118,39 @@ typedef enum
     not_eq_2_s,
     not_eq_f_s,
 
+    // escape sequences states
+    string_lit_backslash_s,
+    string_lit_backslash_x_s,
+    string_lit_backslash_x_1_s,
+    string_lit_backslash_1_s,
+    string_lit_backslash_2_s,
+    
+    // parentheses states
+    left_par_f_s,
+    right_par_f_s,
+
+    // commentary states
+    com_line_f_s,
+    com_block_s,
+    com_block_ast_s,
+
+    // curly braces states
+    left_curly_f_s,
+    right_curly_f_s,
+
+    // assignment states
+    equals_f_s,
+    colon_f_s,
+    semicolon_f_s,
+    comma_f_s,
+
     // TODO
 
     // nullable type state
     null_f_s,
 
     // unknown state
-    unknown_f_s
+    unknown_f_s,
 } state;
 
 // represents the value of the token
@@ -155,5 +186,13 @@ void resetCounters();
 
 // sets the file pointer one token back
 void ungetToken(FILE *stream);
+
+
+extern bool teston;
+extern token_t *testTokens;
+
+
+token_t nextToken(FILE *a) ;
+void preToken(FILE *a);
 
 #endif
