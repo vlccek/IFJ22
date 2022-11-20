@@ -83,19 +83,10 @@ add_library(expParseTests
         stack
         lex)
 
-add_library(generator
-        generator/generator.c
-        generator/generator.h
-        generator/igen.c
-        generator/igen.h
-        generator/3adres.c
-        generator/3adres.h
-)
-
-
 target_compile_definitions(expParseTests PUBLIC)
 
 add_subdirectory(test)
+add_subdirectory(generator)
 
 target_link_libraries(main
         stack
