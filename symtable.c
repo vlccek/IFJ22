@@ -362,7 +362,7 @@ void printHashtable(htTable_t *table, char *index) {
 void printSymbol(symbol_t *symbol) {
     if (!symbol)
     {
-        printlog("(NULL)", 1);
+        printlog("(NULL)");
         return;
     }
     
