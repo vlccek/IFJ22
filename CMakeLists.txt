@@ -83,6 +83,15 @@ add_library(expParseTests
         stack
         lex)
 
+add_library(generator
+        generator/generator.c
+        generator/generator.h
+        generator/igen.c
+        generator/igen.h
+        generator/3adres.c
+        generator/3adres.h
+)
+
 
 target_compile_definitions(expParseTests PUBLIC)
 
@@ -93,6 +102,13 @@ target_link_libraries(main
         queue
         dstring
         LLtable
-        lex)
+        lex
+        parser
+        semanticActions
+        expParse
+        common
+        symtable
+        generator
+        )
 
 
