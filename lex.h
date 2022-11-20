@@ -195,4 +195,6 @@ extern token_t *testTokens;
 token_t nextToken(FILE *a) ;
 void preToken(FILE *a);
 
+void clearBuffer(dynStr_t *buffer);
+
 #endif
