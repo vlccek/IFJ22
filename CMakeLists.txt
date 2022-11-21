@@ -39,9 +39,7 @@ add_library(dstring
 
 add_library(parser
         parser.c
-        parser.h
-        lex.h
-        lex.c)
+        parser.h)
 
 add_library(semanticActions
         semanticActions.c
@@ -56,11 +54,6 @@ add_library(common
         common.h)
 
 add_library(lex
-        lex.c
-        lex.h
-        dynstring)
-
-add_library(lextest
         lex.c
         lex.h)
 
@@ -88,18 +81,46 @@ target_compile_definitions(expParseTests PUBLIC)
 add_subdirectory(test)
 add_subdirectory(generator)
 
-target_link_libraries(main
-        stack
-        queue
-        dstring
-        LLtable
+target_link_libraries(parser
         lex
-        parser
         semanticActions
-        expParse
         common
-        symtable
-        generator
+        expParse
+        stack
+        symtable)
+
+target_link_libraries(semanticActions
+        LLtable)
+
+target_link_libraries(expParse
+        LLtable
+        stack
+        common
+        stack)
+
+target_link_libraries(dstring
+        common)
+
+target_link_libraries(lex
+        common
+        dstring)
+
+target_link_libraries(LLtable
+        common
+        lex)
+
+target_link_libraries(queue
+        stack)
+
+target_link_libraries(stack
+        common)
+
+target_link_libraries(symtable
+        common
+        lex)
+
+target_link_libraries(main
+        parser
         )
 
 
