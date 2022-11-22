@@ -43,7 +43,7 @@ typedef enum symbolType {
 } symbolType_t;
 
 typedef struct symbol {
-    char *identifier;
+    const char *identifier;
     symbolType_t type;
     int rowNumber;
     int rowPosNumber;
@@ -54,7 +54,7 @@ typedef struct symbol {
 } symbol_t;
 
 typedef struct htItem {
-    char *key;
+    const char *key;
     symbol_t value;
     struct htItem *next;
 } htItem_t;
@@ -96,15 +96,15 @@ typedef struct symStack {
 } symStack_T;
 
 void printSymtable(symtable_t *symtable);
-void printHashtable(htTable_t *table, char *index);
+void printHashtable(htTable_t *table, const char *index);
 void printSymbol(symbol_t *symbol);
 
 size_t ht_get_hash(const char *key);
 void htInit(htTable_t *table);
-htItem_t *htSearch(htTable_t *table, char *key);
-void htInsertItem(htTable_t *table, char *key, symbol_t data);
-symbol_t *htGetItem(htTable_t *table, char *key);
-void htDeleteItem(htTable_t *table, char *key);
+htItem_t *htSearch(htTable_t *table, const char *key);
+void htInsertItem(htTable_t *table, const char *key, symbol_t data);
+symbol_t *htGetItem(htTable_t *table, const char *key);
+void htDeleteItem(htTable_t *table, const char *key);
 void htDestroy(htTable_t *table);
 
 void symInit(symtable_t *symtable);
@@ -113,8 +113,8 @@ void symNewLocal(symtable_t *symtable);
 void symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
 void symIFunction(symtable_t *symtable, symbol_t symbol);
-symbol_t *symSearch(symtable_t *symtable, char *identifier);
-symbol_t *symSFunction(symtable_t *symtable, char *identifier);
+symbol_t *symSearch(symtable_t *symtable, const char *identifier);
+symbol_t *symSFunction(symtable_t *symtable, const char *identifier);
 void symSwitch(symtable_t *symtable);
 void symSwitchBack(symtable_t *symtable);
 
@@ -124,7 +124,7 @@ void pushSStack(symStack_T *stack, symbol_t *member);
 symbol_t *popSStack(symStack_T *stack);
 
 DTList_T *createDTL(int count, ...);
-symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
+symbol_t *createSymbol(const char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
 void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);
 void insDTList(DTList_T *list, enum symbolType typ);
