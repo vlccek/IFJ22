@@ -102,7 +102,7 @@ void htInit(htTable_t *table) {
     }
 }
 
-htItem_t *htSearch(htTable_t *table, char *key) {
+htItem_t *htSearch(htTable_t *table, const char *key) {
     htItem_t *item = (*table)[ht_get_hash(key)];
     while (item != NULL) {
         if (strcmp(item->key, key) == 0) {
@@ -113,7 +113,7 @@ htItem_t *htSearch(htTable_t *table, char *key) {
     return NULL;
 }
 
-void htInsertItem(htTable_t *table, char *key, symbol_t value) {
+void htInsertItem(htTable_t *table, const char *key, symbol_t value) {
     htItem_t *item = htSearch(table, key);
     if (item != NULL) {
         printHashtable(table, "Original");
@@ -134,7 +134,7 @@ void htInsertItem(htTable_t *table, char *key, symbol_t value) {
     (*table)[hash] = item;
 }
 
-symbol_t *htGetItem(htTable_t *table, char *key) {
+symbol_t *htGetItem(htTable_t *table, const char *key) {
     htItem_t *item = htSearch(table, key);
     if (item == NULL) {
         return NULL;
@@ -142,7 +142,7 @@ symbol_t *htGetItem(htTable_t *table, char *key) {
     return &item->value;
 }
 
-void htDeleteItem(htTable_t *table, char *key) {
+void htDeleteItem(htTable_t *table, const char *key) {
     htItem_t *item = (*table)[ht_get_hash(key)];
     htItem_t *prevItem = NULL;
     while (item != NULL) {
@@ -174,7 +174,7 @@ void htDestroy(htTable_t *table) {
 // endregion
 // region SymTable
 
-symbol_t *createSymbol(char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType) {
+symbol_t *createSymbol(const char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType) {
     symbol_t *newSymbol = (symbol_t *) malloc(sizeof(symbol_t));
     if (newSymbol == NULL) {
         InternalError("Malloc failed.");
@@ -285,7 +285,7 @@ void symIFunction(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->functions), symbol.identifier, symbol);
 }
 
-symbol_t *symSearch(symtable_t *symtable, char *identifier) {
+symbol_t *symSearch(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
     for (int i = 0; i <= symtable->last; i++)
     {
@@ -298,7 +298,7 @@ symbol_t *symSearch(symtable_t *symtable, char *identifier) {
     return NULL;
 }
 
-symbol_t *symSFunction(symtable_t *symtable, char *identifier) {
+symbol_t *symSFunction(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
     found = htSearch(&(symtable->functions), identifier);
     if (found) {
@@ -338,7 +338,7 @@ void symSwitchBack(symtable_t *symtable)
 }
 
 
-void printHashtable(htTable_t *table, char *index) {
+void printHashtable(htTable_t *table, const char *index) {
     htItem_t *item;
     bool hashTableNotEmpty = false;
     for (int i = 0; i < MAX_HTSIZE; ++i) {
@@ -362,7 +362,7 @@ void printHashtable(htTable_t *table, char *index) {
 void printSymbol(symbol_t *symbol) {
     if (!symbol)
     {
-        printlog("(NULL)", 1);
+        printlog("(NULL)");
         return;
     }
     

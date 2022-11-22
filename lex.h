@@ -9,11 +9,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef LUAINTERPRET_LEX_H
+#define LUAINTERPRET_LEX_H
 extern bool php;
 extern bool declare;
 extern bool endingMark;
-#ifndef LUAINTERPRET_LEX_H
-#define LUAINTERPRET_LEX_H
 
 // represents the type of lexical item
 typedef enum {
@@ -191,8 +191,6 @@ void ungetToken(FILE *stream);
 extern bool teston;
 extern token_t *testTokens;
 
-
-token_t nextToken(FILE *a) ;
-void preToken(FILE *a);
+void clearBuffer(dynStr_t *buffer);
 
 #endif

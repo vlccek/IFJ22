@@ -18,7 +18,7 @@ int row = 1;
 int rowPos = 0;
 
 // logging switch
-bool log = false;
+bool lexLog = false;
 
 // header conditions
 bool php = false;
@@ -268,7 +268,7 @@ void decrementCounters(int c)
 int getNextChar(FILE *stream) {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
-    if (log)
+    if (lexLog)
         loging("Next char: %c %d", outputChar, outputChar);// TODO
     return outputChar;
 }
@@ -291,7 +291,7 @@ void ungetToken(FILE *stream)
 void writeToBuffer(dynStr_t *string, int currentChar)
 {
     char tmp[2] = {(char) currentChar, 0};
-    dstrAppend(string, &tmp);
+    dstrAppend(string, tmp);
     return;
 }
 
@@ -376,7 +376,7 @@ token_t getToken(FILE *stream)
     position = ftell(stream);
 
     int currentChar = getc(stream);
-    if (log)
+    if (lexLog)
         loging("Next char: %c", currentChar);   // TODO
 
     bool stop = false;
@@ -409,7 +409,7 @@ token_t getToken(FILE *stream)
 
         // checking for EOF
         if (currentChar == EOF) {
-            if (log)
+            if (lexLog)
                 loging("Found EOF");
             break;
         }

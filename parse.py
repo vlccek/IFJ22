@@ -1,7 +1,10 @@
 import pandas as pd
+import lxml
+import html5lib
+import bs4
 import numpy as np
 
-with open("LL(1) Parser Generator.html") as fp:
+with open("LLtable.html") as fp:
     df_list = pd.read_html(fp, encoding='ISO-8859-1')  # this parses all the tables in webpages to a list
     df = df_list[0]
     df.head()

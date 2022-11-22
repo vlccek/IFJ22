@@ -21,6 +21,7 @@
 #include "lex.h"
 #include "stack.h"
 #include "symtable.h"
+#include "semanticActions.h"
 
 
 #define MAX_STACK_VIEWABLE 100

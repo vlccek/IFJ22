@@ -2,7 +2,6 @@
 // Created by tonda on 05/10/22.
 //
 #include "parser.h"
-#include "semanticActions.h"
 
 void gStackPushStackToStack(genericStack *original, genericStack *toEmpty) {
     while (gStackTop(toEmpty) != NULL) {
@@ -75,7 +74,7 @@ void exitWrongToken(token_t actualToken, lexType expectedLexType) {
 
 
 void gStackPushReversed(genericStack *stack, PSAStackMember **rule) {
-    make_var(tmpStack, genericStack*, sizeof(genericStack));
+    genericStack *tmpStack = gStackInit();
     while (*rule != NULL) {
         gStackPush(tmpStack, *rule++);
     }
@@ -92,9 +91,9 @@ PSAStackMember *getTopStack(ParserMemory *memory) {
 
 bool expressionParsing(PSAStackMember *topOfStack, lexType lastTokenTypy) {
     if (topOfStack->data == (int) Exp) {
-        preToken(stdin);
+        ungetToken(stdin);
         expAnal();
-        preToken(stdin);
+        ungetToken(stdin);
         return 1;
     }
     return 0;
@@ -120,7 +119,7 @@ void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, t
     }
 
     semanticActionInfo info;
-    newRule->semanticAction(info);
+    callSemanticAction(newRule, info);
 }
 
 void checkTopAndLastMatch(const PSAStackMember *topOfStack, token_t *lastToken) {
@@ -143,7 +142,7 @@ int parser() {
     PSAStackMember *topOfStack;
     token_t lastToken;
 
-    lastToken = nextToken(stdin);
+    lastToken = getToken(stdin);
     while (success == false) {
         topOfStack = getTopStack(memory);
         switch (topOfStack->type) {
@@ -154,12 +153,12 @@ int parser() {
                 checkTopAndLastMatch(topOfStack, &lastToken);
 
                 gStackPop(memory->PSAStack);
-                lastToken = nextToken(stdin);
+                lastToken = getToken(stdin);
                 break;
             case nonTerminal:;
                 if (expressionParsing(topOfStack, lastToken.type)) {
                     gStackPop(memory->PSAStack);
-                    lastToken = nextToken(stdin);
+                    lastToken = getToken(stdin);
                     continue;
                 }
                 deriveNonTerminal(memory, topOfStack, &lastToken);

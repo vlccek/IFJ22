@@ -1,29 +1,16 @@
-//
-// Created by jvlk on 20.9.22.
-//
+/**
+ * @file main.c
+ * @author Jan Brudný (xbrudn02@stud.fit.vut.cz)
+ * @brief Hlavní soubor programu
+ * Implementace překladače imperativního jazyka IFJ21
+ * 
+ * @version 0.1
+ * @date 2022-11-20
+ */
 
-#include "stack.h"
-#include "dynstring.h"
+#include "parser.h"
+#include <stdio.h>
 
-int main(int argc, char *argv[]) {
-
-    dynStr_t *dstr = dstrInit();
-    char *tmp = "Tvojem mamam!";
-
-    dstrAppend(dstr, tmp);
-    dstrAppend(dstr, tmp);
-    dstrAppend(dstr, tmp);
-    dstrAppend(dstr, tmp);
-    dstrAppend(dstr, tmp);
-    dstrAppend(dstr, tmp);
-    dstrAppend(dstr, tmp);
-    dstrAppend(dstr, tmp);
-
-    char *a = dstrGet(dstr);
-
-    dstrPrint(dstr);
-
-    dstrFree(dstr);
-    return 0;
-
+int main() {
+    return parser();
 }
