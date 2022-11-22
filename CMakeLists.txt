@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
-project(stack C)
+project(IFJ22 C)
 
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
 cmake_policy(SET CMP0135 NEW)
+endif()
 
 
 include(FetchContent)
@@ -43,7 +45,7 @@ add_library(parser
 
 add_library(semanticActions
         semanticActions.c
-        semanticActions.h)
+        semanticActions.h semanticActionInfo.c semanticActionInfo.h)
 
 add_library(expParse
         expParse.c
