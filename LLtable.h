@@ -12,6 +12,7 @@
 
 #include "lex.h"
 #include "common.h"
+#include "semanticActionInfo.h"
 
 #define MAX_RULE_LEN 10
 #define MAX_RULES_IN_CELL 10
@@ -67,13 +68,6 @@ typedef enum {
     FunctionBody,
     nonTerminalCount
 } nonTerminalType;
-
-// semantic actions
-typedef struct semanticActionInfo {
-    lexType lexType;
-
-
-} semanticActionInfo;
 
 // Ll table
 typedef enum PSADataType {

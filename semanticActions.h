@@ -6,9 +6,15 @@
 #define STACK_SEMANTICACTIONS_H
 
 #include "LLtable.h"
+#include "semanticActionInfo.h"
 
+// semantic actions
 
 void semanticActionsInit();
+void testingSemanticAction(semanticActionInfo info);
+void callSemanticAction(rule *pravidlo, semanticActionInfo info);
+
+
 
 
 #endif //STACK_SEMANTICACTIONS_H
