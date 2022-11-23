@@ -9,6 +9,8 @@
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
 
+#define STACK_DEBUG 0
+
 
 
 struct stackMem;
