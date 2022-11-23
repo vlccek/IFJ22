@@ -18,7 +18,7 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
     
     if (!pravidlo->semanticAction)
     {
-        loging("Pravidlo nema semantickou akci. ID: %d, nt: %s", pravidlo->id, getNonTerminalName(pravidlo->from));
+        loging("Pravidlo nema semantickou akci. ID: %2d, nt: %s", pravidlo->id, getNonTerminalName(pravidlo->from));
         return;
     }
     pravidlo->semanticAction(info);
