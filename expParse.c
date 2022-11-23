@@ -86,7 +86,7 @@ void pushExpNonTerminal(genericStack *sTokens) {
  */
 expParserType *getTokenP() {
     make_var(b, token_t *, sizeof(token_t));
-    *b = getToken(NULL);
+    *b = getToken(stdin);
     make_var(expAnalt, expParserType *, sizeof(expParserType));
     expAnalt->type = b->type;
     expAnalt->tokenData = b;
