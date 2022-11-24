@@ -26,4 +26,15 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
 
 void semanticActionsInit() {
     setSemanticAction(ProgramBody, ifKey, &testingSemanticAction);
+    setSemanticAction(ProgramBody, identifierVar, &SA_programBody);
+    setSemanticAction(Command, identifierVar, &SA_Command_identifierVar);
+}
+
+void SA_programBody(semanticActionInfo info)
+{
+    loging("SA_programBody");
+}
+void SA_Command_identifierVar(semanticActionInfo info)
+{
+    loging("SA_Command_identifierVar");
 }
