@@ -1,5 +1,5 @@
 /**
- * @file 3adres.h
+ * @file generator_3adres.h
  * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
  * @brief definice datových typů pro práci s tříadresným kódem
  * @version 0.1
@@ -11,8 +11,8 @@
 #ifndef IFJ22_3ADRES_H
 #define IFJ22_3ADRES_H
 
-#include "../common.h"
-#include "../symtable.h"
+#include "common.h"
+#include "symtable.h"
 
 typedef enum i3InstructionType {
     I_ADD,

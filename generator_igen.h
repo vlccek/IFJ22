@@ -1,5 +1,5 @@
 /**
- * @file igen.c
+ * @file generator_igen.h
  * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
  * @brief generator tříadresného kódu
  * @version 0.1
@@ -9,4 +9,8 @@
  * 
  */
 
-#include "igen.h"
+#ifndef IFJ22_IGEN_H
+#define IFJ22_IGEN_H
+#include "common.h"
+
+#endif // IFJ22_IGEN_H
