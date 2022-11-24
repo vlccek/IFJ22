@@ -1,4 +1,5 @@
 all: prekladac
+.PHONY: prekladac %.o tar clean
 # CPPFLAgs jsou flagy preprocesoru, ne c++ :D
 %.o : %.c %.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
@@ -10,3 +11,7 @@ prekladac: $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) prekladac
+
+
+tar:
+	tar -czvf xjarol06.tgz *.c *.h Makefile dokumentace.pdf
