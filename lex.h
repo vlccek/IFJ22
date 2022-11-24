@@ -185,8 +185,7 @@ void freeToken(token_t *input);
 void resetCounters();
 
 // sets the file pointer one token back
-void ungetToken(FILE *stream);
-
+token_t ungetToken();
 
 extern bool teston;
 extern token_t *testTokens;

@@ -33,6 +33,9 @@ bool endingMark = false;
 // represents current position in current row
 unsigned long position = 0;
 
+// buffer for the last token
+token_t lastToken;
+
 // prints the content of a token
 void printTokenData(token_t input)
 {
@@ -281,10 +284,10 @@ void ungetNextChar(FILE *stream, int currentChar)
     return;
 }
 
-// sets the file pointer one token back TODO testing! could potentially cause problems due to different position calculating
-void ungetToken(FILE *stream)
+// sets the file pointer one token back
+token_t ungetToken(FILE *stream)
 {
-    fseek(stream, position, SEEK_SET);
+    return lastToken;
 }
 
 // writes in dynamic string serving as a buffer
@@ -1594,6 +1597,10 @@ token_t getToken(FILE *stream)
                 break;
         }
     }
+
+    // saves the token to the buffer
+    freeToken(&lastToken);
+    lastToken = outputToken;
 
     // frees all buffers and returns the output token
     dstrFree(buffer);
