@@ -1,5 +1,5 @@
 /**
- * @file generator.c
+ * @file generator_generator.c
  * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
  * @brief generátor výsledného kódu
  * @version 0.1
@@ -9,4 +9,4 @@
  * 
  */
 
-#include "generator.h"
+#include "generator_generator.h"

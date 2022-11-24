@@ -1,5 +1,5 @@
 /**
- * @file 3adres.c
+ * @file generator_3adres.c
  * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
  * @brief definice datových typů pro práci s tříadresným kódem
  * @version 0.1
@@ -9,4 +9,4 @@
  * 
  */
 
-#include "3adres.h"
+#include "generator_3adres.h"

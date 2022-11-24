@@ -67,6 +67,14 @@ add_library(symtable
         symtable.c
         symtable.h)
 
+add_library(generator
+	generator_3adres.c
+	generator_3adres.h
+	generator_generator.c
+	generator_generator.h
+	generator_igen.c
+	generator_igen.h)
+
 add_library(expParseTests
         expParse.c
         expParse.h
@@ -81,7 +89,6 @@ add_library(expParseTests
 target_compile_definitions(expParseTests PUBLIC)
 
 add_subdirectory(test)
-add_subdirectory(generator)
 
 target_link_libraries(parser
         lex
