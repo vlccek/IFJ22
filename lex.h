@@ -193,4 +193,7 @@ extern token_t *testTokens;
 
 void clearBuffer(dynStr_t *buffer);
 
+void headerCheck(FILE *stream);
+
+
 #endif

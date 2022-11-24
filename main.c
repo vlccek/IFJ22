@@ -9,8 +9,10 @@
  */
 
 #include "parser.h"
+#include "lex.h"
 #include <stdio.h>
 
 int main() {
+    headerCheck(stdin);
     return parser();
 }
