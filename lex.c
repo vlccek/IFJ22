@@ -646,7 +646,43 @@ token_t getToken(FILE *stream) {
                 break;
             // TODO special characters
             case '=':
-                // TODO
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = equals_f_s;
+                        break;
+                    case equals_f_s:
+                        currentState = eq_2_s;
+                        break;
+                    case eq_2_s:
+                        currentState = eq_f_s;
+                        stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
                 break;
             case ':':
                 switch (currentState) {
@@ -1449,6 +1485,9 @@ token_t getToken(FILE *stream) {
                 break;
             case greater_eq_f_s:
                 outputToken.type = greaterEqOp;
+                break;
+            case eq_f_s:
+                outputToken.type = eqOp;
                 break;
             case not_eq_f_s:
                 outputToken.type = notEqOp;
