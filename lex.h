@@ -111,7 +111,6 @@ typedef enum
     lesser_eq_f_s,
     greater_than_f_s,
     greater_eq_f_s,
-    eq_1_s,
     eq_2_s,
     eq_f_s,
     not_eq_1_s,
