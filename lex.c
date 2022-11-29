@@ -16,6 +16,10 @@
 // logging switch
 #define lexLog false
 
+// for tests
+token_t *testTokens;
+bool teston;
+
 // row and row position counters
 int row = 1;
 int rowPos = 0;
