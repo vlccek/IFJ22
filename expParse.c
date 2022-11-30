@@ -223,6 +223,8 @@ rule *derivateTopStack(genericStack *sTokens) {
         loging("Nebylo nalezeno pravidlo :(");
         PrettyExit(ERR_SYNTAX);
     } else {
+        semanticActionInfo a;
+        r->semanticAction(a);
         loging("END derivate top Ofstack");
         return r;
     }
