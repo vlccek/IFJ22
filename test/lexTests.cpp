@@ -444,7 +444,11 @@ namespace ifj22 {
             auto token = getToken(fp);
 
             for (auto i: nums)
+            {
                 EXPECT_EQ(token.data.valueInteger, i);
+                token = getToken(fp);
+            }
+                
         }
 
         TEST_F(LexTestTokenData, int_data_comments) {
@@ -460,9 +464,11 @@ namespace ifj22 {
 
 
             auto token = getToken(fp);
-
             for (auto i: nums)
+            {
                 EXPECT_EQ(token.data.valueInteger, i);
+                token = getToken(fp);
+            }
         }
 
         TEST_F(LexTestTokenData, float_data_exponencial) {
@@ -650,10 +656,10 @@ namespace ifj22 {
             FILE *fp = prepareFile(text);
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringKey, identifierVar,
-                                           stringKey,
-                                           identifierVar, rightPar, colon, stringKey, curlyBraceRight,
+                                           comma, stringKey,
+                                           identifierVar, rightPar, colon, stringKey, curlyBraceLeft,
                                            returnKey, identifierVar, concatenationOp, stringLiteral,
-                                           curlyBraceLeft};
+                                           concatenationOp, identifierVar, semicolon, curlyBraceRight};
 
             assertTokensEq(fp, tokens);
         }
