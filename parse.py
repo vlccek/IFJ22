@@ -18,7 +18,7 @@ with open("LLtable.html") as fp:
                     rule = r.split("::=")[1:]
                     for k in rule:
                         k = k.split()
-                        if (k[0] == "Exp"):
+                        if k[0] in ["Exp", "Statement", "DeclareVariable"] :
                             if rule[-1].split() != k:
                                 del k[-1]
                         if k == ["ε"]:
