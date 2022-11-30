@@ -276,11 +276,25 @@ namespace ifj22 {
                                                                                      std::make_pair(std::string("hovno(string $a, float $a)"), std::vector({
                                                                                                                                                        identifierFunc,
                                                                                                                                                        leftPar,
-                                                                                                                                                       floatNullKey,
+                                                                                                                                                       stringKey,
+                                                                                                                                                       identifierVar,
+                                                                                                                                                       comma,
+                                                                                                                                                       floatKey,
                                                                                                                                                        identifierVar,
                                                                                                                                                        rightPar,
                                                                                                                                                })),
-                                                                                     std::make_pair(std::string("hovno(string $a, int $a, float $a)"), std::vector({identifierFunc, leftPar, stringKey, identifierVar, floatKey, identifierVar, floatKey, identifierVar, rightPar}))));
+                                                                                     std::make_pair(std::string("hovno(string $a, int $a, float $a)"), std::vector({
+                                                                                        identifierFunc,
+                                                                                        leftPar,
+                                                                                        stringKey,
+                                                                                        identifierVar,
+                                                                                        comma,
+                                                                                        intKey,
+                                                                                        identifierVar,
+                                                                                        comma,
+                                                                                        floatKey,
+                                                                                        identifierVar,
+                                                                                        rightPar}))));
 
 
         INSTANTIATE_TEST_SUITE_P(comments, TestComparing, ::testing::Values(std::make_pair(std::string("//skeropes"
@@ -673,9 +687,9 @@ namespace ifj22 {
             FILE *fp = prepareFile(text);
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringKey,
-                                           curlyBraceRight,
+                                           curlyBraceLeft,
                                            returnKey, stringLiteral, semicolon,
-                                           curlyBraceLeft};
+                                           curlyBraceRight};
             assertTokensEq(fp, tokens);
         }
 
@@ -699,9 +713,9 @@ namespace ifj22 {
             FILE *fp = prepareFile(text);
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, rightPar, colon, stringKey,
-                                           curlyBraceRight,
+                                           curlyBraceLeft,
                                            returnKey, stringLiteral, semicolon,
-                                           curlyBraceLeft};
+                                           curlyBraceRight};
 
             assertTokensEq(fp, tokens);
         }
@@ -715,14 +729,14 @@ namespace ifj22 {
             FILE *fp = prepareFile(text);
 
             std::vector<lexType> tokens = {functionKey, identifierFunc, leftPar, stringKey,
-                                           identifierVar, rightPar, colon, stringKey, curlyBraceRight,
-                                           returnKey, identifierFunc, identifierVar, semicolon, curlyBraceLeft};
+                                           identifierVar, rightPar, colon, stringKey, curlyBraceLeft,
+                                           returnKey, identifierFunc, leftPar, identifierVar, rightPar, semicolon, curlyBraceRight};
             assertTokensEq(fp, tokens);
         }
 
 
         TEST_F(LexTestSimple, keywords_test) {
-            FILE *fp = prepareFile("else float function if int null return"
+            FILE *fp = prepareFile("else float function if int null return "
                                    "string void while");
 
 
@@ -735,7 +749,7 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, {ifKey, leftPar, integerLiteral, rightPar,
-                                curlyBraceLeft, intKey, semicolon, curlyBraceRight,
+                                curlyBraceLeft, integerLiteral, semicolon, curlyBraceRight,
                                 elseKey, curlyBraceLeft, integerLiteral, semicolon, curlyBraceRight});
 
         }
@@ -900,7 +914,7 @@ namespace ifj22 {
             auto text = std::to_string(INTMAX_MAX) + std::string(".69");
             FILE *fp = prepareFile(text.c_str());
 
-            assertTokensEq(fp, {floatKey,});
+            assertTokensEq(fp, {floatLiteral,});
         }
 
         TEST_F(LexTestEdgeCase, floatFail7) {
@@ -964,8 +978,8 @@ namespace ifj22 {
             FILE *fp = prepareFile("function bar(string $param) : string {\n");
 
 
-            assertTokensEq(fp, {floatKey, intKey, stringKey,
-                                floatNullKey, intNullKey, stringNullKey});
+            assertTokensEq(fp, {functionKey, identifierFunc, leftPar, stringKey,
+                                identifierVar, rightPar, colon, stringKey, curlyBraceLeft});
         }
 
         TEST_F(LexTestSimple, functionReturnValue1) {
@@ -1165,7 +1179,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, expressionsVariable4) {
-            FILE *fp = prepareFile(R"(($_67/$cookie*$bruh+$____fuuuh-$huh)");
+            FILE *fp = prepareFile(R"($_67/$cookie*$bruh+$____fuuuh-$huh)");
 
 
             assertTokensEq(fp, {identifierVar, divisionOp,
@@ -1175,7 +1189,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, expressionsVariable2) {
-            FILE *fp = prepareFile(R"(($_67/$cookie*$bruh+$____fuuuh-$huh)");
+            FILE *fp = prepareFile(R"($_67/$cookie*$bruh+$____fuuuh-$huh)");
 
 
             assertTokensEq(fp, {identifierVar, divisionOp,
@@ -1479,7 +1493,7 @@ namespace ifj22 {
 
 
             assertTokensEq(fp, { semicolon, curlyBraceRight, identifierVar,
-                                 stringLiteral, stringLiteral});
+                                 equals, stringLiteral, semicolon});
         }
 
         TEST_F(LexTestEdgeCase, noWhiteSpaces3) {
@@ -1495,7 +1509,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(R"($huh=$bruh*{}-;)");
 
 
-            assertTokensEq(fp, { identifierVar, eqOp,identifierVar,
+            assertTokensEq(fp, { identifierVar, equals, identifierVar,
                                  multiplicationOp, curlyBraceLeft, curlyBraceRight,
                                  minusOp, semicolon});
         }
@@ -1504,7 +1518,7 @@ namespace ifj22 {
             FILE *fp = prepareFile(R"($kks=0;$kks-$kks;)");
 
 
-            assertTokensEq(fp, { identifierVar, eqOp, integerLiteral, semicolon,
+            assertTokensEq(fp, { identifierVar, equals, integerLiteral, semicolon,
                                  identifierVar, minusOp, identifierVar, semicolon});
         }
 
@@ -1536,7 +1550,7 @@ namespace ifj22 {
 
             assertTokensEq(fp, { curlyBraceLeft, curlyBraceRight, semicolon,
                                  leftPar, rightPar, plusOp, minusOp, multiplicationOp,
-                                 divisionOp, eqOp, lesserThanOp, greaterThanOp,
+                                 divisionOp, equals, lesserThanOp, greaterThanOp,
                                  colon, comma, });
         }
 
@@ -1547,7 +1561,7 @@ namespace ifj22 {
 
             assertTokensEq(fp, { curlyBraceLeft, curlyBraceRight, semicolon,
                                  leftPar, rightPar, plusOp, minusOp, multiplicationOp,
-                                 divisionOp, eqOp, lesserThanOp, greaterThanOp,
+                                 divisionOp, equals, lesserThanOp, greaterThanOp,
                                  colon, comma, });
         }
 

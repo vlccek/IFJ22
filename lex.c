@@ -970,6 +970,10 @@ token_t getToken(FILE *stream) {
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
+                    case identifier_func_f_s:
+                        currentState = null_f_s;
+                        stop = true;
+                        break;
                     case com_line_f_s:
                         currentState = com_line_f_s;
                         break;
