@@ -430,7 +430,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestTokenData, string_escape) {
-            std::string str = R"("Ahoj\n\"Sve'te \\\034 \x00")";
+            std::string str = R"("Ahoj\n\"Sve'te \\\042\x00")";
             std::string rstr = "Ahoj\n" // ze zadání
                                "\"Sve'te \\\"";
 
