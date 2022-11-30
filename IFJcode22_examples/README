@@ -1,0 +1,11 @@
+Tento adresář obsahuje několik příkladů programů napsaných v IFJcode22.
+
+Na Merlinovi lze vyzkoušet příkazem:
+
+/pub/courses/ifj/ic22int/linux/ic22int example.ifjcode
+
+Základní použití interpretu ic22int zjistíte příkazem:
+
+/pub/courses/ifj/ic22int/linux/ic22int --help
+
+Pokud chcete vidět detailnější stavy paměti, tak na zajímavá místa programu v IFJcode22 vložte ladící instrukci BREAK.
