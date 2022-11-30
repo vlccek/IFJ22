@@ -1392,56 +1392,56 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces1) {
-            FILE *fp = prepareFile(R"(\t\t\n65\n67\t67)");
+            FILE *fp = prepareFile("\t\t\n65\n67\t67");
 
 
             assertTokensEq(fp, {integerLiteral, integerLiteral, integerLiteral});
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces2) {
-            FILE *fp = prepareFile(R"(\nn)");
+            FILE *fp = prepareFile("\nn");
 
 
             assertTokensEq(fp, {identifierFunc, ending});
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces3) {
-            FILE *fp = prepareFile(R"(\nn)");
+            FILE *fp = prepareFile("\nn");
 
 
             assertTokensEq(fp, {identifierFunc, ending});
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces4) {
-            FILE *fp = prepareFile(R"(\tn)");
+            FILE *fp = prepareFile("\tn");
 
 
             assertTokensEq(fp, {identifierFunc, ending});
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces5) {
-            FILE *fp = prepareFile(R"( n)");
+            FILE *fp = prepareFile(" n");
 
 
             assertTokensEq(fp, {identifierFunc, ending});
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces6) {
-            FILE *fp = prepareFile(R"(\n\t    \t\n\n\n huhu)");
+            FILE *fp = prepareFile("\n\t    \t\n\n\n huhu");
 
 
             assertTokensEq(fp, {identifierFunc, ending});
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces7) {
-            FILE *fp = prepareFile(R"(\n\t    \t\n\n\n  )");
+            FILE *fp = prepareFile("\n\t    \t\n\n\n  ");
 
 
             assertTokensEq(fp, { ending });
         }
 
         TEST_F(LexTestEdgeCase, whiteSpaces8) {
-            FILE *fp = prepareFile(R"(\nn\tt t)");
+            FILE *fp = prepareFile("\nn\tt t");
 
 
             assertTokensEq(fp, { identifierFunc, identifierFunc, identifierFunc, });

@@ -5,12 +5,12 @@
  * Implementace překladače jazyka IFJ22
  */
 
-#include "lex.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "lex.h"
 #include "common.h"
 
 // logging switch
@@ -662,6 +662,14 @@ token_t getToken(FILE *stream) {
                         currentState = eq_f_s;
                         stop = true;
                         break;
+                    case lesser_than_f_s:
+                        currentState = lesser_eq_f_s;
+                        stop = true;
+                        break;
+                    case greater_than_f_s:
+                        currentState = greater_eq_f_s;
+                        stop = true;
+                        break;
                     case string_lit_s:
                         bufferOn = true;
                         currentState = string_lit_s;
@@ -985,7 +993,11 @@ token_t getToken(FILE *stream) {
                 }
                 break;
             case '>':
-                switch (currentState) {
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = greater_than_f_s;
+                        break;
                     case null_f_s:
                         endingMark = true;
                         currentState = init_s;
@@ -1011,7 +1023,8 @@ token_t getToken(FILE *stream) {
                         currentState = string_lit_s;
                         break;
                     default:
-                        currentState = unknown_f_s;
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
                         break;
                 }
                 break;
@@ -1121,7 +1134,14 @@ token_t getToken(FILE *stream) {
             case '-':
                 switch (currentState) {
                     case init_s:
-                        currentState = plus_f_s;
+                        if (currentChar == '+')
+                        {
+                            currentState = plus_f_s;
+                        }
+                        else
+                        {
+                            currentState = minus_f_s;
+                        }
                         stop = true;
                         break;
                     case string_lit_s:
@@ -1202,6 +1222,37 @@ token_t getToken(FILE *stream) {
                         break;
                     case division_f_s:
                         currentState = com_block_s;
+                        break;
+                    case com_block_s:
+                        currentState = com_block_ast_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
+                break;
+            case '<':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = lesser_than_f_s;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
                         break;
                     case com_block_s:
                         currentState = com_block_ast_s;
