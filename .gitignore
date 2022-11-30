@@ -59,6 +59,8 @@ dkms.conf
 
 # VSCode
 /.vscode
+# CLion
+/.idea
 
 # testing
 /lexTest.c
