@@ -7,6 +7,8 @@
 
 #include "LLtable.h"
 #include "semanticActionInfo.h"
+#include "generator_igen.h"
+#include "generator_generator.h"
 
 // semantic actions
 
@@ -15,7 +17,7 @@ void testingSemanticAction(semanticActionInfo info);
 void callSemanticAction(rule *pravidlo, semanticActionInfo info);
 void SA_programBody(semanticActionInfo info);
 void SA_Command_identifierVar(semanticActionInfo info);
-
+void endOfParsing();
 
 
 

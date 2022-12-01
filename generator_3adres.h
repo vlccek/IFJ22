@@ -72,7 +72,7 @@ typedef struct i3htItem {
     struct i3htItem *next;
 } i3htItem_t;
 
-typedef i3htItem_t *i3htTable_t[MAX_HTSIZE];
+typedef i3htItem_t i3htTable_t[MAX_HTSIZE];
 
 
 #endif //IFJ22_3ADRES_H

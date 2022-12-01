@@ -12,5 +12,8 @@
 #ifndef IFJ22_GENERATOR_H
 #define IFJ22_GENERATOR_H
 #include "common.h"
+#include "generator_3adres.h"
+
+void generate(i3htTable_t program);
 
 #endif // IFJ22_GENERATOR_H

@@ -5,6 +5,8 @@
 #include "semanticActions.h"
 
 
+i3htTable_t program;
+
 void testingSemanticAction(semanticActionInfo info) {
     loging("Semanticka akce detekovana!!!");
 }
@@ -25,6 +27,8 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
 }
 
 void semanticActionsInit() {
+    initIgen(program);
+
     setSemanticAction(ProgramBody, ifKey, &testingSemanticAction);
     setSemanticAction(ProgramBody, identifierVar, &SA_programBody);
     setSemanticAction(Command, identifierVar, &SA_Command_identifierVar);
@@ -37,4 +41,8 @@ void SA_programBody(semanticActionInfo info)
 void SA_Command_identifierVar(semanticActionInfo info)
 {
     loging("SA_Command_identifierVar");
+}
+
+void endOfParsing(){
+    generate(program);
 }

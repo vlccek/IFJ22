@@ -12,5 +12,9 @@
 #ifndef IFJ22_IGEN_H
 #define IFJ22_IGEN_H
 #include "common.h"
+#include "generator_3adres.h"
+#include "symtable.h"
+
+void initIgen(i3htTable_t program);
 
 #endif // IFJ22_IGEN_H

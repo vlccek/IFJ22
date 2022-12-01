@@ -10,3 +10,16 @@
  */
 
 #include "generator_igen.h"
+
+symtable_t table;
+
+void initIgen(i3htTable_t program){
+    symInit(&table);
+    make_var(mainBodyKey, char*, 10);
+    mainBodyKey = "P_MainBody";
+    program[0].key = mainBodyKey;
+}
+
+void initFunctionCall(){
+
+}

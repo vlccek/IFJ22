@@ -165,7 +165,7 @@ int parser() {
                 break;
         }
     }
-
+    endOfParsing();
     return 0;
 }
 

@@ -10,3 +10,7 @@
  */
 
 #include "generator_generator.h"
+
+void generate(i3htItem_t *program) {
+    loging("Jmeno programu: %s\n", program[0].key);
+}
