@@ -28,7 +28,7 @@ int updateStackViewMember(ParserMemory *memory, int stackLength) {
 }
 
 void updateStackView(ParserMemory *memory) {
-    make_var(tmpStack, genericStack*, sizeof(genericStack));
+    genericStack * tmpStack = gStackInit();
 
     for (int stackLength = 0; stackLength < MAX_STACK_VIEWABLE; ++stackLength) {
         if (updateStackViewMember(memory, stackLength) == 0)
