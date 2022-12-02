@@ -11,15 +11,49 @@
 
 #include "generator_igen.h"
 
-symtable_t table;
+typedef struct currentState{
+    symbol_t *callingFunction;
+    size_t currentArray;
+}currentState_T;
+
+
+symtable_t symtable;
+currentState_T currentState;
 
 void initIgen(i3htTable_t program){
-    symInit(&table);
-    make_var(mainBodyKey, char*, 10);
-    mainBodyKey = "P_MainBody";
-    program[0].key = mainBodyKey;
+    symInit(&symtable);
+    currentState.currentArray = 0;
+    currentState.callingFunction = NULL;
 }
 
-void initFunctionCall(){
+void startFunctionCall(token_t *token){
+    symbol_t *fceSymbol = symSFunction(&symtable, token->data.valueString->string);
+    if (fceSymbol == NULL){
+        // todo: exit right value
+        InternalError("Function %s not found in symtable!", token->data.valueString->string);
+    }
+    currentState.callingFunction = fceSymbol;
+}
+
+
+void writeString(i3htTable_t program, token_t *token){
+    symbol_t stringSymbol;
+    stringSymbol.identifier = token->data.valueString->string;
+    stringSymbol.rowPosNumber = token->rowPosNumber;
+    stringSymbol.rowNumber = token->rowNumber;
+    stringSymbol.type = string;
+
+    i3Instruction_t instruction;
+    instruction.type = I_WRITE;
+    instruction.dest = stringSymbol;
+    pushToArray(&program[currentState.currentArray].array, instruction);
+}
+
+
+void functionParam(i3htTable_t program, token_t *token){
+    if(!strcmp(currentState.callingFunction->identifier, "write")){
+        if(token->type == stringLiteral)
+            writeString(program, token);
+    }
 
 }

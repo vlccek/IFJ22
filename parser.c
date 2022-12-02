@@ -119,6 +119,7 @@ void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, t
     }
 
     semanticActionInfo info;
+    info.lastToken = lastToken;
     callSemanticAction(newRule, info);
 }
 

@@ -7,7 +7,7 @@
 #include "lex.h"
 
 typedef struct semanticActionInfo {
-    lexType lexType;
+    token_t *lastToken;
 
 
 } semanticActionInfo;

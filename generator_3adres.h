@@ -68,11 +68,15 @@ typedef struct i3InstructionArray {
 
 typedef struct i3htItem {
     char *key;
-    i3InstructionArray_t *array;
+    i3InstructionArray_t array;
     struct i3htItem *next;
 } i3htItem_t;
 
 typedef i3htItem_t i3htTable_t[MAX_HTSIZE];
 
+void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction);
 
+void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, char *functionName);
+
+void initializeProgram(i3htTable_t program);
 #endif //IFJ22_3ADRES_H
