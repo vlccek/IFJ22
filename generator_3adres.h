@@ -70,4 +70,6 @@ void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction);
 void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, char *functionName);
 
 void initializeProgram(i3Table_t *program);
+
+symbol_t tokenToSymbol(token_t *token, symbolType_t type);
 #endif //IFJ22_3ADRES_H

@@ -51,7 +51,7 @@ void SA_FceCall(semanticActionInfo info)
 }
 
 void endOfParsing(){
-    generate(&program);
+    generate(program);
 }
 
 void semanticActionsInit() {

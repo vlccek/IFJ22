@@ -139,7 +139,6 @@ dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
 }
 
 void dstrFree(dynStr_t *dstr) {
-
     free(dstr->string);
     free(dstr);
 }

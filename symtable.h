@@ -46,12 +46,16 @@ typedef enum symbolType {
 typedef struct symbol {
     const char *identifier;
     symbolType_t type;
-    int rowNumber;
-    int rowPosNumber;
     int symtablePos;
     struct DTList *firstParam;
     symbolType_t returnType;
-
+    struct symbol_data{
+        char* string;
+        int integer;
+        double floating;
+    } symbolData;
+    int rowNumber;
+    int rowPosNumber;
 } symbol_t;
 
 typedef struct htItem {

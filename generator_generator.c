@@ -19,11 +19,23 @@ void generateWrite(const char *value){
            "WRITE TF@%%1", value);
 }
 
-void generate(i3Table_t *program) {
-    generateHeader();
-    if(program[0]->instructions[0].type == I_WRITE){
-        generateWrite(program[0]->instructions[0].dest.identifier);
+void generateInstruction(i3Instruction_t instruction) {
 
+}
+
+void generateInstructionArray(i3InstructionArray_t array){
+    if(array.instructions == NULL)
+        return;
+    for (int i = 0; i < array.size; ++i) {
+        generateInstruction(array.instructions[i]);
     }
-    loging("Jmeno programu: %s\n", program[0]->functionName);
+    loging("Vygenerovana funkce: %s\n", array.functionName);
+}
+
+
+void generate(i3Table_t program) {
+    generateHeader();
+    for (int i = 0; i < MAX_HTSIZE; ++i) {
+        generateInstructionArray(program[i]);
+    }
 }

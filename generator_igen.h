@@ -15,5 +15,6 @@
 void initIgen(i3Table_t program);
 void startFunctionCall(token_t *token);
 void functionParam(i3Table_t program, token_t *token);
+void writeLiteral(i3Table_t program, token_t *token);
 
 #endif // IFJ22_IGEN_H
