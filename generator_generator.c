@@ -12,9 +12,31 @@ void generateHeader() {
     printf(".IFJcode22\n");
 }
 
+const char *convertChar(char c, char convBuffer[51]) {
+    sprintf(convBuffer, "\\0%d", c);
+    return convBuffer;
+}
+char *convertString(dynStr_t *dynStr, char *string) {
+    char buf[2];
+    char convBuffer[51];
+    convBuffer[0] = '\0';
+    buf[1] = '\0';
+    char c;
+    while ((c = *string++) != '\0'){
+        buf[0] = c;
+        if(c < 33 || c == 35 || c == 92)
+            dstrAppend(dynStr, convertChar(c, convBuffer));
+        else
+            dstrAppend(dynStr, buf);
+    }
+    return dynStr->string;
+}
 char *generateArgSymbol(symbol_t symb, char *buf) {
-    if (symb.type == string)
-        sprintf(buf, "string@%s", symb.symbolData.string);
+    if (symb.type == string){
+        dynStr_t* string = dstrInit();
+        sprintf(buf, "string@%s", convertString(string, symb.symbolData.string));
+        dstrFree(string);
+    }
     else if (symb.type == integer)
         sprintf(buf, "int@%d", symb.symbolData.integer);
     else if (symb.type == floating)
