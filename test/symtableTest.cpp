@@ -21,14 +21,14 @@ namespace ifj22 {
             symtable_t *symtable = &table;
             symInit(symtable);
             char iden[] = "readi";
-            symbol_t *found = symSFunction(symtable, iden);
+            symbol_t *found = symSearchFunc(symtable, iden);
             ASSERT_STREQ(iden, found->identifier);
         }
         TEST(symtableTest, basicSearch) {
             symtable_t table;
             symInit(&table);
             char iden[] = "readi";
-            symbol_t *found = symSearch(&table, iden);
+            symbol_t *found = symSearchVar(&table, iden);
             ASSERT_EQ(found, nullptr);
         }
         TEST(symtableTest, basicInsert) {
@@ -41,7 +41,7 @@ namespace ifj22 {
             symbol.rowPosNumber = 1;
             symbol.type = floatingNullable;
             symInsert(&table, symbol);
-            symbol_t *found = symSearch(&table, iden);
+            symbol_t *found = symSearchVar(&table, iden);
             ASSERT_STREQ(iden, found->identifier);
         }
         TEST(symtableTest, basicNewLocal) {
@@ -54,13 +54,13 @@ namespace ifj22 {
             symbol.rowPosNumber = 1;
             symbol.type = floatingNullable;
             symInsert(&table, symbol);
-            symbol_t *found = symSearch(&table, iden);
+            symbol_t *found = symSearchVar(&table, iden);
             symNewLocal(&table);
             printSymbol(found);
             printf("%d\n", found->symtablePos);
             symNewLocal(&table);
             symNewLocal(&table);
-            found = symSearch(&table, iden);
+            found = symSearchVar(&table, iden);
             printSymbol(found);
             printf("%d\n", found->symtablePos);
             ASSERT_STREQ(iden, found->identifier);
@@ -83,7 +83,7 @@ namespace ifj22 {
             }
             for (int i = 0; i < symbolTypeLenght; i++) {
                 sprintf(buffer, "%c", i+'a');
-                symbol_t *found = symSearch(&table, buffer);
+                symbol_t *found = symSearchVar(&table, buffer);
                 ASSERT_STREQ(buffer, found->identifier);
                 ASSERT_EQ(i, found->rowNumber);
                 ASSERT_EQ(i, found->rowPosNumber);
@@ -97,11 +97,11 @@ namespace ifj22 {
             for (int i = symbolTypeLenght -1; i > 0; i--) {
                 symDelLocal(&table);
                 sprintf(buffer, "%c", i+'a');
-                symbol_t *found = symSearch(&table, buffer);
+                symbol_t *found = symSearchVar(&table, buffer);
                 printSymbol(found);
                 ASSERT_FALSE(found);
             }
-            symbol_t *found = symSearch(&table, "a");
+            symbol_t *found = symSearchVar(&table, "a");
             ASSERT_STREQ(found->identifier, "a");
         }
 

@@ -113,8 +113,8 @@ void symNewLocal(symtable_t *symtable);
 void symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
 void symIFunction(symtable_t *symtable, symbol_t symbol);
-symbol_t *symSearch(symtable_t *symtable, const char *identifier);
-symbol_t *symSFunction(symtable_t *symtable, const char *identifier);
+symbol_t *symSearchVar(symtable_t *symtable, const char *identifier);
+symbol_t *symSearchFunc(symtable_t *symtable, const char *identifier);
 void symSwitch(symtable_t *symtable);
 void symSwitchBack(symtable_t *symtable);
 

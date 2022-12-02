@@ -47,16 +47,21 @@ void SA_FceCall(semanticActionInfo info)
 }
 
 void endOfParsing(){
-    generate(program);
+    generate(&program);
 }
 
 void semanticActionsInit() {
     initIgen(program);
-    initializeProgram(program);
+    initializeProgram(&program);
 
     setSemanticAction(ProgramBody, ifKey, &testingSemanticAction);
     setSemanticAction(ProgramBody, identifierVar, &SA_programBody);
     setSemanticAction(Command, identifierVar, &SA_Command_identifierVar);
-    setSemanticAction(Statement, stringLiteral, &SA_FunctionParam);
+
+    // Function calls
     setSemanticAction(FceCall, identifierFunc, &SA_FceCall);
+    setSemanticAction(Statement, stringLiteral, &SA_FunctionParam);
+    setSemanticAction(Statement, integerLiteral, &SA_FunctionParam);
+    setSemanticAction(Statement, floatLiteral, &SA_FunctionParam);
+    setSemanticAction(Statement, identifierVar, &SA_FunctionParam);
 }

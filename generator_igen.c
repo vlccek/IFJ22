@@ -27,7 +27,7 @@ void initIgen(i3Table_t program){
 }
 
 void startFunctionCall(token_t *token){
-    symbol_t *fceSymbol = symSFunction(&symtable, token->data.valueString->string);
+    symbol_t *fceSymbol = symSearchFunc(&symtable, token->data.valueString->string);
     if (fceSymbol == NULL){
         // todo: exit right value
         InternalError("Function %s not found in symtable!", token->data.valueString->string);

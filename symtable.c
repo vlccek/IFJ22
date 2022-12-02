@@ -285,7 +285,7 @@ void symIFunction(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->functions), symbol.identifier, symbol);
 }
 
-symbol_t *symSearch(symtable_t *symtable, const char *identifier) {
+symbol_t *symSearchVar(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
     for (int i = 0; i <= symtable->last; i++)
     {
@@ -298,7 +298,7 @@ symbol_t *symSearch(symtable_t *symtable, const char *identifier) {
     return NULL;
 }
 
-symbol_t *symSFunction(symtable_t *symtable, const char *identifier) {
+symbol_t *symSearchFunc(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
     found = htSearch(&(symtable->functions), identifier);
     if (found) {
