@@ -20,7 +20,7 @@ typedef struct currentState{
 symtable_t symtable;
 currentState_T currentState;
 
-void initIgen(i3htTable_t program){
+void initIgen(i3Table_t program){
     symInit(&symtable);
     currentState.currentArray = 0;
     currentState.callingFunction = NULL;
@@ -36,7 +36,7 @@ void startFunctionCall(token_t *token){
 }
 
 
-void writeString(i3htTable_t program, token_t *token){
+void writeString(i3Table_t program, token_t *token){
     symbol_t stringSymbol;
     stringSymbol.identifier = token->data.valueString->string;
     stringSymbol.rowPosNumber = token->rowPosNumber;
@@ -46,11 +46,11 @@ void writeString(i3htTable_t program, token_t *token){
     i3Instruction_t instruction;
     instruction.type = I_WRITE;
     instruction.dest = stringSymbol;
-    pushToArray(&program[currentState.currentArray].array, instruction);
+    pushToArray(&program[currentState.currentArray], instruction);
 }
 
 
-void functionParam(i3htTable_t program, token_t *token){
+void functionParam(i3Table_t program, token_t *token){
     if(!strcmp(currentState.callingFunction->identifier, "write")){
         if(token->type == stringLiteral)
             writeString(program, token);

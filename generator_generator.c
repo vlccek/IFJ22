@@ -22,11 +22,11 @@ void generateWrite(const char *value){
            "WRITE TF@%%1", value);
 }
 
-void generate(i3htItem_t *program) {
+void generate(i3Table_t *program) {
     generateHeader();
-    if(program[0].array.array[0].type == I_WRITE){
-        generateWrite(program[0].array.array[0].dest.identifier);
+    if(program[0]->instructions[0].type == I_WRITE){
+        generateWrite(program[0]->instructions[0].dest.identifier);
 
     }
-    loging("Jmeno programu: %s\n", program[0].key);
+    loging("Jmeno programu: %s\n", program[0]->functionName);
 }

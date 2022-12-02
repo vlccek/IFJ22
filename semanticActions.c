@@ -5,7 +5,7 @@
 #include "semanticActions.h"
 
 
-i3htTable_t program;
+i3Table_t program;
 
 void testingSemanticAction(semanticActionInfo info) {
     loging("Semanticka akce detekovana!!!");
