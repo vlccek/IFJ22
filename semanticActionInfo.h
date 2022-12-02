@@ -1,6 +1,9 @@
-//
-// Created by honza on 22.11.22.
-//
+/**
+ * @file semanticActionInfo.h
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @brief Informace pro semantické akce
+ * Implementace překladače jazyka IFJ22
+ */
 
 #ifndef IFJ22_SEMANTICACTIONINFO_H
 #define IFJ22_SEMANTICACTIONINFO_H

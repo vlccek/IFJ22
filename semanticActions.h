@@ -1,6 +1,10 @@
-//
-// Created by tonda on 20/10/22.
-//
+/**
+ * @file semanticActions.h
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @brief Semantické akce
+ * Implementace překladače jazyka IFJ22
+ */
 
 #ifndef STACK_SEMANTICACTIONS_H
 #define STACK_SEMANTICACTIONS_H

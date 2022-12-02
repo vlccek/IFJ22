@@ -1,12 +1,9 @@
 /**
  * @file generator_3adres.h
- * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief definice datových typů pro práci s tříadresným kódem
- * @version 0.1
- * @date 2022-10-18
- * 
- * @copyright Copyright (c) 2022
- * 
+ * Implementace překladače jazyka IFJ22
  */
 #ifndef IFJ22_3ADRES_H
 #define IFJ22_3ADRES_H

@@ -1,6 +1,9 @@
-//
-// Created by jvlk on 20.9.22.
-//
+/**
+ * @file queue.h
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Fronta
+ * Implementace překladače jazyka IFJ22
+ */
 #include "stack.h"
 #include <stdlib.h>
 #include <stdbool.h>

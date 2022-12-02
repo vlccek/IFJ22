@@ -1,13 +1,11 @@
 /**
  * @file common.h
- * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
- * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
- * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
- * @author Jindřich Vodák (xvodak06@fit.vutbr.cz)
- * 
- * @brief Hlavičkový soubor pomocných funkcí a maker
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @author Jindřich Vodák (xvodak06@stud.fit.vutbr.cz)
+ * @brief Pomocné funkce a makra
  * Implementace překladače imperativního jazyka IFJ21
- *
  */
 
 #ifndef IFJ22_COMMON_H

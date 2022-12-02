@@ -1,8 +1,9 @@
-//
-// Created by jvlk on 16.9.22.
-//
-
-
+/**
+ * @file stack.c
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Zásobník
+ * Implementace překladače jazyka IFJ22
+ */
 #include "stack.h"
 
 genericStack *gStackInit() {

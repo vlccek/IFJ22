@@ -1,6 +1,10 @@
-//
-// Created by tonda on 05/10/22.
-//
+/**
+ * @file parser.c
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Analyzátor
+ * Implementace překladače jazyka IFJ22
+ */
 #include "parser.h"
 
 void gStackPushStackToStack(genericStack *original, genericStack *toEmpty) {

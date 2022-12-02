@@ -2,10 +2,7 @@
  * @file main.c
  * @author Jan Brudný (xbrudn02@stud.fit.vut.cz)
  * @brief Hlavní soubor programu
- * Implementace překladače imperativního jazyka IFJ21
- * 
- * @version 0.1
- * @date 2022-11-20
+ * Implementace překladače jazyka IFJ22
  */
 
 #include "parser.h"

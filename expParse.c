@@ -1,6 +1,9 @@
-//
-// Created by jvlk on 8.10.22.
-//
+/**
+ * @file expParse.c
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief expression parser
+ * Implementace překladače jazyka IFJ22
+ */
 #include "expParse.h"
 
 

@@ -1,12 +1,9 @@
 /**
  * @file generator_generator.c
- * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief generátor výsledného kódu
- * @version 0.1
- * @date 2022-10-21
- * 
- * @copyright Copyright (c) 2022
- * 
+ * Implementace překladače jazyka IFJ22
  */
 
 #include "generator_generator.h"

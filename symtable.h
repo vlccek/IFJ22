@@ -1,11 +1,12 @@
 /**
  * @file symtable.h
- * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
- * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
- * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
- * @brief Parser jazyka
- * Implementace překladače imperativního jazyka IFJ21
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @brief Tabulka symbolů
+ * Implementace překladače jazyka IFJ22
  *
+ * Při implementaci bylo použito řešení hashtabulky z 2. domacího úkolu IAL 2021/Z
  */
 #ifndef IFJ22_SYMTABLE_H
 #define IFJ22_SYMTABLE_H
