@@ -12,8 +12,6 @@
 #include "generator_3adres.h"
 
 
-
-
 void initializeProgram(i3Table_t *program) {
     program[0]->functionName = "P_MainBody";
     initializeInstructionArray(100, program[0], "F_MainBody");
@@ -28,6 +26,14 @@ void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, ch
 }
 
 void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction) {
+
+    if (array->size >= array->capacity) {
+        array->instructions = realloc(array->instructions, sizeof(i3Instruction_t) * array->capacity * 2);
+        if (!array->instructions) {
+            InternalError("realloc fail!");
+        }
+        array->capacity *= 2;
+    }
     if (array->size < array->capacity) {
         array->instructions[array->size].type = instruction.type;
         array->instructions[array->size].dest = instruction.dest;
@@ -35,7 +41,6 @@ void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction) {
         array->instructions[array->size].arg2 = instruction.arg2;
         array->size++;
     } else {
-        // todo: realloc and add
-        InternalError("Exit not enough space in instructions array!");
+        InternalError("Not enough space in array to insert a instruction!");
     }
 }
