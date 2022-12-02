@@ -8,23 +8,88 @@
 
 #include "generator_generator.h"
 
-void generateHeader(){
+void generateHeader() {
     printf(".IFJcode22\n");
 }
 
-void generateWrite(const char *value){
-    printf("CREATEFRAME\n"
-           "DEFVAR TF@%%1\n"
-           "MOVE TF@%%1 string@%s\n"
-           "WRITE TF@%%1", value);
+char *generateArgSymbol(symbol_t symb, char *buf) {
+    if (symb.type == string)
+        sprintf(buf, "string@%s", symb.symbolData.string);
+    else if (symb.type == integer)
+        sprintf(buf, "int@%d", symb.symbolData.integer);
+    else if (symb.type == floating)
+        sprintf(buf, "float@%a", symb.symbolData.floating);
+    return buf;
+}
+
+void generateWrite(i3Instruction_t instruction) {
+    char buf[2048];
+    printf("WRITE %s", generateArgSymbol(instruction.arg1, buf));
 }
 
 void generateInstruction(i3Instruction_t instruction) {
-
+    switch (instruction.type) {
+        case I_ADD:
+            break;
+        case I_SUB:
+            break;
+        case I_MUL:
+            break;
+        case I_DIV:
+            break;
+        case I_IDIV:
+            break;
+        case I_CONCAT:
+            break;
+        case I_EQ:
+            break;
+        case I_NEQ:
+            break;
+        case I_LT:
+            break;
+        case I_GT:
+            break;
+        case I_LEQ:
+            break;
+        case I_GEQ:
+            break;
+        case I_AND:
+            break;
+        case I_OR:
+            break;
+        case I_NOT:
+            break;
+        case I_MOVE:
+            break;
+        case I_INT2FLOAT:
+            break;
+        case I_READ:
+            break;
+        case I_WRITE:
+            generateWrite(instruction);
+            break;
+        case I_STRLEN:
+            break;
+        case I_LABEL:
+            break;
+        case I_JUMP:
+            break;
+        case I_JUMP_IF_TRUE:
+            break;
+        case I_JUMP_IF_FALSE:
+            break;
+        case I_CALL:
+            break;
+        case I_RETURN:
+            break;
+        case I_DEFVAR:
+            break;
+    }
+    printf("\n");
 }
 
-void generateInstructionArray(i3InstructionArray_t array){
-    if(array.instructions == NULL)
+void generateInstructionArray(i3InstructionArray_t array) {
+    if (array.instructions == NULL)
         return;
     for (int i = 0; i < array.size; ++i) {
         generateInstruction(array.instructions[i]);
