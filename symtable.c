@@ -29,9 +29,11 @@ DTList_T *createDTL(int count, ...) {
     return DTL;
 }
 
-/*
- * Insertuje prvky seznamu
- * PRÁZDNÝ SEZNAM MUSÍ BÝT NULL!
+/**
+ * @brief vkládá prvek na konec seznamu
+ * 
+ * @param list DTL seznam
+ * @param typ typ symbolu
  */
 void insDTList(DTList_T *list, enum symbolType typ) {
     DTListMem_T *actualMem = list->first;
@@ -52,36 +54,14 @@ void insDTList(DTList_T *list, enum symbolType typ) {
     }
     list->len++;
 }
-
+/**
+ * @brief inicializuje nový seznam
+ * 
+ * @param list odkaz na nový seznam
+ */
 void initDTList(DTList_T *list) {
     list->first = NULL;
     list->len = 0;
-}
-// endregion
-// region SStack
-void initSStack(symStack_T *stack) {
-    stack->len = 0;
-    stack->top = NULL;
-}
-void pushSStack(symStack_T *stack, symbol_t *member) {
-    symStackMem_T *newMember = malloc(sizeof(symStackMem_T));
-    checkNullPointer(newMember);
-    symStackMem_T *oldTop = stack->top;
-    newMember->down = oldTop;
-    newMember->s = member;
-    stack->top = newMember;
-    stack->len++;
-}
-
-symbol_t *popSStack(symStack_T *stack) {
-    if (stack->top == NULL) {
-        loging("Pop from empty stack!");
-        return NULL;
-    }
-    symStackMem_T *returnMember = stack->top;
-    stack->top = stack->top->down;
-    stack->len--;
-    return returnMember->s;
 }
 // endregion
 // region HashTable

@@ -118,11 +118,6 @@ symbol_t *symSearchFunc(symtable_t *symtable, const char *identifier);
 void symSwitch(symtable_t *symtable);
 void symSwitchBack(symtable_t *symtable);
 
-
-void initSStack(symStack_T *stack);
-void pushSStack(symStack_T *stack, symbol_t *member);
-symbol_t *popSStack(symStack_T *stack);
-
 DTList_T *createDTL(int count, ...);
 symbol_t *createSymbol(const char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
 void saveBuildInFunctions(symtable_t *symtable);
