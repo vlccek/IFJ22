@@ -54,7 +54,8 @@ typedef enum symbolDataType {
 // so we need something like data type and symbol type???
 typedef struct symbol {
     const char *identifier;
-    symbolDataType_t type;
+    symbolType_t type;
+    symbolDataType_t dataType;
     int symtablePos;
     struct DTList *firstParam;
     symbolDataType_t returnType;
