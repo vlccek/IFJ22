@@ -13,13 +13,13 @@ Command ::= semicolon
 Command ::= FceCall
 
 ## Definice funkcí
-FceDefine ::= FceHeader curlyBraceLeft FunctionBody curlyBraceRight
-FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType
+FceDefine ::= functionKey FceHeader curlyBraceLeft FunctionBody curlyBraceRight
+FceHeader ::= identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType
 FunctionDeclareParams ::=''
-FunctionDeclareParams ::= DeclareParam  CommaOrEpsParams
+FunctionDeclareParams ::= DataType DeclareParam CommaOrEpsParams
 CommaOrEpsParams ::=''
 CommaOrEpsParams ::= comma DeclareParam  CommaOrEpsParams
-DeclareParam ::= DataType identifierVar
+DeclareParam ::=  identifierVar
 
 ## FuncReturnType
 FuncReturnColonType ::= DataType
