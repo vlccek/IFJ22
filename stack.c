@@ -8,7 +8,7 @@
 
 genericStack *gStackInit() {
     make_var(stack, genericStack *, sizeof(genericStack));
-            stack->c = 0;
+    stack->c = 0;
     stack->top = NULL;
     return stack;
 }
@@ -76,7 +76,7 @@ void *gStackPopBack(genericStack *s) {
     stackMem_t *pLast;
     stackMem_t *bottomEl = gStackBottom(s, &pLast);
 
-    if (s->top == NULL){
+    if (s->top == NULL) {
         exit(ERR_RUNTIME);
     }
 
@@ -106,16 +106,16 @@ void *gStackTop(genericStack *s) {
 
 
 void gStackPrint(genericStack *s, void (*printMem)(void *)) {
-    fprintf(stdout, "Your stack looks like: \n");
+    loging("Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
         printMem(i->data);
-        fprintf(stdout, " -> ");
+        loging(" -> ");
         i = i->next;
     }
     printMem(i->data);
 
-    fprintf(stdout, "\n");
+    loging("\n");
 }
 /*
  * Returns null when elemnt not exist
