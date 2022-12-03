@@ -119,7 +119,7 @@ bool precOver(genericStack *s) {
 }
 
 void printExpParserType(void *data) {
-    loging("%s", generatePrintExpParsertype((expParserType *) data));
+    fprintf(stdout, "%s", generatePrintExpParsertype((expParserType *) data));
 }
 
 void addPrecLBefore(genericStack *s, unsigned position) {
