@@ -106,16 +106,16 @@ void *gStackTop(genericStack *s) {
 
 
 void gStackPrint(genericStack *s, void (*printMem)(void *)) {
-    fprintf(stdout, "Your stack looks like: \n");
+    fprintf(stderr, "Your stack looks like: \n");
     stackMem_t *i = s->top;
     while (i->next != NULL) {
         printMem(i->data);
-        fprintf(stdout, " -> ");
+        fprintf(stderr, " -> ");
         i = i->next;
     }
     printMem(i->data);
 
-    fprintf(stdout, "\n");
+    fprintf(stderr, "\n");
 }
 /*
  * Returns null when elemnt not exist
