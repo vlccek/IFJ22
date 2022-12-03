@@ -126,6 +126,7 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
     r->id = counter++;
     r->from = nonTerminal;
     r->epsRule = memberCount == 0;
+    r->semanticAction = NULL;
     Table[nonTerminal][terminal]->rules[ruleIndex] = r;
 
     if (r->epsRule == false) {
