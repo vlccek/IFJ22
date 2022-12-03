@@ -37,6 +37,10 @@ char *convertString(dynStr_t *dynStr, char *string) {
 /// \param buf buffer where output will be stored
 /// \return buf parameter
 char *generateArgSymbol(symbol_t symb, char *buf) {
+    if(symb.type != literal){
+        printSymbol(&symb);
+        InternalError("Printed symbol is not literal.");
+    }
     if (symb.dataType == string) {
         dynStr_t *string = dstrInit();
         sprintf(buf, "string@%s", convertString(string, symb.token.data.valueString->string));
@@ -48,9 +52,17 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
     return buf;
 }
 
+char *generateArgSymVar(symbol_t symb, char *buf) {
+    if(symb.type == variable){
+        sprintf(buf, "LF@%s", symb.identifier);
+        return buf;
+    }
+    return generateArgSymbol(symb, buf);
+}
+
 void generateWrite(i3Instruction_t instruction) {
     char buf[2048];
-    printf("WRITE %s", generateArgSymbol(instruction.arg1, buf));
+    printf("WRITE %s", generateArgSymVar(instruction.arg1, buf));
 }
 
 void generateDefvar(i3Instruction_t instruction) {
