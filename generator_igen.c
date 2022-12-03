@@ -101,20 +101,11 @@ symbolDataType_t tokenTypeToSymbolType(lexType type) {
                           getTerminalName(type));
     }
 }
-void writeLiteral(i3Table_t program, token_t token) {
-    symbol_t symbol;
-    ;// = tokenToSymbol(token, tokenTypeToSymbolType(token.type));
 
+void writeSymbol(i3Table_t program, symbol_t symbol) {
     i3Instruction_t instruction;
     instruction.type = I_WRITE;
     instruction.arg1 = symbol;
-    pushToArray(&program[currentState.currentArray], instruction);
-}
-
-void writeSymbol(i3Table_t program, symbol_t *symbol) {
-    i3Instruction_t instruction;
-    instruction.type = I_WRITE;
-    instruction.arg1 = *symbol;
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
@@ -122,9 +113,13 @@ void functionParam(i3Table_t program, token_t token) {
     if (!strcmp(currentState.callingFunction->identifier, "write")) {
         if (token.type == identifierVar) {
             symbol_t *symbol = findExistingVariable(token.data.valueString->string);
-            writeSymbol(program, symbol);
+            writeSymbol(program, *symbol);
         } else {
-            writeLiteral(program, token);
+            symbol_t newSymbol = createSymbolVarLit("",
+                                                    literal,
+                                                    tokenTypeToSymbolType(token.type),
+                                                    token);
+            writeSymbol(program, newSymbol);
         }
     }
 }
@@ -184,6 +179,7 @@ void flushCommand(i3Table_t program) {
         moveToVariable(program, currentState.tmp1);
         currentState.tmp1.type = undefinedType;
     }
+    currentState.callingFunction = NULL;
 }
 
 void exitCodeBlock() {
