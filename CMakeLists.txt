@@ -23,8 +23,35 @@ add_compile_definitions("DEBUG=$<CONFIG:Debug>")
 
 set(CMAKE_C_STANDARD 11)
 add_executable(main
+        LLtable.c
+        common.c
+        dynstring.c
+        expParse.c
+        generator_3adres.c
+        generator_generator.c
+        generator_igen.c
+        lex.c
         main.c
-        )
+        parser.c
+        queue.c
+        semanticActionInfo.c
+        semanticActions.c
+        stack.c
+        symtable.c
+        LLtable.h
+        common.h
+        dynstring.h
+        expParse.h
+        generator_3adres.h
+        generator_generator.h
+        generator_igen.h
+        lex.h
+        parser.h
+        queue.h
+        semanticActionInfo.h
+        semanticActions.h
+        stack.h
+        symtable.h)
 
 add_library(stack
         stack.c
@@ -133,9 +160,3 @@ target_link_libraries(stack
 target_link_libraries(symtable
         common
         lex)
-
-target_link_libraries(main
-        parser
-        )
-
-
