@@ -12,6 +12,8 @@ typedef struct currentState {
     size_t currentArray;
     symbol_t *callingFunction; // todo: this should be nulled somewhere
     symbol_t undefinedVariable;// variable is floating in the middle of assignment
+    symbol_t newFunction;      // symbol nové funkce, který si pamatujeme
+    lexType lastVarType;       // typ proměnné při definici funkce, kterou si pamatujeme
 
     // used by expression parsing
     symbol_t tmp1;// primary temporary symbol
@@ -30,6 +32,28 @@ void initIgen(i3Table_t program) {
     currentState.tmp2.type = undefinedType;
 }
 
+
+void functionDefBegin(char *identifier) {
+    symSwitch(&symtable);
+    currentState.newFunction = *createSymbolFunction(identifier, function, NULL, undefined);
+}
+void functionDefParam(char *identifier) {
+    insDTList(currentState.newFunction.firstParam, tokenTypeToSymbolType(currentState.lastVarType), identifier);
+}
+void functionDefParamRememberType(lexType type) {
+    currentState.lastVarType = type;
+}
+void functionDefRet(token_t token) {
+    currentState.newFunction.returnType = tokenTypeToSymbolType(token.type);
+    symbol_t *search = symSearchFunc(&symtable, currentState.newFunction.identifier);
+    if (search)
+    {
+        printlog("Pokus o redefinici funkce '%s'\n", currentState.newFunction.identifier);
+        PrettyExit(ERR_IDENTIFIER_NAME);
+    }
+    symInsertFunction(&symtable, currentState.newFunction);
+}
+
 symbol_t *findExistingVariable(char *variableName) {
     symbol_t *symbol = symSearchVar(&symtable, variableName);
     if (symbol == NULL) {
@@ -40,6 +64,8 @@ symbol_t *findExistingVariable(char *variableName) {
 }
 
 void startFunctionCall(token_t token) {
+    // todo: vložit název funkce a počet parametrů do nějaké tabulky, pozdější kontroly
+    // todo: a nakonec parsování kontrola podle reálného záznamu
     symbol_t *fceSymbol = symSearchFunc(&symtable, token.data.valueString->string);
     if (fceSymbol == NULL) {
         // todo: exit right value
@@ -52,11 +78,24 @@ void startFunctionCall(token_t token) {
 symbolDataType_t tokenTypeToSymbolType(lexType type) {
     switch (type) {
         case stringLiteral:
+        case stringKey:
             return string;
         case integerLiteral:
+        case intKey:
             return integer;
         case floatLiteral:
+        case floatKey:
             return floating;
+        case nullKey:
+            return nil;
+        case stringNullKey:
+            return stringNullable;
+        case intNullKey:
+            return integerNullable;
+        case floatNullKey:
+            return floatingNullable;
+        case voidKey:
+            return undefined;
         default:
             InternalError("Lex type '%s' is not convertable to symbol type!",
                           getTerminalName(type));

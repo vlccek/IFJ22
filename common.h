@@ -42,7 +42,7 @@
 
 
 // makra pro příjemější programování
-#define checkNullPointer(p)   if ((p) == NULL){InternalError("Not enough memory. "); exit(99);} // pro malloc
+#define checkNullPointer(p)   if ((p) == NULL){InternalError("Not enough memory. "); exit(ERR_RUNTIME);} // pro malloc
 #define checkNotZeroReturn(Expression) {\
                 int err;\
                 if((err = Expression) != 0){  \

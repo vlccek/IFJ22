@@ -22,7 +22,7 @@ DTList_T *createDTL(int count, ...) {
     va_list args;
     va_start(args, count);
     for (int i = 0; i < count; ++i) {
-        insDTList(DTL, va_arg(args, symbolDataType_t));
+        insDTList(DTL, va_arg(args, symbolDataType_t), NULL);
     }
     va_end(args);
 
@@ -35,21 +35,18 @@ DTList_T *createDTL(int count, ...) {
  * @param list DTL seznam
  * @param typ typ symbolu
  */
-void insDTList(DTList_T *list, symbolDataType_t typ) {
+void insDTList(DTList_T *list, symbolDataType_t typ, char* identifier) {
     DTListMem_T *actualMem = list->first;
+        DTListMem_T *newMember = malloc(sizeof(DTListMem_T));
+        checkNullPointer(newMember);
+        newMember->type = typ;
+        newMember->next = NULL;
+        newMember->identifier = identifier;
     if (list->first != NULL) {
         while (actualMem->next != NULL)
             actualMem = actualMem->next;
-        DTListMem_T *newMember = malloc(sizeof(DTListMem_T));
-        checkNullPointer(newMember);
-        newMember->next = NULL;
-        newMember->type = typ;
         actualMem->next = newMember;
     } else {
-        DTListMem_T *newMember = malloc(sizeof(DTListMem_T));
-        checkNullPointer(newMember);
-        newMember->next = NULL;
-        newMember->type = typ;
         list->first = newMember;
     }
     list->len++;
@@ -181,7 +178,7 @@ symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *pa
     if (paramList != NULL) {
         DTListMem_T *tmp = paramList->first;
         while (tmp != NULL) {
-            insDTList(newPList, tmp->type);
+            insDTList(newPList, tmp->type, NULL);
             tmp = tmp->next;
         }
     }
@@ -191,39 +188,39 @@ symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *pa
 
 
 void saveBuildInFunctions(symtable_t *symtable) {
-    symIFunction(symtable, *createSymbolFunction("reads", function,
-                                                 createDTL(0),
-                                                 stringNullable));
-    symIFunction(symtable, *createSymbolFunction("readi", function,
-                                                 createDTL(0),
-                                                 integerNullable));
-    symIFunction(symtable, *createSymbolFunction("readf", function,
-                                                 createDTL(0),
-                                                 floatingNullable));
-    symIFunction(symtable, *createSymbolFunction("write", function,
-                                                 createDTL(0),
-                                                 undefinedDataType));
-    symIFunction(symtable, *createSymbolFunction("intval", function,
-                                                 createDTL(1, floatingNullable),
-                                                 integer));
-    symIFunction(symtable, *createSymbolFunction("floatval", function,
-                                                 createDTL(1, integerNullable),
-                                                 floating));
-    symIFunction(symtable, *createSymbolFunction("strval", function,
-                                                 createDTL(1, stringNullable),
-                                                 string));
-    symIFunction(symtable, *createSymbolFunction("substring", function,
-                                                 createDTL(3, string, integer, integer),
-                                                 stringNullable));
-    symIFunction(symtable, *createSymbolFunction("strlen", function,
-                                                 createDTL(1, string),
-                                                 integer));
-    symIFunction(symtable, *createSymbolFunction("ord", function,
-                                                 createDTL(1, string),
-                                                 integer));
-    symIFunction(symtable, *createSymbolFunction("chr", function,
-                                                 createDTL(1, integer),
-                                                 string));
+    symInsertFunction(symtable, *createSymbolFunction("reads", function,
+                                                      createDTL(0),
+                                                      stringNullable));
+    symInsertFunction(symtable, *createSymbolFunction("readi", function,
+                                                      createDTL(0),
+                                                      integerNullable));
+    symInsertFunction(symtable, *createSymbolFunction("readf", function,
+                                                      createDTL(0),
+                                                      floatingNullable));
+    symInsertFunction(symtable, *createSymbolFunction("write", function,
+                                                      createDTL(0),
+                                                      undefinedDataType));
+    symInsertFunction(symtable, *createSymbolFunction("intval", function,
+                                                      createDTL(1, floatingNullable),
+                                                      integer));
+    symInsertFunction(symtable, *createSymbolFunction("floatval", function,
+                                                      createDTL(1, integerNullable),
+                                                      floating));
+    symInsertFunction(symtable, *createSymbolFunction("strval", function,
+                                                      createDTL(1, stringNullable),
+                                                      string));
+    symInsertFunction(symtable, *createSymbolFunction("substring", function,
+                                                      createDTL(3, string, integer, integer),
+                                                      stringNullable));
+    symInsertFunction(symtable, *createSymbolFunction("strlen", function,
+                                                      createDTL(1, string),
+                                                      integer));
+    symInsertFunction(symtable, *createSymbolFunction("ord", function,
+                                                      createDTL(1, string),
+                                                      integer));
+    symInsertFunction(symtable, *createSymbolFunction("chr", function,
+                                                      createDTL(1, integer),
+                                                      string));
 }
 
 void symInit(symtable_t *symtable) {
@@ -275,7 +272,7 @@ void symInsert(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->current[symtable->last]), symbol.identifier, symbol);
 }
 
-void symIFunction(symtable_t *symtable, symbol_t symbol) {
+void symInsertFunction(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->functions), symbol.identifier, symbol);
 }
 

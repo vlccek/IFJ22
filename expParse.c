@@ -61,6 +61,8 @@ precedenceTableIndex indexInPrecTable(lexType t) {
             loging("Index in precedenc table: %d", indexDollar);
             return indexDollar;
             break;
+        default:
+            InternalError("unknown type");
     }
 }
 

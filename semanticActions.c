@@ -16,14 +16,12 @@ void testingSemanticAction(semanticActionInfo info) {
 }
 
 void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
-    if (!pravidlo)
-    {
+    if (!pravidlo) {
         loging("Pravidlo je NULL");
         return;
     }
-    
-    if (!pravidlo->semanticAction)
-    {
+
+    if (!pravidlo->semanticAction) {
         loging("Pravidlo nema semantickou akci. ID: %2d, nt: %s", pravidlo->id, getNonTerminalName(pravidlo->from));
         return;
     }
@@ -31,23 +29,36 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
 }
 
 
-void SA_programBody(semanticActionInfo info)
-{
+void SA_programBody(semanticActionInfo info) {
     loging("SA_programBody");
 }
-void SA_Command_identifierVar(semanticActionInfo info)
-{
+void SA_Command_identifierVar(semanticActionInfo info) {
     loging("SA_Command_identifierVar");
 }
 
-void SA_Statement(semanticActionInfo info)
-{
+void SA_Statement(semanticActionInfo info) {
     newStatement(program, info.lastToken);
 }
 
-void SA_FceCall(semanticActionInfo info)
-{
+void SA_FceCall(semanticActionInfo info) {
     startFunctionCall(info.lastToken);
+}
+
+void SA_FceDefine(semanticActionInfo info) {
+    functionDefBegin(info.lastToken.data.valueString);
+}
+void SA_FceDefParam(semanticActionInfo info) {
+    functionDefParam(info.lastToken.data.valueString);
+}
+void SA_FceDefType(semanticActionInfo info) {
+    functionDefParamRememberType(info.lastToken.type);
+}
+void SA_FceDefRet(semanticActionInfo info) {
+    functionDefRet(info.lastToken);
+}
+
+void endOfParsing() {
+    generate(program);
 }
 
 void SA_DeclareNewVariable(semanticActionInfo info) {
@@ -71,6 +82,15 @@ void semanticActionsInit() {
 
     // Variables assignment
     setSemanticAction(Command, identifierVar, &SA_DeclareNewVariable);
+
+    // Function definition
+    setSemanticAction(FceHeader, identifierFunc, &SA_FceDefine);
+    setSemanticActionRow(FunctionDeclareParams, &SA_FceDefType, 1, rightPar);
+    setSemanticAction(DeclareParam, identifierVar, &SA_FceDefParam);
+    setSemanticActionRow(FuncReturnColonType, &SA_FceDefRet, 0);
+
+
+
 }
 
 void SA_EndOfCommand() {

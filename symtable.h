@@ -45,12 +45,12 @@ typedef enum symbolDataType {
     integer,
     integerNullable,
     nil,
-    undefinedDataType,
+    undefinedDataType, // void ekvivalent
     symbolDataTypeLength
 } symbolDataType_t;
 
 // Todo: we have a great problem here:
-// we need to know that symbol is variable, but also the type of the variable
+// we need to know that symbol is variable, but also the type of the variable,
 // so we need something like data type and symbol type???
 typedef struct symbol {
     const char *identifier;
@@ -84,6 +84,7 @@ typedef struct DTListMem DTListMem_T;
 typedef struct DTListMem {
     DTListMem_T *next;
     symbolDataType_t type;
+    char *identifier;
 } DTListMem_T;
 
 typedef struct DTList {
@@ -108,7 +109,7 @@ void symDestroy(symtable_t *symtable);
 void symNewLocal(symtable_t *symtable);
 void symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
-void symIFunction(symtable_t *symtable, symbol_t symbol);
+void symInsertFunction(symtable_t *symtable, symbol_t symbol);
 symbol_t *symSearchVar(symtable_t *symtable, const char *identifier);
 symbol_t *symSearchFunc(symtable_t *symtable, const char *identifier);
 void symSwitch(symtable_t *symtable);
@@ -119,5 +120,5 @@ symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_
 symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType);
 void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);
-void insDTList(DTList_T *list, symbolDataType_t typ);
+void insDTList(DTList_T *list, symbolDataType_t typ, char *identifier);
 #endif//IFJ22_SYMTABLE_H

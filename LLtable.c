@@ -13,6 +13,25 @@ void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*sem
     Table[nonTerminal][terminal]->rules[0]->semanticAction = semanticAction;
 }
 
+void setSemanticActionRow(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo), size_t except, ...) {
+    for (int i = 0; i < lexTypeCount; ++i) {
+        if (Table[nonTerminal][i]) {
+            Table[nonTerminal][i]->rules[0]->semanticAction = semanticAction;
+        }
+    }
+    va_list list;
+    va_start ( list, except );
+
+    for ( int x = 0; x < except; x++ )
+    {
+        lexType toDelete = va_arg ( list, lexType );
+        if (Table[nonTerminal][toDelete])
+        {
+            Table[nonTerminal][toDelete]->rules[0]->semanticAction = NULL;
+        }
+    }
+    va_end ( list );
+}
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal) {
     if (nonterm >= nonTerminalCount || terminal >= lexTypeCount)

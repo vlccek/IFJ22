@@ -14,9 +14,14 @@
 
 void initIgen(i3Table_t program);
 void startFunctionCall(token_t token);
+symbolDataType_t tokenTypeToSymbolType(lexType type);
 void newStatement(i3Table_t program, token_t token);
 void writeLiteral(i3Table_t program, token_t token);
 void newVariable(i3Table_t program, token_t token);
+void functionDefParamRememberType(lexType type);
+void functionDefParam(char *identifier);
+void functionDefBegin(char *identifier);
+void functionDefRet(token_t token);
 void flushCommand(i3Table_t program);
 
 #endif // IFJ22_IGEN_H

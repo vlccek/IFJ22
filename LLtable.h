@@ -110,5 +110,6 @@ PSAStackMember *createPSAStackMember(int value, PSADataType type);
 char *getStringPSAMember(PSAStackMember m);
 
 void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*semanticAction)(semanticActionInfo));
+void setSemanticActionRow(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo), size_t except, ...);
 
 #endif //LUAINTERPRET_LLTABLE_H
