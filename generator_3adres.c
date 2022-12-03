@@ -21,7 +21,7 @@ void initializeProgram(i3Table_t *program) {
 }
 
 void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, char *functionName) {
-    make_var(instructionArray, i3Instruction_t*, maxCapacity*sizeof (i3Instruction_t));
+    make_var(instructionArray, i3Instruction_t *, maxCapacity * sizeof(i3Instruction_t));
     array->instructions = instructionArray;
     array->capacity = maxCapacity;
     array->functionName = functionName;
@@ -47,8 +47,8 @@ void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction) {
     }
 }
 
-char* copyString(char* toCopy){
-    make_var(newString, char*, strlen(toCopy))
-    strcpy(newString, toCopy);
+char *copyString(char *toCopy) {
+    make_var(newString, char *, sizeof(char) * (strlen(toCopy) + 1))
+            strcpy(newString, toCopy);
     return newString;
 }

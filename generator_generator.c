@@ -37,13 +37,13 @@ char *convertString(dynStr_t *dynStr, char *string) {
 /// \param buf buffer where output will be stored
 /// \return buf parameter
 char *generateArgSymbol(symbol_t symb, char *buf) {
-    if (symb.type == string) {
+    if (symb.dataType == string) {
         dynStr_t *string = dstrInit();
         sprintf(buf, "string@%s", convertString(string, symb.token.data.valueString->string));
         dstrFree(string);
-    } else if (symb.type == integer)
+    } else if (symb.dataType == integer)
         sprintf(buf, "int@%d", symb.token.data.valueInteger);
-    else if (symb.type == floating)
+    else if (symb.dataType == floating)
         sprintf(buf, "float@%a", symb.token.data.valueFloat);
     return buf;
 }
