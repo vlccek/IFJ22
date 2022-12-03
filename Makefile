@@ -24,3 +24,4 @@ clean_o:
 
 tar:
 	tar -czvf xjarol06.tgz *.c *.h Makefile dokumentace.pdf
+	@echo "##### A vypl si exit na InternalErroru?? #####"
