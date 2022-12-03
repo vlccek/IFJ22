@@ -11,7 +11,7 @@
 typedef struct currentState {
     size_t currentArray;
     symbol_t *callingFunction; // todo: this should be nulled somewhere
-    symbol_t *floatingVariable;// variable is floating in the middle of assignment
+    symbol_t *undefinedVariable;// variable is floating in the middle of assignment
 } currentState_T;
 
 
@@ -33,17 +33,17 @@ symbol_t *findExistingVariable(char *variableName) {
     return symbol;
 }
 
-void startFunctionCall(token_t *token) {
-    symbol_t *fceSymbol = symSearchFunc(&symtable, token->data.valueString->string);
+void startFunctionCall(token_t token) {
+    symbol_t *fceSymbol = symSearchFunc(&symtable, token.data.valueString->string);
     if (fceSymbol == NULL) {
         // todo: exit right value
-        InternalError("Function %s not found in symtable!", token->data.valueString->string);
+        InternalError("Function %s not found in symtable!", token.data.valueString->string);
     }
     currentState.callingFunction = fceSymbol;
 }
 
 
-symbolType_t tokenTypeToSymbolType(lexType type) {
+symbolDataType_t tokenTypeToSymbolType(lexType type) {
     switch (type) {
         case stringLiteral:
             return string;
@@ -56,8 +56,8 @@ symbolType_t tokenTypeToSymbolType(lexType type) {
                           getTerminalName(type));
     }
 }
-void writeLiteral(i3Table_t program, token_t *token) {
-    symbol_t symbol = tokenToSymbol(token, tokenTypeToSymbolType(token->type));
+void writeLiteral(i3Table_t program, token_t token) {
+    symbol_t symbol = tokenToSymbol(token, tokenTypeToSymbolType(token.type));
 
     i3Instruction_t instruction;
     instruction.type = I_WRITE;
@@ -72,10 +72,10 @@ void writeSymbol(i3Table_t program, symbol_t *symbol) {
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
-void functionParam(i3Table_t program, token_t *token) {
+void functionParam(i3Table_t program, token_t token) {
     if (!strcmp(currentState.callingFunction->identifier, "write")) {
-        if (token->type == identifierVar) {
-            symbol_t *symbol = findExistingVariable(token->data.valueString->string);
+        if (token.type == identifierVar) {
+            symbol_t *symbol = findExistingVariable(token.data.valueString->string);
             writeSymbol(program, symbol);
         } else {
             writeLiteral(program, token);
@@ -83,20 +83,20 @@ void functionParam(i3Table_t program, token_t *token) {
     }
 }
 
-void moveToVariable(i3Table_t program, token_t *token) {
-    currentState.floatingVariable->type = tokenTypeToSymbolType(token->type);
-    symInsert(&symtable, *currentState.floatingVariable);
+void moveToVariable(i3Table_t program, token_t token) {
+    currentState.undefinedVariable->type = tokenTypeToSymbolType(token.type);
+    symInsert(&symtable, *currentState.undefinedVariable);
 
     i3Instruction_t instruction = {
             .type = I_MOVE,
-            .dest = *currentState.floatingVariable,
+            .dest = *currentState.undefinedVariable,
             .arg1 = tokenToSymbol(token,
-                                  tokenTypeToSymbolType(token->type))};
+                                  tokenTypeToSymbolType(token.type))};
     pushToArray(&program[currentState.currentArray], instruction);
-    currentState.floatingVariable = NULL;
+    currentState.undefinedVariable = NULL;
 }
 
-void newStatement(i3Table_t program, token_t *token) {
+void newStatement(i3Table_t program, token_t token) {
     if (currentState.callingFunction != NULL) {
         // if in the middle of function call
         functionParam(program, token);
@@ -106,19 +106,19 @@ void newStatement(i3Table_t program, token_t *token) {
     }
 }
 
-void newVariable(i3InstructionArray_t *program, token_t *token) {
-    symbol_t *symbol = symSearchVar(&symtable, token->data.valueString->string);
+void newVariable(i3InstructionArray_t *program, token_t token) {
+    symbol_t *symbol = symSearchVar(&symtable, token.data.valueString->string);
     if (symbol != NULL) {
         InternalError("Redefinitions of variable is prohibited!");
         // todo: or is it?
     }
     // todo: symbol does not have all props initialized - mby use tokenToSymbol()
-    symbol = createSymbol(token->data.valueString->string,
+    symbol = createSymbol(token.data.valueString->string,
                           undefined, // we do not know variable type by now
                           NULL,      // variable does not have param list
                           undefined);// variable does not have return value
 
-    currentState.floatingVariable = symbol;
+    currentState.undefinedVariable = symbol;
 
     i3Instruction_t instruction = {
             .type = I_DEFVAR,

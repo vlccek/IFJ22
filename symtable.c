@@ -22,7 +22,7 @@ DTList_T *createDTL(int count, ...) {
     va_list args;
     va_start(args, count);
     for (int i = 0; i < count; ++i) {
-        insDTList(DTL, va_arg(args, symbolType_t));
+        insDTList(DTL, va_arg(args, symbolDataType_t));
     }
     va_end(args);
 
@@ -154,7 +154,7 @@ void htDestroy(htTable_t *table) {
 // endregion
 // region SymTable
 
-symbol_t *createSymbol(const char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType) {
+symbol_t *createSymbol(const char *name, symbolDataType_t type, DTList_T *paramList, symbolDataType_t returnType) {
     symbol_t *newSymbol = (symbol_t *) malloc(sizeof(symbol_t));
     if (newSymbol == NULL) {
         InternalError("Malloc failed.");
@@ -187,7 +187,7 @@ void saveBuildInFunctions(symtable_t *symtable) {
                                          floatingNullable));
     symIFunction(symtable, *createSymbol("write", function,
                                          createDTL(0),
-                                         undefined));
+                                         nil));
     symIFunction(symtable, *createSymbol("intval", function,
                                          createDTL(1, floatingNullable),
                                          integer));
@@ -348,9 +348,6 @@ void printSymbol(symbol_t *symbol) {
     
     char *type;
     switch (symbol->type) {
-        case function:
-            type = "function";
-            break;
         case string:
             type = "string";
             break;

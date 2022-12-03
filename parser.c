@@ -115,8 +115,8 @@ rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
     return firstRule;
 }
 
-void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, token_t *lastToken) {
-    rule *newRule = findRule((*lastToken), *topOfStack);
+void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, token_t lastToken) {
+    rule *newRule = findRule(lastToken, *topOfStack);
     gStackPop(memory->PSAStack);
     if (newRule->epsRule == false) {
         gStackPushReversed(memory->PSAStack, newRule->to);
@@ -166,7 +166,7 @@ int parser() {
                     lastToken = getToken(stdin);
                     continue;
                 }
-                deriveNonTerminal(memory, topOfStack, &lastToken);
+                deriveNonTerminal(memory, topOfStack, lastToken);
                 break;
         }
     }

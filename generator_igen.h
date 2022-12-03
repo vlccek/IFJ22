@@ -13,9 +13,9 @@
 #include "symtable.h"
 
 void initIgen(i3Table_t program);
-void startFunctionCall(token_t *token);
-void newStatement(i3Table_t program, token_t *token);
-void writeLiteral(i3Table_t program, token_t *token);
-void newVariable(i3Table_t program, token_t *token);
+void startFunctionCall(token_t token);
+void newStatement(i3Table_t program, token_t token);
+void writeLiteral(i3Table_t program, token_t token);
+void newVariable(i3Table_t program, token_t token);
 
 #endif // IFJ22_IGEN_H

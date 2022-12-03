@@ -10,7 +10,7 @@
 #include "lex.h"
 
 typedef struct semanticActionInfo {
-    token_t *lastToken;
+    token_t lastToken;
 
 
 } semanticActionInfo;

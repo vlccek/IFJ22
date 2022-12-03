@@ -71,5 +71,5 @@ void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, ch
 
 void initializeProgram(i3Table_t *program);
 
-symbol_t tokenToSymbol(token_t *token, symbolType_t type);
+symbol_t tokenToSymbol(token_t token, symbolDataType_t type);
 #endif //IFJ22_3ADRES_H
