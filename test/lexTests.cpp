@@ -561,7 +561,8 @@ namespace ifj22 {
 
 
         TEST_F(LexTestAdvanced, prolog_unallowChars) {
-
+            php = false;
+            declare = false;
             char text[] = "randomcharejjeojeoeojejojeojeojeojeoejeoj"
                           
                           "function bar(string $param) : string {\n"
@@ -573,6 +574,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars2) {
+            php = false;
+            declare = false;
             char text[] = "<?phpjenej\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
@@ -584,6 +587,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars3) {
+            php = false;
+            declare = false;
             char text[] = "<?php\n"
                           "a = 10;"
                           "declare(strict_types=1);"
@@ -596,6 +601,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars4) {
+            php = false;
+            declare = false;
             char text[] = "<<?php\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
@@ -607,6 +614,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars_comments1) {
+            php = false;
+            declare = false;
             char text[] = "/*kks*/<<?php\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
@@ -618,6 +627,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars_comments2) {
+            php = false;
+            declare = false;
             char text[] = "//kks\n<?php\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
@@ -629,6 +640,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars5) {
+            php = false;
+            declare = false;
             char text[] = "\t<?php\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
@@ -640,6 +653,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars6) {
+            php = false;
+            declare = false;
             char text[] = "\n<?php\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
@@ -651,6 +666,8 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestAdvanced, prolog_unallowChars7) {
+            php = false;
+            declare = false;
             char text[] = " <?php\n"
                           "declare(strict_types=1);"
                           "function bar(string $param) : string {\n"
