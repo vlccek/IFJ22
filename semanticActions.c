@@ -50,10 +50,6 @@ void SA_FceCall(semanticActionInfo info)
     startFunctionCall(info.lastToken);
 }
 
-void endOfParsing(){
-    generate(program);
-}
-
 void SA_DeclareNewVariable(semanticActionInfo info) {
     newVariable(program, info.lastToken);
 }
@@ -75,4 +71,12 @@ void semanticActionsInit() {
 
     // Variables assignment
     setSemanticAction(Command, identifierVar, &SA_DeclareNewVariable);
+}
+
+void SA_EndOfCommand() {
+    flushCommand(program);
+}
+
+void SA_EndOfParsing(){
+    generate(program);
 }

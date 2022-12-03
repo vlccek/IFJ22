@@ -12,6 +12,10 @@ typedef struct currentState {
     size_t currentArray;
     symbol_t *callingFunction; // todo: this should be nulled somewhere
     symbol_t undefinedVariable;// variable is floating in the middle of assignment
+
+    // used by expression parsing
+    symbol_t tmp1;// primary temporary symbol
+    symbol_t tmp2;// secondary temporary symbol
 } currentState_T;
 
 
@@ -22,6 +26,8 @@ void initIgen(i3Table_t program) {
     symInit(&symtable);
     currentState.currentArray = 0;
     currentState.callingFunction = NULL;
+    currentState.tmp1.type = undefinedType;
+    currentState.tmp2.type = undefinedType;
 }
 
 symbol_t *findExistingVariable(char *variableName) {
@@ -105,7 +111,13 @@ void newStatement(i3Table_t program, token_t token) {
                                                 literal,
                                                 tokenTypeToSymbolType(token.type),
                                                 token);
-        moveToVariable(program, newSymbol);
+        if (currentState.tmp1.type == undefinedType) {
+            currentState.tmp1 = newSymbol;
+        } else if (currentState.tmp2.type == undefinedType) {
+            currentState.tmp2 = newSymbol;
+        } else {
+            InternalError("No more tmp variables available!");
+        }
     }
 }
 
@@ -117,12 +129,20 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
     }
     // todo: symbol does not have all props initialized - mby use tokenToSymbol()
     currentState.undefinedVariable = createSymbolVarLit(token.data.valueString->string,
-                                            variable,                         // we do not know variable type by now
-                                            undefined,// variable does not have param list
-                                            token);                           // variable does not have return value
+                                                        variable,         // we do not know variable type by now
+                                                        undefinedDataType,// variable does not have param list
+                                                        token);           // variable does not have return value
 
     i3Instruction_t instruction = {
             .type = I_DEFVAR,
             .arg1 = currentState.undefinedVariable};
     pushToArray(&program[currentState.currentArray], instruction);
+}
+
+/// Complete the command action
+void flushCommand(i3Table_t program) {
+    if (currentState.tmp1.type != undefinedType){
+        moveToVariable(program, currentState.tmp1);
+        currentState.tmp1.type = undefinedType;
+    }
 }

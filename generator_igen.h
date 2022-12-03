@@ -17,5 +17,6 @@ void startFunctionCall(token_t token);
 void newStatement(i3Table_t program, token_t token);
 void writeLiteral(i3Table_t program, token_t token);
 void newVariable(i3Table_t program, token_t token);
+void flushCommand(i3Table_t program);
 
 #endif // IFJ22_IGEN_H

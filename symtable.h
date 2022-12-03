@@ -32,7 +32,8 @@
 typedef enum symbolType {
     function,
     variable,
-    literal
+    literal,
+    undefinedType
 
 } symbolType_t;
 
@@ -44,9 +45,8 @@ typedef enum symbolDataType {
     integer,
     integerNullable,
     nil,
-    undefined,
+    undefinedDataType,
     symbolDataTypeLength
-
 } symbolDataType_t;
 
 // Todo: we have a great problem here:

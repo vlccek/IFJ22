@@ -162,7 +162,7 @@ symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_
 
     newSymbol.token = token;
     newSymbol.firstParam = NULL;
-    newSymbol.returnType = undefined;
+    newSymbol.returnType = undefinedDataType;
 
     return newSymbol;
 }
@@ -174,7 +174,7 @@ symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *pa
         InternalError("Malloc failed.");
     }
     newSymbol->type = type;
-    newSymbol->dataType = undefined;
+    newSymbol->dataType = undefinedDataType;
     newSymbol->identifier = name;
     newSymbol->returnType = returnType;
     DTList_T *newPList = createDTL(0);
@@ -202,7 +202,7 @@ void saveBuildInFunctions(symtable_t *symtable) {
                                                  floatingNullable));
     symIFunction(symtable, *createSymbolFunction("write", function,
                                                  createDTL(0),
-                                                 undefined));
+                                                 undefinedDataType));
     symIFunction(symtable, *createSymbolFunction("intval", function,
                                                  createDTL(1, floatingNullable),
                                                  integer));
@@ -366,6 +366,9 @@ void printSymbol(symbol_t *symbol) {
         case literal:
             type = "literal";
             break;
+        case undefinedType:
+            type = "undefinedType";
+            break;
         default:
             InternalError("Type of symbol (%d) is unknown", symbol->type);
     }
@@ -391,7 +394,7 @@ void printSymbol(symbol_t *symbol) {
         case nil:
             dataType = "nil";
             break;
-        case undefined:
+        case undefinedDataType:
             dataType = "undefined";
             break;
         default:

@@ -156,6 +156,8 @@ int parser() {
                 break;
             case terminal:
                 checkTopAndLastMatch(topOfStack, &lastToken);
+                if(lastToken.type == semicolon)
+                    SA_EndOfCommand();
 
                 gStackPop(memory->PSAStack);
                 lastToken = getToken(stdin);
@@ -170,7 +172,7 @@ int parser() {
                 break;
         }
     }
-    endOfParsing();
+    SA_EndOfParsing();
     return 0;
 }
 
