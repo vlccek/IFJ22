@@ -1347,6 +1347,37 @@ token_t getToken(FILE *stream) {
                         break;
                 }
                 break;
+            case '\t':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = init_s;
+                        break;
+                    case string_lit_s:
+                        dstrAppend(buffer, "\t");
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        stop = true;
+                        break;
+                }
+                break;
             case '\n':
                 switch (currentState) {
                     case init_s:
@@ -1378,7 +1409,6 @@ token_t getToken(FILE *stream) {
                         break;
                 }
                 break;
-            case '\t':
             case '\r':
             case '\v':
             case '\f':
