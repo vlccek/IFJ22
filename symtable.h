@@ -58,13 +58,7 @@ typedef struct symbol {
     int symtablePos;
     struct DTList *firstParam;
     symbolDataType_t returnType;
-    struct symbol_data{
-        char* string;
-        int integer;
-        double floating;
-    } symbolData;
-    int rowNumber;
-    int rowPosNumber;
+    token_t token;
 } symbol_t;
 
 typedef struct htItem {
