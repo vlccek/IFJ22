@@ -9,8 +9,9 @@
 #include "generator_igen.h"
 
 typedef struct currentState {
-    symbol_t *callingFunction;
+    symbol_t *callingFunction; // todo: this should be nulled somewhere
     size_t currentArray;
+
 } currentState_T;
 
 
@@ -51,7 +52,8 @@ symbolType_t tokenTypeToSymbolType(lexType type) {
         case floatLiteral:
             return floating;
         default:
-            InternalError("Lex type %d is not convertable to symbol type!", type);
+            InternalError("Lex type '%s' is not convertable to symbol type!",
+                          getTerminalName(type));
     }
 }
 void writeLiteral(i3Table_t program, token_t *token) {
@@ -78,4 +80,30 @@ void functionParam(i3Table_t program, token_t *token) {
         }
         writeLiteral(program, token);
     }
+}
+
+void newStatement(i3Table_t program, token_t *token) {
+    // if in the middle of function call
+    if (currentState.callingFunction->identifier != NULL) {
+        functionParam(program, token);
+    }
+
+    // statement is part of the expression
+
+}
+
+void newVariable(i3InstructionArray_t *program, token_t *token) {
+    symbol_t *symbol = symSearchVar(&symtable, token->data.valueString->string);
+    if(symbol != NULL){
+        InternalError("Redefinitions of variable is prohibited!");
+        // todo: or is it?
+    }
+
+    i3Instruction_t instruction;
+    instruction.type = I_DEFVAR;
+    instruction.arg1 = *createSymbol(token->data.valueString->string,
+                                    undefined, // we do not know variable type by now
+                                    NULL, // variable does not have param list
+                                    undefined); // variable does not have return value
+    pushToArray(&program[currentState.currentArray], instruction);
 }

@@ -42,7 +42,7 @@ void SA_Command_identifierVar(semanticActionInfo info)
 
 void SA_FunctionParam(semanticActionInfo info)
 {
-    functionParam(program, info.lastToken);
+    newStatement(program, info.lastToken);
 }
 
 void SA_FceCall(semanticActionInfo info)
@@ -52,6 +52,10 @@ void SA_FceCall(semanticActionInfo info)
 
 void endOfParsing(){
     generate(program);
+}
+
+void SA_DeclareNewVariable(semanticActionInfo info) {
+    newVariable(program, info.lastToken);
 }
 
 void semanticActionsInit() {
@@ -68,4 +72,7 @@ void semanticActionsInit() {
     setSemanticAction(Statement, integerLiteral, &SA_FunctionParam);
     setSemanticAction(Statement, floatLiteral, &SA_FunctionParam);
     setSemanticAction(Statement, identifierVar, &SA_FunctionParam);
+
+    // Variables assignment
+    setSemanticAction(Command, identifierVar, &SA_DeclareNewVariable);
 }

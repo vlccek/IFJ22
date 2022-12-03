@@ -122,6 +122,8 @@ void generateInstructionArray(i3InstructionArray_t array) {
 
 void generate(i3Table_t program) {
     generateHeader();
+    printf("\n");
+    printf("CREATEFRAME\nPUSHFRAME\n");
     for (int i = 0; i < MAX_HTSIZE; ++i) {
         generateInstructionArray(program[i]);
     }
