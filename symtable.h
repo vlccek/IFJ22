@@ -1,11 +1,12 @@
 /**
  * @file symtable.h
- * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
- * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
- * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
- * @brief Parser jazyka
- * Implementace překladače imperativního jazyka IFJ21
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @brief Tabulka symbolů
+ * Implementace překladače jazyka IFJ22
  *
+ * Při implementaci bylo použito řešení hashtabulky z 2. domacího úkolu IAL 2021/Z
  */
 #ifndef IFJ22_SYMTABLE_H
 #define IFJ22_SYMTABLE_H
@@ -30,6 +31,12 @@
 
 typedef enum symbolType {
     function,
+    variable,
+    literal
+
+} symbolType_t;
+
+typedef enum symbolDataType {
     string,
     stringNullable,
     floating,
@@ -37,20 +44,22 @@ typedef enum symbolType {
     integer,
     integerNullable,
     nil,
-    undefined, 
-    symbolTypeLenght
+    undefined,
+    symbolDataTypeLength
 
-} symbolType_t;
+} symbolDataType_t;
 
+// Todo: we have a great problem here:
+// we need to know that symbol is variable, but also the type of the variable
+// so we need something like data type and symbol type???
 typedef struct symbol {
     const char *identifier;
     symbolType_t type;
-    int rowNumber;
-    int rowPosNumber;
+    symbolDataType_t dataType;
     int symtablePos;
     struct DTList *firstParam;
-    symbolType_t returnType;
-
+    symbolDataType_t returnType;
+    token_t token;
 } symbol_t;
 
 typedef struct htItem {
@@ -74,26 +83,13 @@ typedef struct symtable {
 typedef struct DTListMem DTListMem_T;
 typedef struct DTListMem {
     DTListMem_T *next;
-    symbolType_t type;
+    symbolDataType_t type;
 } DTListMem_T;
 
 typedef struct DTList {
     int len;
     DTListMem_T *first;
 } DTList_T;
-
-typedef struct symStackMem symStackMem_T;
-typedef struct symStackMem {
-    symStackMem_T *down;
-    symbol_t *s;
-} symStackMem_T;
-
-typedef struct symStack symStack_T;
-typedef struct symStack {
-    int len;
-    symStackMem_T *top;
-
-} symStack_T;
 
 void printSymtable(symtable_t *symtable);
 void printHashtable(htTable_t *table, const char *index);
@@ -113,19 +109,15 @@ void symNewLocal(symtable_t *symtable);
 void symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
 void symIFunction(symtable_t *symtable, symbol_t symbol);
-symbol_t *symSearch(symtable_t *symtable, const char *identifier);
-symbol_t *symSFunction(symtable_t *symtable, const char *identifier);
+symbol_t *symSearchVar(symtable_t *symtable, const char *identifier);
+symbol_t *symSearchFunc(symtable_t *symtable, const char *identifier);
 void symSwitch(symtable_t *symtable);
 void symSwitchBack(symtable_t *symtable);
 
-
-void initSStack(symStack_T *stack);
-void pushSStack(symStack_T *stack, symbol_t *member);
-symbol_t *popSStack(symStack_T *stack);
-
 DTList_T *createDTL(int count, ...);
-symbol_t *createSymbol(const char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType);
+symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_t dataType, token_t token);
+symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType);
 void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);
-void insDTList(DTList_T *list, enum symbolType typ);
+void insDTList(DTList_T *list, symbolDataType_t typ);
 #endif//IFJ22_SYMTABLE_H

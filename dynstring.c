@@ -1,7 +1,8 @@
 /**
  * @file dynstring.c
- * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @brief Jednoduchý dynamický string
+ * Implementace překladače jazyka IFJ22
  */
 
 
@@ -138,7 +139,6 @@ dynStr_t *dstrSubstring(dynStr_t *dstr, int start, int stop) {
 }
 
 void dstrFree(dynStr_t *dstr) {
-
     free(dstr->string);
     free(dstr);
 }

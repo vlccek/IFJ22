@@ -1,6 +1,9 @@
-//
-// Created by jvlk on 8.10.22.
-//
+/**
+ * @file expParse.c
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief expression parser
+ * Implementace překladače jazyka IFJ22
+ */
 #include "expParse.h"
 
 
@@ -116,7 +119,7 @@ bool precOver(genericStack *s) {
 }
 
 void printExpParserType(void *data) {
-    fprintf(stdout, "%s", generatePrintExpParsertype((expParserType *) data));
+    fprintf(stderr, "%s", generatePrintExpParsertype((expParserType *) data));
 }
 
 void addPrecLBefore(genericStack *s, unsigned position) {
@@ -224,6 +227,7 @@ rule *derivateTopStack(genericStack *sTokens) {
         PrettyExit(ERR_SYNTAX);
     } else {
         semanticActionInfo a;
+        a.lastToken = *tmp->tokenData;
         r->semanticAction(a);
         loging("END derivate top Ofstack");
         return r;

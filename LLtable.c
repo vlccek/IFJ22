@@ -1,10 +1,9 @@
 /**
  * @file LLTable.c
- * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
- * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
- * @brief Tabulka ktera obsahuje vsechny pravidla
- * Implementace překladače imperativního jazyka IFJ21
- *
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Tabulka, která obsahuje všechna pravidla
+ * Implementace překladače jazyka IFJ22
  */
 #include "LLtable.h"
 

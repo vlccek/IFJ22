@@ -43,7 +43,21 @@ add_library(parser
         parser.c
         parser.h)
 
+add_library(generator
+        generator_3adres.c
+        generator_3adres.h
+        generator_generator.c
+        generator_generator.h
+        generator_igen.c
+        generator_igen.h)
+
 add_library(semanticActions
+        generator_3adres.c
+        generator_3adres.h
+        generator_generator.c
+        generator_generator.h
+        generator_igen.c
+        generator_igen.h
         semanticActions.c
         semanticActions.h semanticActionInfo.c semanticActionInfo.h)
 
@@ -66,14 +80,6 @@ add_library(LLtable
 add_library(symtable
         symtable.c
         symtable.h)
-
-add_library(generator
-	generator_3adres.c
-	generator_3adres.h
-	generator_generator.c
-	generator_generator.h
-	generator_igen.c
-	generator_igen.h)
 
 add_library(expParseTests
         expParse.c

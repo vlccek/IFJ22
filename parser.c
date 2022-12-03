@@ -1,6 +1,10 @@
-//
-// Created by tonda on 05/10/22.
-//
+/**
+ * @file parser.c
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Analyzátor
+ * Implementace překladače jazyka IFJ22
+ */
 #include "parser.h"
 
 void gStackPushStackToStack(genericStack *original, genericStack *toEmpty) {
@@ -24,7 +28,7 @@ int updateStackViewMember(ParserMemory *memory, int stackLength) {
 }
 
 void updateStackView(ParserMemory *memory) {
-    make_var(tmpStack, genericStack*, sizeof(genericStack));
+    genericStack * tmpStack = gStackInit();
 
     for (int stackLength = 0; stackLength < MAX_STACK_VIEWABLE; ++stackLength) {
         if (updateStackViewMember(memory, stackLength) == 0)
@@ -111,14 +115,15 @@ rule *findRule(token_t lastToken, PSAStackMember topOfStack) {
     return firstRule;
 }
 
-void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, token_t *lastToken) {
-    rule *newRule = findRule((*lastToken), *topOfStack);
+void deriveNonTerminal(ParserMemory *memory, const PSAStackMember *topOfStack, token_t lastToken) {
+    rule *newRule = findRule(lastToken, *topOfStack);
     gStackPop(memory->PSAStack);
     if (newRule->epsRule == false) {
         gStackPushReversed(memory->PSAStack, newRule->to);
     }
 
     semanticActionInfo info;
+    info.lastToken = lastToken;
     callSemanticAction(newRule, info);
 }
 
@@ -161,11 +166,11 @@ int parser() {
                     lastToken = getToken(stdin);
                     continue;
                 }
-                deriveNonTerminal(memory, topOfStack, &lastToken);
+                deriveNonTerminal(memory, topOfStack, lastToken);
                 break;
         }
     }
-
+    endOfParsing();
     return 0;
 }
 

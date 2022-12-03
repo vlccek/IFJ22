@@ -1,9 +1,9 @@
 /**
  * @file parser.c
- * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
- * @author Jakub Vlk (xvlkja07@fit.vutbr.cz)
- * @brief Hlavičkový soubor pro parser jazyka
- * Implementace překladače imperativního jazyka IFJ22
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Analyzátor
+ * Implementace překladače jazyka IFJ22
  *
  */
 

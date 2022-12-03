@@ -2,11 +2,11 @@
  * @file symtable.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @author Antonín Jarolím (xjarol06@fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief Tabulka symbolů
- * Implementace překladače imperativního jazyka IFJ21
+ * Implementace překladače jazyka IFJ22
  *
- * Při implementaci bylo použito řešení hashtabulky z 2. domacího úkolu IAL
+ * Při implementaci bylo použito řešení hashtabulky z 2. domacího úkolu IAL 2021/Z
  */
 #include "symtable.h"
 
@@ -22,18 +22,20 @@ DTList_T *createDTL(int count, ...) {
     va_list args;
     va_start(args, count);
     for (int i = 0; i < count; ++i) {
-        insDTList(DTL, va_arg(args, symbolType_t));
+        insDTList(DTL, va_arg(args, symbolDataType_t));
     }
     va_end(args);
 
     return DTL;
 }
 
-/*
- * Insertuje prvky seznamu
- * PRÁZDNÝ SEZNAM MUSÍ BÝT NULL!
+/**
+ * @brief vkládá prvek na konec seznamu
+ * 
+ * @param list DTL seznam
+ * @param typ typ symbolu
  */
-void insDTList(DTList_T *list, enum symbolType typ) {
+void insDTList(DTList_T *list, symbolDataType_t typ) {
     DTListMem_T *actualMem = list->first;
     if (list->first != NULL) {
         while (actualMem->next != NULL)
@@ -52,36 +54,14 @@ void insDTList(DTList_T *list, enum symbolType typ) {
     }
     list->len++;
 }
-
+/**
+ * @brief inicializuje nový seznam
+ * 
+ * @param list odkaz na nový seznam
+ */
 void initDTList(DTList_T *list) {
     list->first = NULL;
     list->len = 0;
-}
-// endregion
-// region SStack
-void initSStack(symStack_T *stack) {
-    stack->len = 0;
-    stack->top = NULL;
-}
-void pushSStack(symStack_T *stack, symbol_t *member) {
-    symStackMem_T *newMember = malloc(sizeof(symStackMem_T));
-    checkNullPointer(newMember);
-    symStackMem_T *oldTop = stack->top;
-    newMember->down = oldTop;
-    newMember->s = member;
-    stack->top = newMember;
-    stack->len++;
-}
-
-symbol_t *popSStack(symStack_T *stack) {
-    if (stack->top == NULL) {
-        loging("Pop from empty stack!");
-        return NULL;
-    }
-    symStackMem_T *returnMember = stack->top;
-    stack->top = stack->top->down;
-    stack->len--;
-    return returnMember->s;
 }
 // endregion
 // region HashTable
@@ -174,12 +154,27 @@ void htDestroy(htTable_t *table) {
 // endregion
 // region SymTable
 
-symbol_t *createSymbol(const char *name, symbolType_t type, DTList_T *paramList, symbolType_t returnType) {
+symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_t dataType, token_t token) {
+    symbol_t newSymbol;
+    newSymbol.identifier = name;
+    newSymbol.type = type;
+    newSymbol.dataType = dataType;
+
+    newSymbol.token = token;
+    newSymbol.firstParam = NULL;
+    newSymbol.returnType = undefined;
+
+    return newSymbol;
+}
+
+
+symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType) {
     symbol_t *newSymbol = (symbol_t *) malloc(sizeof(symbol_t));
     if (newSymbol == NULL) {
         InternalError("Malloc failed.");
     }
     newSymbol->type = type;
+    newSymbol->dataType = undefined;
     newSymbol->identifier = name;
     newSymbol->returnType = returnType;
     DTList_T *newPList = createDTL(0);
@@ -196,39 +191,39 @@ symbol_t *createSymbol(const char *name, symbolType_t type, DTList_T *paramList,
 
 
 void saveBuildInFunctions(symtable_t *symtable) {
-    symIFunction(symtable, *createSymbol("reads", function,
-                                         createDTL(0),
-                                         stringNullable));
-    symIFunction(symtable, *createSymbol("readi", function,
-                                         createDTL(0),
-                                         integerNullable));
-    symIFunction(symtable, *createSymbol("readf", function,
-                                         createDTL(0),
-                                         floatingNullable));
-    symIFunction(symtable, *createSymbol("write", function,
-                                         createDTL(0),
-                                         undefined));
-    symIFunction(symtable, *createSymbol("intval", function,
-                                         createDTL(1, floatingNullable),
-                                         integer));
-    symIFunction(symtable, *createSymbol("floatval", function,
-                                         createDTL(1, integerNullable),
-                                         floating));
-    symIFunction(symtable, *createSymbol("strval", function,
-                                         createDTL(1, stringNullable),
-                                         string));
-    symIFunction(symtable, *createSymbol("substring", function,
-                                         createDTL(3, string, integer, integer),
-                                         stringNullable));
-    symIFunction(symtable, *createSymbol("strlen", function,
-                                         createDTL(1, string),
-                                         integer));
-    symIFunction(symtable, *createSymbol("ord", function,
-                                         createDTL(1, string),
-                                         integer));
-    symIFunction(symtable, *createSymbol("chr", function,
-                                         createDTL(1, integer),
-                                         string));
+    symIFunction(symtable, *createSymbolFunction("reads", function,
+                                                 createDTL(0),
+                                                 stringNullable));
+    symIFunction(symtable, *createSymbolFunction("readi", function,
+                                                 createDTL(0),
+                                                 integerNullable));
+    symIFunction(symtable, *createSymbolFunction("readf", function,
+                                                 createDTL(0),
+                                                 floatingNullable));
+    symIFunction(symtable, *createSymbolFunction("write", function,
+                                                 createDTL(0),
+                                                 undefined));
+    symIFunction(symtable, *createSymbolFunction("intval", function,
+                                                 createDTL(1, floatingNullable),
+                                                 integer));
+    symIFunction(symtable, *createSymbolFunction("floatval", function,
+                                                 createDTL(1, integerNullable),
+                                                 floating));
+    symIFunction(symtable, *createSymbolFunction("strval", function,
+                                                 createDTL(1, stringNullable),
+                                                 string));
+    symIFunction(symtable, *createSymbolFunction("substring", function,
+                                                 createDTL(3, string, integer, integer),
+                                                 stringNullable));
+    symIFunction(symtable, *createSymbolFunction("strlen", function,
+                                                 createDTL(1, string),
+                                                 integer));
+    symIFunction(symtable, *createSymbolFunction("ord", function,
+                                                 createDTL(1, string),
+                                                 integer));
+    symIFunction(symtable, *createSymbolFunction("chr", function,
+                                                 createDTL(1, integer),
+                                                 string));
 }
 
 void symInit(symtable_t *symtable) {
@@ -263,8 +258,7 @@ void symNewLocal(symtable_t *symtable) {
 
 void symDelLocal(symtable_t *symtable) {
     if (symtable->last == 0) {
-        if (symtable->isInFunction)
-        {
+        if (symtable->isInFunction) {
             loging("INFO: Switching back to main symtable.");
             symSwitchBack(symtable);
             return;
@@ -285,10 +279,9 @@ void symIFunction(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->functions), symbol.identifier, symbol);
 }
 
-symbol_t *symSearch(symtable_t *symtable, const char *identifier) {
+symbol_t *symSearchVar(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
-    for (int i = 0; i <= symtable->last; i++)
-    {
+    for (int i = 0; i <= symtable->last; i++) {
         found = htSearch(&(symtable->main[i]), identifier);
         if (found) {
             found->value.symtablePos = symtable->last - i;
@@ -298,7 +291,7 @@ symbol_t *symSearch(symtable_t *symtable, const char *identifier) {
     return NULL;
 }
 
-symbol_t *symSFunction(symtable_t *symtable, const char *identifier) {
+symbol_t *symSearchFunc(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
     found = htSearch(&(symtable->functions), identifier);
     if (found) {
@@ -307,16 +300,14 @@ symbol_t *symSFunction(symtable_t *symtable, const char *identifier) {
     return NULL;
 }
 
-void symSwitch(symtable_t *symtable){
-    if (symtable->isInFunction)
-    {
+void symSwitch(symtable_t *symtable) {
+    if (symtable->isInFunction) {
         InternalError("Attempted to switch to infunc while in infunc.");
     }
-    if (symtable->last > 0)
-    {
+    if (symtable->last > 0) {
         InternalError("Attempted to switch to infunc while in a local symtable.");
     }
-    
+
     symtable->current = symtable->infunc;
     symtable->lastMain = symtable->last;
     symtable->last = 0;
@@ -324,10 +315,8 @@ void symSwitch(symtable_t *symtable){
     return;
 }
 
-void symSwitchBack(symtable_t *symtable)
-{
-    if (!symtable->isInFunction)
-    {
+void symSwitchBack(symtable_t *symtable) {
+    if (!symtable->isInFunction) {
         InternalError("Attempted to switch to main while in main.");
     }
     symtable->current = symtable->main;
@@ -360,46 +349,56 @@ void printHashtable(htTable_t *table, const char *index) {
 }
 
 void printSymbol(symbol_t *symbol) {
-    if (!symbol)
-    {
+    if (!symbol) {
         printlog("(NULL)");
         return;
     }
-    
+
+    char *dataType;
     char *type;
     switch (symbol->type) {
         case function:
             type = "function";
             break;
-        case string:
-            type = "string";
+        case variable:
+            type = "variable";
             break;
-        case stringNullable:
-            type = "?string";
-            break;
-        case floating:
-            type = "floating";
-            break;
-        case floatingNullable:
-            type = "?floating";
-            break;
-        case integer:
-            type = "integer";
-            break;
-        case integerNullable:
-            type = "?integer";
-            break;
-        case nil:
-            type = "nil";
-            break;
-        case undefined:
-            type = "undefined";
+        case literal:
+            type = "literal";
             break;
         default:
             InternalError("Type of symbol (%d) is unknown", symbol->type);
+    }
+    switch (symbol->dataType) {
+        case string:
+            dataType = "string";
+            break;
+        case stringNullable:
+            dataType = "?string";
+            break;
+        case floating:
+            dataType = "floating";
+            break;
+        case floatingNullable:
+            dataType = "?floating";
+            break;
+        case integer:
+            dataType = "integer";
+            break;
+        case integerNullable:
+            dataType = "?integer";
+            break;
+        case nil:
+            dataType = "nil";
+            break;
+        case undefined:
+            dataType = "undefined";
+            break;
+        default:
+            InternalError("DataType of symbol (%d) is unknown", symbol->dataType);
             break;
     }
-    printlog("(%s, %s)", symbol->identifier, type);
+    printlog("(%s, %s, %s)", symbol->identifier, type, dataType);
 }
 
 void printSymtable(symtable_t *symtable) {

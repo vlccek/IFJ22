@@ -1,6 +1,9 @@
-//
-// Created by jvlk on 20.9.22.
-//
+/**
+ * @file stack.h
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Zásobník
+ * Implementace překladače jazyka IFJ22
+ */
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>

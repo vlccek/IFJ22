@@ -1,12 +1,9 @@
 /**
  * @file generator_3adres.h
- * @author Jan Brudný (xbrudn02@fit.vutbr.cz)
+ * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+ * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief definice datových typů pro práci s tříadresným kódem
- * @version 0.1
- * @date 2022-10-18
- * 
- * @copyright Copyright (c) 2022
- * 
+ * Implementace překladače jazyka IFJ22
  */
 #ifndef IFJ22_3ADRES_H
 #define IFJ22_3ADRES_H
@@ -61,18 +58,16 @@ typedef struct i3Instruction {
  */
 typedef struct i3InstructionArray {
     char *functionName;
-    i3Instruction_t *array;
+    i3Instruction_t *instructions;
     size_t size;
     size_t capacity;
 } i3InstructionArray_t;
 
-typedef struct i3htItem {
-    char *key;
-    i3InstructionArray_t *array;
-    struct i3htItem *next;
-} i3htItem_t;
+typedef i3InstructionArray_t i3Table_t[MAX_HTSIZE];
 
-typedef i3htItem_t *i3htTable_t[MAX_HTSIZE];
+void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction);
 
+void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, char *functionName);
 
+void initializeProgram(i3Table_t *program);
 #endif //IFJ22_3ADRES_H

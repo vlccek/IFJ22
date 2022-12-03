@@ -1,6 +1,9 @@
-//
-// Created by jvlk on 18.9.22.
-//
+/**
+ * @file queue.c
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Fronta
+ * Implementace překladače jazyka IFJ22
+ */
 #include "queue.h"
 
 typedef genericStack queue_t;
