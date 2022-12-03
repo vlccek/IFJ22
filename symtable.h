@@ -91,19 +91,6 @@ typedef struct DTList {
     DTListMem_T *first;
 } DTList_T;
 
-typedef struct symStackMem symStackMem_T;
-typedef struct symStackMem {
-    symStackMem_T *down;
-    symbol_t *s;
-} symStackMem_T;
-
-typedef struct symStack symStack_T;
-typedef struct symStack {
-    int len;
-    symStackMem_T *top;
-
-} symStack_T;
-
 void printSymtable(symtable_t *symtable);
 void printHashtable(htTable_t *table, const char *index);
 void printSymbol(symbol_t *symbol);
@@ -128,8 +115,8 @@ void symSwitch(symtable_t *symtable);
 void symSwitchBack(symtable_t *symtable);
 
 DTList_T *createDTL(int count, ...);
-symbol_t *createSymbol(const char *name, symbolDataType_t type, DTList_T *paramList, symbolDataType_t returnType);
+symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType);
 void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);
-void insDTList(DTList_T *list, enum symbolType typ);
+void insDTList(DTList_T *list, symbolDataType_t typ);
 #endif//IFJ22_SYMTABLE_H

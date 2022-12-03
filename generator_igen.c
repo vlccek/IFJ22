@@ -84,7 +84,7 @@ void functionParam(i3Table_t program, token_t token) {
 }
 
 void moveToVariable(i3Table_t program, token_t token) {
-    currentState.undefinedVariable->type = tokenTypeToSymbolType(token.type);
+    currentState.undefinedVariable->dataType = tokenTypeToSymbolType(token.type);
     symInsert(&symtable, *currentState.undefinedVariable);
 
     i3Instruction_t instruction = {
@@ -113,10 +113,10 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
         // todo: or is it?
     }
     // todo: symbol does not have all props initialized - mby use tokenToSymbol()
-    symbol = createSymbol(token.data.valueString->string,
-                          undefined, // we do not know variable type by now
-                          NULL,      // variable does not have param list
-                          undefined);// variable does not have return value
+    symbol = createSymbolFunction(token.data.valueString->string,
+                                  undefined, // we do not know variable type by now
+                                  NULL,      // variable does not have param list
+                                  undefined);// variable does not have return value
 
     currentState.undefinedVariable = symbol;
 
