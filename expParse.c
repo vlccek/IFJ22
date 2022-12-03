@@ -113,9 +113,8 @@ bool precOver(genericStack *s) {
         if (((expParserType *) gStackTop(s))->type == dollar) {
             return false;
         }
-    } else {
-        return true;
     }
+    return true;
 }
 
 void printExpParserType(void *data) {
