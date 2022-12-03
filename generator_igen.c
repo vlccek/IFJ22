@@ -77,24 +77,33 @@ void functionParam(i3Table_t program, token_t *token) {
         if (token->type == identifierVar) {
             symbol_t *symbol = findExistingVariable(token->data.valueString->string);
             writeSymbol(program, symbol);
+        } else {
+            writeLiteral(program, token);
         }
-        writeLiteral(program, token);
     }
 }
 
-void newStatement(i3Table_t program, token_t *token) {
-    // if in the middle of function call
-    if (currentState.callingFunction != NULL) {
-        functionParam(program, token);
-    }
+void moveToVariable(i3Table_t program, token_t *token) {
+    currentState.floatingVariable->type = tokenTypeToSymbolType(token->type);
+    symInsert(&symtable, *currentState.floatingVariable);
 
-    // statement is part of the expression
     i3Instruction_t instruction = {
             .type = I_MOVE,
             .dest = *currentState.floatingVariable,
             .arg1 = tokenToSymbol(token,
                                   tokenTypeToSymbolType(token->type))};
     pushToArray(&program[currentState.currentArray], instruction);
+    currentState.floatingVariable = NULL;
+}
+
+void newStatement(i3Table_t program, token_t *token) {
+    if (currentState.callingFunction != NULL) {
+        // if in the middle of function call
+        functionParam(program, token);
+    } else {
+        // statement is part of the expression
+        moveToVariable(program, token);
+    }
 }
 
 void newVariable(i3InstructionArray_t *program, token_t *token) {

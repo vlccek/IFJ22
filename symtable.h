@@ -43,6 +43,9 @@ typedef enum symbolType {
 
 } symbolType_t;
 
+// Todo: we have a great problem here:
+// we need to know that symbol is variable, but also the type of the variable
+// so we need something like data type and symbol type???
 typedef struct symbol {
     const char *identifier;
     symbolType_t type;

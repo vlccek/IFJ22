@@ -22,22 +22,26 @@ char *convertString(dynStr_t *dynStr, char *string) {
     convBuffer[0] = '\0';
     buf[1] = '\0';
     char c;
-    while ((c = *string++) != '\0'){
+    while ((c = *string++) != '\0') {
         buf[0] = c;
-        if(c < 33 || c == 35 || c == 92)
+        if (c < 33 || c == 35 || c == 92)
             dstrAppend(dynStr, convertChar(c, convBuffer));
         else
             dstrAppend(dynStr, buf);
     }
     return dynStr->string;
 }
+
+/// Converts any symbol literal to ifjcode literal
+/// \param symb symbol to be converted
+/// \param buf buffer where output will be stored
+/// \return buf parameter
 char *generateArgSymbol(symbol_t symb, char *buf) {
-    if (symb.type == string){
-        dynStr_t* string = dstrInit();
+    if (symb.type == string) {
+        dynStr_t *string = dstrInit();
         sprintf(buf, "string@%s", convertString(string, symb.symbolData.string));
         dstrFree(string);
-    }
-    else if (symb.type == integer)
+    } else if (symb.type == integer)
         sprintf(buf, "int@%d", symb.symbolData.integer);
     else if (symb.type == floating)
         sprintf(buf, "float@%a", symb.symbolData.floating);
@@ -49,6 +53,16 @@ void generateWrite(i3Instruction_t instruction) {
     printf("WRITE %s", generateArgSymbol(instruction.arg1, buf));
 }
 
+void generateDefvar(i3Instruction_t instruction) {
+    printf("DEFVAR LF@%s", instruction.arg1.symbolData.string);
+}
+
+void generateMove(i3Instruction_t instruction) {
+    char buf[2048];
+    printf("MOVE LF@%s %s",
+           instruction.dest.symbolData.string,
+           generateArgSymbol(instruction.arg1, buf));
+}
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
         case I_ADD:
@@ -82,6 +96,7 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_NOT:
             break;
         case I_MOVE:
+            generateMove(instruction);
             break;
         case I_INT2FLOAT:
             break;
@@ -105,6 +120,7 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_RETURN:
             break;
         case I_DEFVAR:
+            generateDefvar(instruction);
             break;
     }
     printf("\n");
