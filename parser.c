@@ -158,6 +158,8 @@ int parser() {
                 checkTopAndLastMatch(topOfStack, &lastToken);
                 if(lastToken.type == semicolon)
                     SA_EndOfCommand();
+                if(lastToken.type == curlyBraceRight)
+                    SA_EndOfBlock();
 
                 gStackPop(memory->PSAStack);
                 lastToken = getToken(stdin);

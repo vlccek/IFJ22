@@ -23,6 +23,7 @@ void SA_programBody(semanticActionInfo info);
 void SA_Command_identifierVar(semanticActionInfo info);
 void SA_EndOfParsing();
 void SA_EndOfCommand();
+void SA_EndOfBlock();
 
 
 

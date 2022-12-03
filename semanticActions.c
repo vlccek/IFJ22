@@ -20,8 +20,8 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
         loging("Pravidlo je NULL");
         return;
     }
-
-    if (!pravidlo->semanticAction) {
+    fprintf(stderr, "%p", pravidlo->semanticAction);
+    if (pravidlo->semanticAction==NULL) {
         loging("Pravidlo nema semantickou akci. ID: %2d, nt: %s", pravidlo->id, getNonTerminalName(pravidlo->from));
         return;
     }
@@ -95,6 +95,10 @@ void semanticActionsInit() {
 
 void SA_EndOfCommand() {
     flushCommand(program);
+}
+
+void SA_EndOfBlock() {
+    exitCodeBlock();
 }
 
 void SA_EndOfParsing(){

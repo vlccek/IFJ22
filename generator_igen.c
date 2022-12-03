@@ -35,7 +35,7 @@ void initIgen(i3Table_t program) {
 
 void functionDefBegin(char *identifier) {
     symSwitch(&symtable);
-    currentState.newFunction = *createSymbolFunction(identifier, function, NULL, undefined);
+    currentState.newFunction = *createSymbolFunction(identifier, function, NULL, undefinedDataType);
 }
 void functionDefParam(char *identifier) {
     insDTList(currentState.newFunction.firstParam, tokenTypeToSymbolType(currentState.lastVarType), identifier);
@@ -95,7 +95,7 @@ symbolDataType_t tokenTypeToSymbolType(lexType type) {
         case floatNullKey:
             return floatingNullable;
         case voidKey:
-            return undefined;
+            return undefinedDataType;
         default:
             InternalError("Lex type '%s' is not convertable to symbol type!",
                           getTerminalName(type));
@@ -184,4 +184,8 @@ void flushCommand(i3Table_t program) {
         moveToVariable(program, currentState.tmp1);
         currentState.tmp1.type = undefinedType;
     }
+}
+
+void exitCodeBlock() {
+    symDelLocal(&symtable);
 }
