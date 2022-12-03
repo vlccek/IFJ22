@@ -39,12 +39,12 @@ char *convertString(dynStr_t *dynStr, char *string) {
 char *generateArgSymbol(symbol_t symb, char *buf) {
     if (symb.type == string) {
         dynStr_t *string = dstrInit();
-        sprintf(buf, "string@%s", convertString(string, symb.symbolData.string));
+        sprintf(buf, "string@%s", convertString(string, symb.token.data.valueString->string));
         dstrFree(string);
     } else if (symb.type == integer)
-        sprintf(buf, "int@%d", symb.symbolData.integer);
+        sprintf(buf, "int@%d", symb.token.data.valueInteger);
     else if (symb.type == floating)
-        sprintf(buf, "float@%a", symb.symbolData.floating);
+        sprintf(buf, "float@%a", symb.token.data.valueFloat);
     return buf;
 }
 
@@ -54,13 +54,13 @@ void generateWrite(i3Instruction_t instruction) {
 }
 
 void generateDefvar(i3Instruction_t instruction) {
-    printf("DEFVAR LF@%s", instruction.arg1.symbolData.string);
+    printf("DEFVAR LF@%s", instruction.arg1.token.data.valueString->string);
 }
 
 void generateMove(i3Instruction_t instruction) {
     char buf[2048];
     printf("MOVE LF@%s %s",
-           instruction.dest.symbolData.string,
+           instruction.dest.token.data.valueString->string,
            generateArgSymbol(instruction.arg1, buf));
 }
 void generateInstruction(i3Instruction_t instruction) {

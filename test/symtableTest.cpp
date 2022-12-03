@@ -69,7 +69,7 @@ namespace ifj22 {
             symtable_t table;
             symInit(&table);
             char buffer[20];
-            for (int i = 0; i < symbolTypeLength; i++) {
+            for (int i = 0; i < symbolDataTypeLength; i++) {
                 symbol_t symbol;
                 sprintf(buffer, "%c", i+'a');
                 char *iden = (char *) malloc(sizeof(char) * strlen(buffer));
@@ -81,7 +81,7 @@ namespace ifj22 {
                 symInsert(&table, symbol);
                 symNewLocal(&table);
             }
-            for (int i = 0; i < symbolTypeLength; i++) {
+            for (int i = 0; i < symbolDataTypeLength; i++) {
                 sprintf(buffer, "%c", i+'a');
                 symbol_t *found = symSearchVar(&table, buffer);
                 ASSERT_STREQ(buffer, found->identifier);
@@ -94,7 +94,7 @@ namespace ifj22 {
             // test delete local symtables works
             symDelLocal(&table);
 
-            for (int i = symbolTypeLength -1; i > 0; i--) {
+            for (int i = symbolDataTypeLength -1; i > 0; i--) {
                 symDelLocal(&table);
                 sprintf(buffer, "%c", i+'a');
                 symbol_t *found = symSearchVar(&table, buffer);

@@ -45,7 +45,7 @@ typedef enum symbolDataType {
     integerNullable,
     nil,
     undefined,
-    symbolTypeLength
+    symbolDataTypeLength
 
 } symbolDataType_t;
 
@@ -115,6 +115,7 @@ void symSwitch(symtable_t *symtable);
 void symSwitchBack(symtable_t *symtable);
 
 DTList_T *createDTL(int count, ...);
+symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_t dataType, token_t token);
 symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType);
 void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);

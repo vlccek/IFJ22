@@ -52,30 +52,3 @@ char* copyString(char* toCopy){
     strcpy(newString, toCopy);
     return newString;
 }
-
-symbol_t tokenToSymbol(token_t token, symbolDataType_t type) {
-    symbol_t newSymbol;
-    newSymbol.rowPosNumber = token.rowPosNumber;
-    newSymbol.rowNumber = token.rowNumber;
-
-    if(type == string){
-        newSymbol.symbolData.string = copyString(token.data.valueString->string);
-    }else if(type == integer){
-        newSymbol.symbolData.integer = token.data.valueInteger;
-    }else if(type == floating){
-        newSymbol.symbolData.floating = token.data.valueFloat;
-    }
-
-    newSymbol.type = type;
-    if (type == function) {
-        newSymbol.identifier = copyString(token.data.valueString->string);
-        newSymbol.firstParam = NULL;
-        newSymbol.returnType = undefined;
-    }else{
-        newSymbol.identifier = NULL;
-        newSymbol.firstParam = NULL;
-        newSymbol.returnType = undefined;
-
-    }
-    return newSymbol;
-}
