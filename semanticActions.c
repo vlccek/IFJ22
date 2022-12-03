@@ -40,7 +40,7 @@ void SA_Command_identifierVar(semanticActionInfo info)
     loging("SA_Command_identifierVar");
 }
 
-void SA_FunctionParam(semanticActionInfo info)
+void SA_Statement(semanticActionInfo info)
 {
     newStatement(program, info.lastToken);
 }
@@ -68,10 +68,10 @@ void semanticActionsInit() {
 
     // Function calls
     setSemanticAction(FceCall, identifierFunc, &SA_FceCall);
-    setSemanticAction(Statement, stringLiteral, &SA_FunctionParam);
-    setSemanticAction(Statement, integerLiteral, &SA_FunctionParam);
-    setSemanticAction(Statement, floatLiteral, &SA_FunctionParam);
-    setSemanticAction(Statement, identifierVar, &SA_FunctionParam);
+    setSemanticAction(Statement, stringLiteral, &SA_Statement);
+    setSemanticAction(Statement, integerLiteral, &SA_Statement);
+    setSemanticAction(Statement, floatLiteral, &SA_Statement);
+    setSemanticAction(Statement, identifierVar, &SA_Statement);
 
     // Variables assignment
     setSemanticAction(Command, identifierVar, &SA_DeclareNewVariable);

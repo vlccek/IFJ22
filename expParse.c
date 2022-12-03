@@ -227,6 +227,7 @@ rule *derivateTopStack(genericStack *sTokens) {
         PrettyExit(ERR_SYNTAX);
     } else {
         semanticActionInfo a;
+        a.lastToken = tmp->tokenData;
         r->semanticAction(a);
         loging("END derivate top Ofstack");
         return r;

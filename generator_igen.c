@@ -9,9 +9,9 @@
 #include "generator_igen.h"
 
 typedef struct currentState {
-    symbol_t *callingFunction; // todo: this should be nulled somewhere
     size_t currentArray;
-
+    symbol_t *callingFunction; // todo: this should be nulled somewhere
+    symbol_t *floatingVariable;// variable is floating in the middle of assignment
 } currentState_T;
 
 
@@ -24,9 +24,9 @@ void initIgen(i3Table_t program) {
     currentState.callingFunction = NULL;
 }
 
-symbol_t *findExistingVariable(char* variableName){
+symbol_t *findExistingVariable(char *variableName) {
     symbol_t *symbol = symSearchVar(&symtable, variableName);
-    if(symbol == NULL){
+    if (symbol == NULL) {
         // todo: exit with right code
         InternalError("Varibale '%s' not found in symtable!", variableName);
     }
@@ -84,26 +84,35 @@ void functionParam(i3Table_t program, token_t *token) {
 
 void newStatement(i3Table_t program, token_t *token) {
     // if in the middle of function call
-    if (currentState.callingFunction->identifier != NULL) {
+    if (currentState.callingFunction != NULL) {
         functionParam(program, token);
     }
 
     // statement is part of the expression
-
+    i3Instruction_t instruction = {
+            .type = I_MOVE,
+            .dest = *currentState.floatingVariable,
+            .arg1 = tokenToSymbol(token,
+                                  tokenTypeToSymbolType(token->type))};
+    pushToArray(&program[currentState.currentArray], instruction);
 }
 
 void newVariable(i3InstructionArray_t *program, token_t *token) {
     symbol_t *symbol = symSearchVar(&symtable, token->data.valueString->string);
-    if(symbol != NULL){
+    if (symbol != NULL) {
         InternalError("Redefinitions of variable is prohibited!");
         // todo: or is it?
     }
+    // todo: symbol does not have all props initialized - mby use tokenToSymbol()
+    symbol = createSymbol(token->data.valueString->string,
+                          undefined, // we do not know variable type by now
+                          NULL,      // variable does not have param list
+                          undefined);// variable does not have return value
 
-    i3Instruction_t instruction;
-    instruction.type = I_DEFVAR;
-    instruction.arg1 = *createSymbol(token->data.valueString->string,
-                                    undefined, // we do not know variable type by now
-                                    NULL, // variable does not have param list
-                                    undefined); // variable does not have return value
+    currentState.floatingVariable = symbol;
+
+    i3Instruction_t instruction = {
+            .type = I_DEFVAR,
+            .arg1 = *symbol};
     pushToArray(&program[currentState.currentArray], instruction);
 }
