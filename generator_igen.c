@@ -18,6 +18,7 @@ typedef struct currentState {
     // used by expression parsing
     symbol_t tmp1;// primary temporary symbol
     symbol_t tmp2;// secondary temporary symbol
+    symbolDataType_t lastDataTypeOnStack;
 } currentState_T;
 
 
@@ -30,6 +31,7 @@ void initIgen(i3Table_t program) {
     currentState.callingFunction = NULL;
     currentState.tmp1.type = undefinedType;
     currentState.tmp2.type = undefinedType;
+    currentState.lastDataTypeOnStack = undefinedDataType;
 }
 
 
@@ -46,8 +48,7 @@ void functionDefParamRememberType(lexType type) {
 void functionDefRet(token_t token) {
     currentState.newFunction.returnType = tokenTypeToSymbolType(token.type);
     symbol_t *search = symSearchFunc(&symtable, currentState.newFunction.identifier);
-    if (search)
-    {
+    if (search) {
         printlog("Pokus o redefinici funkce '%s'\n", currentState.newFunction.identifier);
         PrettyExit(ERR_IDENTIFIER_NAME);
     }
@@ -124,6 +125,17 @@ void functionParam(i3Table_t program, token_t token) {
     }
 }
 
+void createPops(i3Table_t program) {
+    currentState.undefinedVariable.dataType = currentState.lastDataTypeOnStack;
+    currentState.lastDataTypeOnStack = undefinedDataType;
+    symInsert(&symtable, currentState.undefinedVariable);
+
+    i3Instruction_t instruction = {
+            .type = I_POPS,
+            .dest = currentState.undefinedVariable};
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+
 void moveToVariable(i3Table_t program, symbol_t symbol) {
     currentState.undefinedVariable.dataType = symbol.dataType;
     symInsert(&symtable, currentState.undefinedVariable);
@@ -175,13 +187,54 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
 
 /// Complete the command action
 void flushCommand(i3Table_t program) {
-    if (currentState.tmp1.type != undefinedType){
+    if (currentState.tmp1.type != undefinedType) {
         moveToVariable(program, currentState.tmp1);
         currentState.tmp1.type = undefinedType;
+    } else {
+        if (currentState.lastDataTypeOnStack != undefinedDataType)
+            createPops(program);
     }
     currentState.callingFunction = NULL;
 }
 
 void exitCodeBlock() {
     symDelLocal(&symtable);
+}
+
+void createPushInstruction(i3Table_t program, symbol_t symbol) {
+    i3Instruction_t instruction = {
+            .type = I_PUSHS,
+            .arg1 = symbol,
+    };
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+
+void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
+    if (type != I_ADDS &&
+        type != I_DIVS &&
+        type != I_IDIVS &&
+        type != I_MULS &&
+        type != I_SUBS)
+        InternalError("Creating stack instruction but not actually!");
+    i3Instruction_t instruction = {
+            .type = type,
+    };
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+
+void actionPlus(i3Table_t program) {
+    if (currentState.tmp1.type == undefinedType)
+        InternalError("There is nothing to add!");
+
+    // push another
+    createPushInstruction(program, currentState.tmp1);
+    currentState.tmp1.type = undefinedType;
+
+    if (currentState.tmp2.type != undefinedType) {
+        createPushInstruction(program, currentState.tmp2);
+        currentState.tmp2.type = undefinedType;
+    }
+
+    createStackInstruction(program, I_ADDS);
+    currentState.lastDataTypeOnStack = integer;
 }

@@ -153,14 +153,14 @@ void expAnal() {
         switch (precSymb(a, b)) {
             case precR:
                 loging("Entering precR case")
-                ruleNum = derivateTopStack(sTokens);
+                        ruleNum = derivateTopStack(sTokens);
                 pushExpNonTerminal(sTokens);
                 // najde se první < pak se přejde
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)
                 loging("Entering precL case")
-                addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
+                        addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
                 gStackPush(sTokens, b);
                 b = getTokenP();
                 break;
@@ -192,7 +192,6 @@ unsigned stackTopTerminalIndex(genericStack *s) {
     return i;
 }
 
-
 unsigned findFirst(genericStack *s, int searchSymb) {
     unsigned i = 0;
     while (((expParserType *) gStackGetNth(s, i++))->type != searchSymb) {//empty
@@ -203,6 +202,23 @@ unsigned findFirst(genericStack *s, int searchSymb) {
     return i;
 }
 
+
+expressionAction_t convertToAction(lexType data) {
+    switch (data) {
+        case plusOp:
+            return APlus;
+        case minusOp:
+            return AMinus;
+        case divisionOp:
+            return ADivision;
+        case multiplicationOp:
+            return AMultiplication;
+        case concatenationOp:
+            return AConcatenation;
+        default:
+            return ANotAnAction;
+    }
+}
 rule *derivateTopStack(genericStack *sTokens) {
     loging("Entering derivate top Ofstack");
     expParserType *tmp;
@@ -228,7 +244,15 @@ rule *derivateTopStack(genericStack *sTokens) {
         PrettyExit(ERR_SYNTAX);
     } else {
         semanticActionInfo a;
-        a.lastToken = *tmp->tokenData;
+        if (tmp->tokenData == NULL) {
+            // todo: might be broken if ()
+            if (handle[1]->type != terminal)
+                InternalError("This should definitely be terminal!");
+            a.action = convertToAction(handle[1]->data);
+        } else {
+            a.lastToken = *tmp->tokenData;
+            a.action = ANotAnAction;
+        }
         r->semanticAction(a);
         loging("END derivate top Ofstack");
         return r;

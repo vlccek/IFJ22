@@ -9,10 +9,18 @@
 #define IFJ22_SEMANTICACTIONINFO_H
 #include "lex.h"
 
+typedef enum expressionAction {
+    APlus,
+    AMinus,
+    ADivision,
+    AMultiplication,
+    AConcatenation,
+    ANotAnAction
+} expressionAction_t;
+
 typedef struct semanticActionInfo {
     token_t lastToken;
-
-
+    expressionAction_t action;
 } semanticActionInfo;
 
 #endif//IFJ22_SEMANTICACTIONINFO_H

@@ -23,6 +23,8 @@ void functionDefParam(char *identifier);
 void functionDefBegin(char *identifier);
 void functionDefRet(token_t token);
 void flushCommand(i3Table_t program);
+void actionPlus(i3Table_t program);
 void exitCodeBlock();
+
 
 #endif // IFJ22_IGEN_H

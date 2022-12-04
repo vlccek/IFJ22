@@ -37,7 +37,7 @@ char *convertString(dynStr_t *dynStr, char *string) {
 /// \param buf buffer where output will be stored
 /// \return buf parameter
 char *generateArgSymbol(symbol_t symb, char *buf) {
-    if(symb.type != literal){
+    if (symb.type != literal) {
         printSymbol(&symb);
         InternalError("Printed symbol is not literal.");
     }
@@ -53,7 +53,7 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
 }
 
 char *generateArgSymVar(symbol_t symb, char *buf) {
-    if(symb.type == variable){
+    if (symb.type == variable) {
         sprintf(buf, "LF@%s", symb.identifier);
         return buf;
     }
@@ -75,17 +75,43 @@ void generateMove(i3Instruction_t instruction) {
            instruction.dest.token.data.valueString->string,
            generateArgSymbol(instruction.arg1, buf));
 }
+
+void generatePushs(i3Instruction_t instruction) {
+    char buf[2048];
+    printf("PUSHS %s",
+           generateArgSymbol(instruction.arg1, buf));
+}
+
+void generatePops(i3Instruction_t instruction) {
+    char buf[2048];
+    if (instruction.dest.type != variable) {
+        printSymbol(&instruction.arg1);
+        InternalError("Cannot push from stack to above symbol");
+    }
+
+    printf("POPS %s", generateArgSymVar(instruction.dest, buf));
+}
+
+void generateStackInstruction(const char *instructionName) {
+    printf("%s", instructionName);
+}
+
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
-        case I_ADD:
+        case I_ADDS:
+            generateStackInstruction("ADDS");
             break;
-        case I_SUB:
+        case I_SUBS:
+            generateStackInstruction("SUBS");
             break;
-        case I_MUL:
+        case I_MULS:
+            generateStackInstruction("MULS");
             break;
-        case I_DIV:
+        case I_DIVS:
+            generateStackInstruction("DIVS");
             break;
-        case I_IDIV:
+        case I_IDIVS:
+            generateStackInstruction("IDIVS");
             break;
         case I_CONCAT:
             break;
@@ -133,6 +159,12 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_DEFVAR:
             generateDefvar(instruction);
+            break;
+        case I_PUSHS:
+            generatePushs(instruction);
+            break;
+        case I_POPS:
+            generatePops(instruction);
             break;
     }
     printf("\n");

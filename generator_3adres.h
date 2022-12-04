@@ -12,11 +12,11 @@
 #include "symtable.h"
 
 typedef enum i3InstructionType {
-    I_ADD,
-    I_SUB,
-    I_MUL,
-    I_DIV,
-    I_IDIV,
+    I_ADDS,
+    I_SUBS,
+    I_MULS,
+    I_DIVS,
+    I_IDIVS,
     I_CONCAT,
     I_EQ,
     I_NEQ,
@@ -38,7 +38,10 @@ typedef enum i3InstructionType {
     I_JUMP_IF_FALSE,
     I_CALL,
     I_RETURN,
-    I_DEFVAR 
+    I_DEFVAR,
+    I_PUSHS,
+    I_POPS,
+
 } i3InstructionType_t;
 
 /**

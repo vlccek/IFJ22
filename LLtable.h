@@ -109,6 +109,7 @@ PSAStackMember *createPSAStackMember(int value, PSADataType type);
 
 char *getStringPSAMember(PSAStackMember m);
 
+void setSemanticActionAllRules(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo));
 void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*semanticAction)(semanticActionInfo));
 void setSemanticActionRow(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo), size_t except, ...);
 

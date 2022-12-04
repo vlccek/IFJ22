@@ -20,17 +20,31 @@ void setSemanticActionRow(nonTerminalType nonTerminal, void (*semanticAction)(se
         }
     }
     va_list list;
-    va_start ( list, except );
+    va_start(list, except);
 
-    for ( int x = 0; x < except; x++ )
-    {
-        lexType toDelete = va_arg ( list, lexType );
-        if (Table[nonTerminal][toDelete])
-        {
+    for (int x = 0; x < except; x++) {
+        lexType toDelete = va_arg(list, lexType);
+        if (Table[nonTerminal][toDelete]) {
             Table[nonTerminal][toDelete]->rules[0]->semanticAction = NULL;
         }
     }
-    va_end ( list );
+    va_end(list);
+}
+
+void setSemanticActionAllRules(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo)) {
+    // func is called ony to insert Exp actions
+    // and first is statement, so first should be skipped
+    int firstRule = 1;
+    // the great pyramid living its happy life
+    for (int lexType = 0; lexType < lexTypeCount; ++lexType) {
+        if (Table[nonTerminal][lexType]) {
+            for (int rule = firstRule; rule < MAX_RULES_IN_CELL; ++rule) {
+                if (Table[nonTerminal][lexType]->rules[rule]) {
+                    Table[nonTerminal][lexType]->rules[rule]->semanticAction = semanticAction;
+                }
+            }
+        }
+    }
 }
 
 tableMember *getLLMember(nonTerminalType nonterm, lexType terminal) {

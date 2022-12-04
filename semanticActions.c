@@ -57,12 +57,22 @@ void SA_FceDefRet(semanticActionInfo info) {
     functionDefRet(info.lastToken);
 }
 
-void endOfParsing() {
-    generate(program);
-}
-
 void SA_DeclareNewVariable(semanticActionInfo info) {
     newVariable(program, info.lastToken);
+}
+
+void SA_ExpressionAction(semanticActionInfo info) {
+    switch (info.action) {
+        case APlus:
+            actionPlus(program);
+            break;
+        case AMinus:
+        case ADivision:
+        case AMultiplication:
+        case AConcatenation:
+        case ANotAnAction:
+            InternalError("Expression action called at very wrong time.");
+    }
 }
 
 void semanticActionsInit() {
@@ -89,8 +99,8 @@ void semanticActionsInit() {
     setSemanticAction(DeclareParam, identifierVar, &SA_FceDefParam);
     setSemanticActionRow(FuncReturnColonType, &SA_FceDefRet, 0);
 
-
-
+    // Expression action(s)
+    setSemanticActionAllRules(Exp, &SA_ExpressionAction);
 }
 
 void SA_EndOfCommand() {
