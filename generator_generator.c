@@ -83,7 +83,8 @@ void generatePushs(i3Instruction_t instruction) {
 }
 
 void generatePops(i3Instruction_t instruction) {
-    char buf[2048];
+    char buf[2048];// todo: @Kiznoh tvuj napad se mi prestal libit od doby co musim
+    // todo: mit takto buffer v kazde funkci, pls fix :-)
     if (instruction.dest.type != variable) {
         printSymbol(&instruction.arg1);
         InternalError("Cannot push from stack to above symbol");
