@@ -1347,7 +1347,7 @@ token_t getToken(FILE *stream) {
                         break;
                 }
                 break;
-            case '\t':/*
+            case '\t':
                 switch (currentState)
                 {
                     case init_s:
@@ -1376,7 +1376,7 @@ token_t getToken(FILE *stream) {
                     default:
                         stop = true;
                         break;
-                }*/
+                }
                 break;
             case '\n':
                 switch (currentState) {
@@ -1612,9 +1612,7 @@ token_t getToken(FILE *stream) {
         }
     }
 
-    // frees all buffers and returns the output token
-    dstrFree(buffer);
-    dstrFree(escSeqBuffer);
+    // returns the output token
     lastToken = outputToken;
     return outputToken;
 }
