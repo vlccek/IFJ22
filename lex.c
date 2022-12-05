@@ -1232,7 +1232,7 @@ token_t getToken(FILE *stream) {
                         currentState = com_block_ast_s;
                         break;
                     case com_block_ast_s:
-                        currentState = com_block_s;
+                        currentState = com_block_ast_s;
                         break;
                     case com_line_f_s:
                         currentState = com_line_f_s;
