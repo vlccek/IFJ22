@@ -486,19 +486,21 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestTokenData, float_data_exponencial) {
-            FILE *fp = prepareFile("0.0e0 00000.15e0000 1.8498e0005 61561615.0000e15161561 ");
+            FILE *fp = prepareFile("0.0e0 00000.15e0000 1.8498e000 6156.0000e2 ");
             std::vector<float> nums = {
                     0,
                     0.15,
                     1.8498e0 /*q*/,
-                    005,
+                    615600,
             };
 
-
-            auto token = getToken(fp);
-
             for (auto i: nums)
-                EXPECT_EQ(token.data.valueInteger, i);
+            {
+                auto token = getToken(fp);
+                //EXPECT_EQ(token.data.valueFloat, i);
+                EXPECT_TRUE(abs(token.data.valueFloat - i) <= 0.00000001);
+            }
+                
         }
 
         TEST_F(LexTestTokenData, float_data_basic_comments) {
@@ -512,11 +514,11 @@ namespace ifj22 {
 
             FILE *fp = prepareFile(str.c_str());
 
-
-            auto token = getToken(fp);
-
             for (auto i: nums)
-                EXPECT_EQ(token.data.valueInteger, i);
+            {
+                auto token = getToken(fp);
+                EXPECT_EQ(token.data.valueFloat, i);
+            }
         }
 
         TEST_F(LexTestTokenData, float_data_basic) {
@@ -531,10 +533,13 @@ namespace ifj22 {
             FILE *fp = prepareFile(str.c_str());
 
 
-            auto token = getToken(fp);
+            
 
             for (auto i: nums)
-                EXPECT_EQ(token.data.valueInteger, i);
+            {
+                auto token = getToken(fp);
+                EXPECT_EQ(token.data.valueFloat, i);
+            }
         }
 
 
@@ -1326,7 +1331,7 @@ namespace ifj22 {
         }
 
         TEST_F(LexTestSimple, prologAtTheEnd4) {
-            FILE *fp = prepareFile(R"(//msg @Fado if you read this \n 1 ?>)");
+            FILE *fp = prepareFile("//msg @Fado if you read this \n 1 ?>");
 
 
             assertTokensEq(fp, {integerLiteral});
