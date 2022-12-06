@@ -172,10 +172,10 @@ void generateInstruction(i3Instruction_t instruction) {
 }
 
 void generateLabel(char *label) {
-    printf("LABEL %s\n", label);
+    printf("\nLABEL %s\n", label);
 }
 void generateJump(char *label) {
-    printf("JUMP %s\n", label);
+    printf("JUMP %s\n\n", label);
 }
 
 void generateInstructionArray(i3InstructionArray_t array) {

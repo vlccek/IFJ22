@@ -10,7 +10,7 @@
 
 typedef struct currentState {
     size_t currentArray;
-    size_t lastArray;
+    size_t lastUsedArray;      // poslední array, do kterého se zapisoval kód funkce
     symbol_t *callingFunction; // todo: this should be nulled somewhere
     symbol_t undefinedVariable;// variable is floating in the middle of assignment
     symbol_t newFunction;      // symbol nové funkce, který si pamatujeme
@@ -29,7 +29,7 @@ currentState_T currentState;
 void initIgen(i3Table_t program) {
     symInit(&symtable);
     currentState.currentArray = 0;
-    currentState.lastArray = 0;
+    currentState.lastUsedArray = 0;
     currentState.callingFunction = NULL;
     currentState.tmp1.type = undefinedType;
     currentState.tmp2.type = undefinedType;
@@ -206,7 +206,7 @@ void exitCodeBlock() {
 }
 
 void enterFunc(i3InstructionArray_t *program, char *identifier) {
-    currentState.currentArray = ++currentState.lastArray;
+    currentState.currentArray = ++currentState.lastUsedArray;
     if (currentState.currentArray >= MAX_HTSIZE) {
         InternalError("Nelze vytvořit další pole pro zápis tříadresných instrukcí.");
     }
