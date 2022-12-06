@@ -193,6 +193,7 @@ void createPops(i3Table_t program) {
             .type = I_POPS,
             .dest = currentState.undefinedVariable};
     pushToArray(&program[currentState.currentArray], instruction);
+    currentState.undefinedVariable.type = undefinedType;
 }
 
 void moveToVariable(i3Table_t program, symbol_t symbol) {
@@ -263,7 +264,9 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
 
 /// Complete the command action
 void flushCommand(i3Table_t program) {
-    createPops(program);
+    if (currentState.undefinedVariable.type != undefinedType) {
+        createPops(program);
+    }
     currentState.callingFunction = NULL;
 }
 
