@@ -17,7 +17,7 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
         return;
     }
     fprintf(stderr, "%p", pravidlo->semanticAction);
-    if (pravidlo->semanticAction==NULL) {
+    if (pravidlo->semanticAction == NULL) {
         loging("Pravidlo nema semantickou akci. ID: %2d, nt: %s", pravidlo->id, getNonTerminalName(pravidlo->from));
         return;
     }
@@ -64,9 +64,17 @@ void SA_ExpressionAction(semanticActionInfo info) {
             actionPlus(program);
             break;
         case AMinus:
+            actionSubtraction(program);
+            break;
         case ADivision:
+            actionDivision(program);
+            break;
         case AMultiplication:
+            actionMultiplication(program);
+            break;
         case AConcatenation:
+            actionConcat(program);
+            break;
         case ANotAnAction:
             InternalError("Expression action called at very wrong time.");
     }
@@ -107,6 +115,6 @@ void SA_EndOfBlock() {
     exitCodeBlock();
 }
 
-void SA_EndOfParsing(){
+void SA_EndOfParsing() {
     generate(program);
 }

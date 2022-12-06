@@ -238,7 +238,7 @@ void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
-void actionPlus(i3Table_t program) {
+void action(i3Table_t program, i3InstructionType_t type) {
     if (currentState.tmp1.type == undefinedType)
         InternalError("There is nothing to add!");
 
@@ -251,6 +251,27 @@ void actionPlus(i3Table_t program) {
         currentState.tmp2.type = undefinedType;
     }
 
-    createStackInstruction(program, I_ADDS);
+    createStackInstruction(program, type);
+}
+
+void actionPlus(i3Table_t program) {
+    action(program, I_ADDS);
+    currentState.lastDataTypeOnStack = integer;
+}
+void actionSubtraction(i3InstructionArray_t *program) {
+    action(program, I_SUBS);
+    currentState.lastDataTypeOnStack = integer;
+}
+void actionMultiplication(i3InstructionArray_t *program) {
+    action(program, I_MULS);
+    currentState.lastDataTypeOnStack = integer;
+}
+void actionConcat(i3InstructionArray_t *program) {
+    action(program, I_MULS);
+}
+void actionDivision(i3InstructionArray_t *program) {
+    // todo: Find out types (convert one to float) and decide between
+    // todo: IDIVS or DIVS
+    action(program, I_IDIVS);
     currentState.lastDataTypeOnStack = integer;
 }
