@@ -6,6 +6,7 @@
 ##
 all: prekladac
 .PHONY: prekladac %.o tar clean clean_o
+# CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic 
 # CPPFLAgs jsou flagy preprocesoru
 %.o : %.c %.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
