@@ -62,9 +62,8 @@ expParserType *stackTopTerminal(genericStack *s);
 unsigned findFirst(genericStack *s, int searchSymb);
 
 
-
 // praser for expresions
-void expAnal();
+void expAnal(bool parseBoolExpression);
 
 void printExpParserType(void *data);
 

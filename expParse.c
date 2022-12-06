@@ -147,7 +147,7 @@ void addPrecLBefore(genericStack *s, unsigned position) {
     }
 }
 
-void expAnal() {
+void expAnal(bool parseBoolExpression) {
     // )   createLLTable();// todo: remove if not testing
     genericStack *sTokens = gStackInit();
     pushPrecedencToken(sTokens, dollar);
