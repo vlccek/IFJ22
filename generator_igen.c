@@ -85,13 +85,17 @@ void startFunctionCall(i3Table_t program, token_t token) {
     symbol_t *symbol = createSymbolFunction(token.data.valueString->string, function, NULL, undefinedDataType);
     currentState.callingFunction = symbol;
     currentState.functionCallParamNumber = 0;
-    pushFrame(program);
-    createFrame(program);
+    if (strcmp(currentState.callingFunction->identifier, "write") != 0) {
+        pushFrame(program);
+        createFrame(program);
+    }
 }
 void endFunctionCall(i3Table_t program, token_t token) {
     //todo konec volani funkce
     loging("konec volani funkce");
-    popFrame(program);
+    if (strcmp(currentState.callingFunction->identifier, "write") != 0) {
+        popFrame(program);
+    }
 }
 
 
@@ -242,18 +246,19 @@ void newStatement(i3Table_t program, token_t token) {
 void newVariable(i3InstructionArray_t *program, token_t token) {
     if (token.type != identifierVar)
         InternalError("Not a variable identifier");
-    if (!symSearchVar(&symtable, token.data.valueString->string)) {
-        // todo: find and assign to undefined
+    symbol_t *found;
+    if ((found = symSearchVar(&symtable, token.data.valueString->string)) == NULL) {
+        currentState.undefinedVariable = createSymbolVarLit(token.data.valueString->string,
+                                                            variable,         // we do not know variable type by now
+                                                            undefinedDataType,// variable does not have param list
+                                                            token);           // variable does not have return value
+        i3Instruction_t instruction = {
+                .type = I_DEFVAR,
+                .arg1 = currentState.undefinedVariable};
+        pushToArray(&program[currentState.currentArray], instruction);
+    } else {
+        currentState.undefinedVariable = *found;
     }
-    // todo: symbol does not have all props initialized - mby use tokenToSymbol()
-    currentState.undefinedVariable = createSymbolVarLit(token.data.valueString->string,
-                                                        variable,         // we do not know variable type by now
-                                                        undefinedDataType,// variable does not have param list
-                                                        token);           // variable does not have return value
-    i3Instruction_t instruction = {
-            .type = I_DEFVAR,
-            .arg1 = currentState.undefinedVariable};
-    pushToArray(&program[currentState.currentArray], instruction);
 }
 
 /// Complete the command action
@@ -310,10 +315,10 @@ void actionDivision(i3Table_t program) {
     createStackInstruction(program, I_DIVS);
 }
 
-void actionGT(i3InstructionArray_t *program){
+void actionGT(i3InstructionArray_t *program) {
     createStackInstruction(program, I_GTS);
 }
 
-void ifstart(){
+void ifstart() {
     currentState.immersion++;
 }
