@@ -34,7 +34,7 @@ void actionLTS(i3InstructionArray_t *program);
 void actionEQS(i3InstructionArray_t *program);
 void actionLTSEQ(i3InstructionArray_t *program); // >=
 void actionGTSEQ(i3InstructionArray_t *program); // <=
-void ifstart();
+void ifStart();
 
 void exitCodeBlock();
 void enterFunc(i3InstructionArray_t *program, char *identifier);

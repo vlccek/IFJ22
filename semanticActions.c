@@ -96,7 +96,7 @@ void SA_ExpressionAction(semanticActionInfo info) {
     }
 }
 
-void ifkey(semanticActionInfo info) {
+void SA_ifKey(semanticActionInfo info) {
     ifStart();
 }
 
@@ -132,7 +132,7 @@ void semanticActionsInit() {
     setSemanticActionAllRules(Exp, &SA_ExpressionAction);
 
     // IF
-    setSemanticAction(Condition, ifKey, &ifkey);
+    setSemanticAction(Condition, ifKey, &SA_ifKey);
 
     // Return
     setSemanticAction(Return, returnKey, &SA_Return);
