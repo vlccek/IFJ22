@@ -54,6 +54,10 @@ precedenceTableIndex indexInPrecTable(lexType t) {
             loging("Index in precedenc table: %d", indexLpar);
             return indexLpar;
         case rightPar:
+            if (leftparc == 0 &&  isExpInIf ){
+                loging("Found `(` token, i this context is end of exp Index in precedenc table: %d", indexDollar);
+                return indexDollar;
+            }
             loging("Index in precedenc table: %d", indexRpar);
             return indexRpar;
         case dollar:
@@ -147,7 +151,8 @@ void addPrecLBefore(genericStack *s, unsigned position) {
     }
 }
 
-void expAnal(bool parseBoolExpression) {
+void expAnal(bool isInIf) {
+    isExpInIf = isInIf;
     // )   createLLTable();// todo: remove if not testing
     genericStack *sTokens = gStackInit();
     pushPrecedencToken(sTokens, dollar);
@@ -159,6 +164,9 @@ void expAnal(bool parseBoolExpression) {
         gStackPrint(sTokens, printExpParserType);
         a = stackTopTerminal(sTokens);
         loging("IN a (Top notnerminal): %s", generatePrintExpParsertype(a));
+        if (a->tokenData->type == leftPar ){
+            leftparc ++;
+        }
         loging("IN B (input): %s ", generatePrintExpParsertype(b));
         loging("precedence sympol: %s", precSymbString(precSymb(a, b)));
         switch (precSymb(a, b)) {
