@@ -13,7 +13,8 @@
 #include "symtable.h"
 
 void initIgen(i3Table_t program);
-void startFunctionCall(token_t token);
+void startFunctionCall(i3Table_t program, token_t token);
+void endFunctionCall(i3Table_t program, token_t token);
 symbolDataType_t tokenTypeToSymbolType(lexType type);
 void newStatement(i3Table_t program, token_t token);
 void writeLiteral(i3Table_t program, token_t token);

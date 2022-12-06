@@ -58,6 +58,13 @@ char *generateArgSymVar(symbol_t symb, char *buf) {
     }
     return generateArgSymbol(symb, buf);
 }
+char *generateArgSymVarLF(symbol_t symb, char *buf) {
+    if (symb.type == variable) {
+        sprintf(buf, "LF@%s", symb.identifier);
+        return buf;
+    }
+    return generateArgSymbol(symb, buf);
+}
 
 void generateWrite(i3Instruction_t instruction) {
     char buf[2048];
@@ -95,6 +102,19 @@ void generatePops(i3Instruction_t instruction) {
 void generateSimpleIns(const char *instructionName) {
     printf("%s", instructionName);
 }
+void generateMoveSpecial(i3Instruction_t instruction, bool param) {
+    char buf[2048];
+    if (param) {
+        printf("MOVE TF@%s %s",
+               instruction.dest.token.data.valueString->string,
+               generateArgSymVarLF(instruction.arg1, buf));
+    } else {
+        printf("MOVE %s TF%s",
+               generateArgSymVarLF(instruction.dest, buf),
+               instruction.arg1.token.data.valueString->string);
+    }
+}
+
 
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
@@ -135,6 +155,12 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_MOVE:
             generateMove(instruction);
+            break;
+        case I_MOVE_PARAM:
+            generateMoveSpecial(instruction, true);
+            break;
+        case I_MOVE_RETURN:
+            generateMoveSpecial(instruction, false);
             break;
         case I_INT2FLOAT:
             break;
@@ -177,6 +203,15 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_STRI2INTS:
             generateSimpleIns("STRI2INTS");
+            break;
+        case I_POPFRAME:
+            generateSimpleIns("POPFRAME");
+            break;
+        case I_PUSHFRAME:
+            generateSimpleIns("PUSHFRAME");
+            break;
+        case I_CREATEFRAME:
+            generateSimpleIns("CREATEFRAME");
             break;
     }
     printf("\n");

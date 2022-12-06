@@ -36,7 +36,10 @@ void SA_Statement(semanticActionInfo info) {
 }
 
 void SA_FceCall(semanticActionInfo info) {
-    startFunctionCall(info.lastToken);
+    startFunctionCall(program, info.lastToken);
+}
+void SA_FceCallEnd(semanticActionInfo info) {
+    endFunctionCall(program, info.lastToken);
 }
 
 void SA_FceDefine(semanticActionInfo info) {
@@ -98,6 +101,7 @@ void semanticActionsInit() {
     setSemanticAction(Statement, integerLiteral, &SA_Statement);
     setSemanticAction(Statement, floatLiteral, &SA_Statement);
     setSemanticAction(Statement, identifierVar, &SA_Statement);
+    setSemanticAction(CommaOrEpsParam, rightPar, &SA_FceCallEnd);
 
     // Variables assignment
     setSemanticAction(Command, identifierVar, &SA_DeclareNewVariable);

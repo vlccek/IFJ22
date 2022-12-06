@@ -10,11 +10,12 @@
 
 typedef struct currentState {
     size_t currentArray;
-    size_t lastUsedArray;      // poslední array, do kterého se zapisoval kód funkce
-    symbol_t *callingFunction; // todo: this should be nulled somewhere
-    symbol_t undefinedVariable;// variable is floating in the middle of assignment
-    symbol_t newFunction;      // symbol nové funkce, který si pamatujeme
-    lexType lastVarType;       // typ proměnné při definici funkce, kterou si pamatujeme
+    size_t lastUsedArray;          // poslední array, do kterého se zapisoval kód funkce
+    symbol_t *callingFunction;     // todo: this should be nulled somewhere
+    symbol_t undefinedVariable;    // variable is floating in the middle of assignment
+    symbol_t newFunction;          // symbol nové funkce, který si pamatujeme
+    lexType lastVarType;           // typ proměnné při definici funkce, kterou si pamatujeme
+    size_t functionCallParamNumber;// kolikátý parametr funkce právě zpracováme
 
     // used by expression parsing
     symbol_t tmp1;// primary temporary symbol
@@ -35,6 +36,7 @@ void initIgen(i3Table_t program) {
     currentState.tmp1.type = undefinedType;
     currentState.tmp2.type = undefinedType;
     currentState.lastDataTypeOnStack = undefinedDataType;
+    currentState.functionCallParamNumber = 0;
 }
 
 
@@ -63,18 +65,39 @@ void functionDefRet(token_t token) {
 symbol_t *findExistingVariable(char *variableName) {
     symbol_t *symbol = symSearchVar(&symtable, variableName);
     if (symbol == NULL) {
-        // todo: exit with right code
-        printlog("Varibale '%s' not found in symtable!\n", variableName);
+        printlog("Proměnná '%s' nebyla nalezena v tabulce symbolů!\n", variableName);
         PrettyExit(ERR_IDENTIFIER_NAME);
     }
     return symbol;
 }
+void pushFrame(i3Table_t program) {
+    i3Instruction_t instruction;
+    instruction.type = I_PUSHFRAME;
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+void popFrame(i3Table_t program) {
+    i3Instruction_t instruction;
+    instruction.type = I_POPFRAME;
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+void createFrame(i3Table_t program) {
+    i3Instruction_t instruction;
+    instruction.type = I_CREATEFRAME;
+    pushToArray(&program[currentState.currentArray], instruction);
+}
 
-void startFunctionCall(token_t token) {
-    // todo: vložit název funkce a počet parametrů do nějaké tabulky, pozdější kontroly
+void startFunctionCall(i3Table_t program, token_t token) {
     // todo: a nakonec parsování kontrola podle reálného záznamu
     symbol_t *symbol = createSymbolFunction(token.data.valueString->string, function, NULL, undefinedDataType);
     currentState.callingFunction = symbol;
+    currentState.functionCallParamNumber = 0;
+    pushFrame(program);
+    createFrame(program);
+}
+void endFunctionCall(i3Table_t program, token_t token) {
+    //todo konec volani funkce
+    loging("konec volani funkce");
+    popFrame(program);
 }
 
 
@@ -111,6 +134,32 @@ void writeSymbol(i3Table_t program, symbol_t symbol) {
     instruction.arg1 = symbol;
     pushToArray(&program[currentState.currentArray], instruction);
 }
+dynStr_t *functionParamInternalName() {
+    dynStr_t *string = dstrInit();
+    dstrAppend(string, "$param");
+    char buf[128];
+    sprintf(buf, "%zu", currentState.functionCallParamNumber++);
+    dstrAppend(string, buf);
+    return string;
+}
+
+void functionParamAssignment(i3Table_t program, symbol_t symbol) {
+    i3Instruction_t instruction;
+    instruction.type = I_DEFVAR;
+    dynStr_t *string = functionParamInternalName();
+    char *identifier = dstrGet(string);
+    token_t token = symbol.token;
+    token.data.valueString = string;
+    instruction.arg1 = createSymbolVarLit(identifier, variable, undefinedDataType, token);
+    pushToArray(&program[currentState.currentArray], instruction);
+
+
+    i3Instruction_t instructionMove = {
+            .type = I_MOVE_PARAM,
+            .dest = instruction.arg1,
+            .arg1 = symbol};
+    pushToArray(&program[currentState.currentArray], instructionMove);
+}
 
 void functionParam(i3Table_t program, token_t token) {
     if (!strcmp(currentState.callingFunction->identifier, "write")) {
@@ -125,7 +174,16 @@ void functionParam(i3Table_t program, token_t token) {
             writeSymbol(program, newSymbol);
         }
     } else {
-        // todo
+        if (token.type == identifierVar) {
+            symbol_t *symbol = findExistingVariable(token.data.valueString->string);
+            functionParamAssignment(program, *symbol);
+        } else {
+            symbol_t newSymbol = createSymbolVarLit("",
+                                                    literal,
+                                                    tokenTypeToSymbolType(token.type),
+                                                    token);
+            functionParamAssignment(program, newSymbol);
+        }
     }
 }
 

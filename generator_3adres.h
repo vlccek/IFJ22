@@ -28,6 +28,11 @@ typedef enum i3InstructionType {
     I_OR,
     I_NOT,
     I_MOVE,
+    I_MOVE_PARAM,
+    I_MOVE_RETURN,
+    I_POPFRAME,
+    I_PUSHFRAME,
+    I_CREATEFRAME,
     I_INT2FLOAT,
     I_READ,
     I_WRITE,
@@ -36,8 +41,8 @@ typedef enum i3InstructionType {
     I_JUMP,
     I_JUMP_IF_TRUE,
     I_JUMP_IF_FALSE,
-    I_LTS, // mensi
-    I_GTS, // vetší
+    I_LTS,// mensi
+    I_GTS,// vetší
     I_EQS, // stejné
     I_CALL,
     I_RETURN,
