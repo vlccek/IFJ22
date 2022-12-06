@@ -18,9 +18,6 @@ typedef struct currentState {
     size_t functionCallParamNumber;// kolikátý parametr funkce právě zpracováme
 
     // used by expression parsing
-    symbol_t tmp1;// primary temporary symbol
-    symbol_t tmp2;// secondary temporary symbol
-    symbolDataType_t lastDataTypeOnStack;
     int immersion;
 } currentState_T;
 
@@ -33,9 +30,6 @@ void initIgen(i3Table_t program) {
     currentState.currentArray = 0;
     currentState.lastUsedArray = 0;
     currentState.callingFunction = NULL;
-    currentState.tmp1.type = undefinedType;
-    currentState.tmp2.type = undefinedType;
-    currentState.lastDataTypeOnStack = undefinedDataType;
     currentState.functionCallParamNumber = 0;
 }
 
@@ -188,8 +182,7 @@ void functionParam(i3Table_t program, token_t token) {
 }
 
 void createPops(i3Table_t program) {
-    currentState.undefinedVariable.dataType = currentState.lastDataTypeOnStack;
-    currentState.lastDataTypeOnStack = undefinedDataType;
+    currentState.undefinedVariable.dataType = undefinedDataType;
     symInsert(&symtable, currentState.undefinedVariable);
 
     i3Instruction_t instruction = {
@@ -228,20 +221,21 @@ symbol_t tokenToSymbol(token_t token) {
     return newSymbol;
 }
 
+void createPushInstruction(i3Table_t program, symbol_t symbol) {
+    i3Instruction_t instruction = {
+            .type = I_PUSHS,
+            .arg1 = symbol,
+    };
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+
 void newStatement(i3Table_t program, token_t token) {
     if (currentState.callingFunction != NULL) {
         // if in the middle of function call
         functionParam(program, token);
     } else {
         symbol_t newSymbol = tokenToSymbol(token);
-
-        if (currentState.tmp1.type == undefinedType) {
-            currentState.tmp1 = newSymbol;
-        } else if (currentState.tmp2.type == undefinedType) {
-            currentState.tmp2 = newSymbol;
-        } else {
-            InternalError("No more tmp variables available!");
-        }
+        createPushInstruction(program, newSymbol);
     }
 }
 
@@ -264,13 +258,7 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
 
 /// Complete the command action
 void flushCommand(i3Table_t program) {
-    if (currentState.tmp1.type != undefinedType) {
-        moveToVariable(program, currentState.tmp1);
-        currentState.tmp1.type = undefinedType;
-    } else {
-        if (currentState.lastDataTypeOnStack != undefinedDataType)
-            createPops(program);
-    }
+    createPops(program);
     currentState.callingFunction = NULL;
 }
 
@@ -293,14 +281,6 @@ void exitFunc() {
     currentState.currentArray = 0;
 }
 
-void createPushInstruction(i3Table_t program, symbol_t symbol) {
-    i3Instruction_t instruction = {
-            .type = I_PUSHS,
-            .arg1 = symbol,
-    };
-    pushToArray(&program[currentState.currentArray], instruction);
-}
-
 void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
     if (type != I_ADDS &&
         type != I_DIVS &&
@@ -314,85 +294,24 @@ void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
-void action(i3Table_t program, i3InstructionType_t type) {
-    if (currentState.tmp1.type == undefinedType)
-        InternalError("There is nothing to add/div/...!");
-
-    // push another
-    createPushInstruction(program, currentState.tmp1);
-    currentState.lastDataTypeOnStack = currentState.tmp1.dataType;
-    currentState.tmp1.type = undefinedType;
-
-    if (currentState.tmp2.type != undefinedType) {
-        createPushInstruction(program, currentState.tmp2);
-        currentState.tmp2.type = undefinedType;
-    }
-
-    createStackInstruction(program, type);
-}
-
-void convertTypes(symbolDataType_t convertTo, symbol_t *toBeConverted) {
-    if (toBeConverted->dataType == convertTo)
-        return;
-
-    if (convertTo == floating && toBeConverted->dataType == integer) {
-        toBeConverted->dataType = floating;
-        toBeConverted->token.data.valueFloat = (float) toBeConverted->token.data.valueInteger;
-        return;
-    }
-
-    InternalError("Cannot convert!\n");
-}
-
-void convertTopToFloat(i3Table_t program) {
-    if (currentState.lastDataTypeOnStack != integer)// todo: probably aritmetic error
-        InternalError("Cannot convert anything else than int");
-    i3Instruction_t instruction = {
-            .type = I_INT2FLOATS,
-    };
-    pushToArray(&program[currentState.currentArray], instruction);
-}
-void prepareOperandTypes(i3Table_t program, bool convToFloat) {
-    // if one of them if floating, then both of them has to be floating
-    if (currentState.tmp1.dataType == floating ||
-        currentState.tmp2.dataType == floating) {
-        convertTypes(floating, &currentState.tmp1);
-        convertTypes(floating, &currentState.tmp2);
-    } else if (convToFloat) {// if division
-        convertTypes(floating, &currentState.tmp1);
-        convertTypes(floating, &currentState.tmp2);
-    }
-    if (currentState.lastDataTypeOnStack != undefinedDataType) {
-        if (currentState.tmp1.dataType == floating)
-            convertTopToFloat(program);
-    }
-}
-
-
 void actionPlus(i3Table_t program) {
-    prepareOperandTypes(program, false);
-    action(program, I_ADDS);
+    createStackInstruction(program, I_ADDS);
 }
 void actionSubtraction(i3Table_t program) {
-    prepareOperandTypes(program, false);
-    action(program, I_SUBS);
+    createStackInstruction(program, I_SUBS);
 }
 void actionMultiplication(i3Table_t program) {
-    prepareOperandTypes(program, false);
-    action(program, I_MULS);
+    createStackInstruction(program, I_MULS);
 }
 void actionConcat(i3Table_t program) {
-    prepareOperandTypes(program, false);
-    action(program, I_MULS);
+    createStackInstruction(program, I_MULS);
 }
 void actionDivision(i3Table_t program) {
-    // todo: covert both to float
-    prepareOperandTypes(program, true);
-    action(program, I_DIVS);
+    createStackInstruction(program, I_DIVS);
 }
 
 void actionGT(i3InstructionArray_t *program){
-    action(program, I_GTS);
+    createStackInstruction(program, I_GTS);
 }
 
 void ifstart(){
