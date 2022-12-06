@@ -418,6 +418,30 @@ void createLLTable() {
                  partOfRulesRightSide(concatenationOp),
                  partOfRulesRightSide(Exp));
     insertMember(leftPar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(leftPar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(leftPar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(leftPar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(leftPar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(eqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(leftPar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(notEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(leftPar, Exp, 3,
                  partOfRulesRightSide(leftPar),
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(rightPar));
@@ -443,6 +467,30 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(concatenationOp),
                  partOfRulesRightSide(Exp));
+    insertMember(identifierVar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(eqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(identifierVar, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(notEqOp),
+                 partOfRulesRightSide(Exp));
     insertMember(floatLiteral, Exp, 1,
                  partOfRulesRightSide(Statement));
     insertMember(floatLiteral, Exp, 3,
@@ -464,6 +512,30 @@ void createLLTable() {
     insertMember(floatLiteral, Exp, 3,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(concatenationOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(eqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(floatLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(notEqOp),
                  partOfRulesRightSide(Exp));
     insertMember(stringLiteral, Exp, 1,
                  partOfRulesRightSide(Statement));
@@ -487,6 +559,30 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(concatenationOp),
                  partOfRulesRightSide(Exp));
+    insertMember(stringLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(stringLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(stringLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(stringLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(stringLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(eqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(stringLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(notEqOp),
+                 partOfRulesRightSide(Exp));
     insertMember(integerLiteral, Exp, 1,
                  partOfRulesRightSide(Statement));
     insertMember(integerLiteral, Exp, 3,
@@ -508,6 +604,30 @@ void createLLTable() {
     insertMember(integerLiteral, Exp, 3,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(concatenationOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(integerLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(integerLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(integerLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(integerLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(integerLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(eqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(integerLiteral, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(notEqOp),
                  partOfRulesRightSide(Exp));
     insertMember(nullKey, Exp, 2,
                  partOfRulesRightSide(nullKey),
@@ -531,6 +651,30 @@ void createLLTable() {
     insertMember(nullKey, Exp, 3,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(concatenationOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(lesserEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterThanOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(greaterEqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(eqOp),
+                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, Exp, 3,
+                 partOfRulesRightSide(Exp),
+                 partOfRulesRightSide(notEqOp),
                  partOfRulesRightSide(Exp));
     insertMember(stringNullKey, DataType, 1,
                  partOfRulesRightSide(stringNullKey));

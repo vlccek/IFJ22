@@ -46,6 +46,14 @@ Exp ::= Exp plusOp Exp
 Exp ::= Exp divisionOp Exp
 Exp ::= Exp multiplicationOp Exp
 Exp ::= Exp concatenationOp Exp
+
+Exp ::= Exp lesserThanOp Exp
+Exp ::= Exp lesserEqOp Exp
+Exp ::= Exp greaterThanOp Exp
+Exp ::= Exp greaterEqOp Exp
+Exp ::= Exp eqOp Exp
+Exp ::= Exp notEqOp Exp
+
 Exp ::= leftPar Exp rightPar
 
 
