@@ -36,8 +36,8 @@ typedef enum {
     precendenceTypeCount
 } precendenceType;
 
-bool isExpInIf = false;
-int leftparc;
+extern bool isExpInIf;
+extern int leftparc;
 
 extern char *precTypeString[];
 extern precendenceType precedenceTable[indexCount][indexCount];

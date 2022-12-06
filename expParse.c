@@ -6,18 +6,21 @@
  */
 #include "expParse.h"
 
+bool isExpInIf = false;
+int leftparc = 0;
+
 
 precendenceType precedenceTable[indexCount][indexCount] = {
         //a
         // +- | */ | ID lit... | . | lpar | rpar  | boolOP |dollar
-        {precR, precR, precL, precR, precL, precR, precL,  precR}, // +-             //// top b
-        {precR, precR, precL, precR, precL, precR, precL, precR}, // */
+        {precR, precL, precL, precR, precL, precR, precR, precR}, // +-             //// top b
+        {precR, precR, precL, precR, precL, precR, precR, precR}, // */
         {precR, precR, precE, precR, precE, precR, precR, precR}, // ID LIT
-        {precE, precE, precL, precE, precL, precE, precL, precR}, // .
-        {precR, precR, precL, precR, precR, precEq, precL, precR},// lpar
-        {precR, precR, precL, precR, precE, precR, precL, precR}, // rpar
-        {precL, precL, precL, precL, precL, precL, precL, precL},// boolOP |
-        {precL, precL, precL, precL, precL, precL, precL, precE}  // dollar
+        {precE, precE, precL, precE, precL, precR, precR, precR}, // .
+        {precL, precL, precL, precL, precL, precEq, precL, precL},// lpar
+        {precR, precR, precE, precR, precE, precR, precR, precR}, // rpar
+        {precL, precL, precL, precL, precL, precR, precE, precR}, // boolOP |
+        {precL, precL, precL, precL, precL, precE, precL, precE}  // dollar
 };
 
 
@@ -164,27 +167,27 @@ void expAnal(bool isInIf) {
         gStackPrint(sTokens, printExpParserType);
         a = stackTopTerminal(sTokens);
         loging("IN a (Top notnerminal): %s", generatePrintExpParsertype(a));
-        if (a->tokenData->type == leftPar ){
-            leftparc ++;
+        if (b->type == leftPar) {
+            leftparc++;
         }
         loging("IN B (input): %s ", generatePrintExpParsertype(b));
         loging("precedence sympol: %s", precSymbString(precSymb(a, b)));
         switch (precSymb(a, b)) {
             case precR:
-                loging("Entering precR case")
+                loging("Entering precR case");
                 ruleNum = derivateTopStack(sTokens);
                 pushExpNonTerminal(sTokens);
                 // najde se první < pak se přejde
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)
-                loging("Entering precL case")
+                loging("Entering precL case");
                 addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
                 gStackPush(sTokens, b);
                 b = getTokenP();
                 break;
             case precEq:
-                gStackPush(sTokens, a);
+                gStackPush(sTokens, b);
                 b = getTokenP();
                 break;
             case precE:
@@ -238,6 +241,27 @@ expressionAction_t convertToAction(lexType data) {
             return ANotAnAction;
     }
 }
+
+// check if rule is (exp)
+bool checkIfHandlerIsTrvial(PSAStackMember *in[10]) {
+    PSAStackMember m[3];
+    m[0].type = terminal;
+    m[0].data = leftPar;
+    m[1].type = terminal;
+    m[1].data = Statement;
+    m[2].type = terminal;
+    m[2].data = rightPar;
+
+    for (int i = 0; i < 3; i++) {
+        if (m[i].data == in[i]->data && m[i].type == in[i]->type) {
+            return false;
+        }
+        if(in[i+1] == NULL){
+            break ;
+        }
+    }
+    return true;
+}
 rule *derivateTopStack(genericStack *sTokens) {
     loging("Entering derivate top Ofstack");
     expParserType *tmp;
@@ -261,16 +285,15 @@ rule *derivateTopStack(genericStack *sTokens) {
         //todo exit semntika
         loging("Nebylo nalezeno pravidlo :(");
         PrettyExit(ERR_SYNTAX);
-    } else {
+    } else if (checkIfHandlerIsTrvial(r->to)){
         semanticActionInfo a;
-        if (tmp->tokenData == NULL) {
-            // todo: might be broken if ()
+        if (r->from == Statement) {
+            a.lastToken = *tmp->tokenData;
+            a.action = ANotAnAction;
+        } else {
             if (handle[1]->type != terminal)
                 InternalError("This should definitely be terminal!");
             a.action = convertToAction(handle[1]->data);
-        } else {
-            a.lastToken = *tmp->tokenData;
-            a.action = ANotAnAction;
         }
         r->semanticAction(a);
         loging("END derivate top Ofstack");
