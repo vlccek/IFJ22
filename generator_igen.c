@@ -20,6 +20,7 @@ typedef struct currentState {
     symbol_t tmp1;// primary temporary symbol
     symbol_t tmp2;// secondary temporary symbol
     symbolDataType_t lastDataTypeOnStack;
+    int immersion;
 } currentState_T;
 
 
@@ -330,4 +331,12 @@ void actionDivision(i3Table_t program) {
     // todo: covert both to float
     prepareOperandTypes(program, true);
     action(program, I_DIVS);
+}
+
+void actionGT(i3InstructionArray_t *program){
+    action(program, I_GTS);
+}
+
+void ifstart(){
+    currentState.immersion++;
 }

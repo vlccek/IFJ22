@@ -15,6 +15,11 @@ typedef enum expressionAction {
     ADivision,
     AMultiplication,
     AConcatenation,
+    AGreaterThen,
+    ALowerThen,
+    AEq,
+    AbiggerThenEq,
+    ALowerThenEq,
     ANotAnAction
 } expressionAction_t;
 

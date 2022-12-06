@@ -74,9 +74,15 @@ void SA_ExpressionAction(semanticActionInfo info) {
         case AConcatenation:
             actionConcat(program);
             break;
+        case AGreaterThen:
+            actionGT(program);
         case ANotAnAction:
             InternalError("Expression action called at very wrong time.");
     }
+}
+
+void ifkey(semanticActionInfo info){
+    ifstart();
 }
 
 void semanticActionsInit() {
@@ -104,6 +110,9 @@ void semanticActionsInit() {
 
     // Expression action(s)
     setSemanticActionAllRules(Exp, &SA_ExpressionAction);
+
+    // IF
+    setSemanticAction(Condition, ifKey, &ifkey);
 }
 
 void SA_EndOfCommand() {
