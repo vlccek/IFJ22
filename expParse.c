@@ -237,6 +237,16 @@ expressionAction_t convertToAction(lexType data) {
             return AMultiplication;
         case concatenationOp:
             return AConcatenation;
+        case lesserEqOp:
+            return ALowerThenEq;
+        case lesserThanOp:
+            return ALowerThen;
+        case greaterThanOp:
+            return AGreaterThen;
+        case greaterEqOp:
+            return AGreaterThenEq;
+        case eqOp:
+            return AEq;
         default:
             return ANotAnAction;
     }

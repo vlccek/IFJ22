@@ -290,12 +290,6 @@ void exitFunc() {
 }
 
 void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
-    if (type != I_ADDS &&
-        type != I_DIVS &&
-        type != I_IDIVS &&
-        type != I_MULS &&
-        type != I_SUBS)
-        InternalError("Creating stack instruction but not actually!");
     i3Instruction_t instruction = {
             .type = type,
     };
@@ -318,8 +312,20 @@ void actionDivision(i3Table_t program) {
     createStackInstruction(program, I_DIVS);
 }
 
-void actionGT(i3InstructionArray_t *program) {
+void actionGTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_GTS);
+}
+void actionLTS(i3InstructionArray_t *program) {
+    createStackInstruction(program, I_LTS);
+}
+void actionEQS(i3InstructionArray_t *program) {
+    createStackInstruction(program, I_LTS);
+}
+void actionLTSEQ(i3InstructionArray_t *program) {
+    createStackInstruction(program, I_LTS);
+}
+void actionGTSEQ(i3InstructionArray_t *program) {
+    createStackInstruction(program, I_LTS);
 }
 
 void ifStart() {

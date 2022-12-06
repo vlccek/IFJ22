@@ -78,14 +78,18 @@ void SA_ExpressionAction(semanticActionInfo info) {
             actionConcat(program);
             break;
         case AGreaterThen:
-            actionGT(program);
+            actionGTS(program);
         case ALowerThen:
+            actionLTS(program);
             break;
         case AEq:
+            actionEQS(program);
             break;
-        case AbiggerThenEq:
+        case AGreaterThenEq:
+            actionGTSEQ(program);
             break;
         case ALowerThenEq:
+            actionLTSEQ(program);
             break;
         case ANotAnAction:
             InternalError("Expression action called at very wrong time.");

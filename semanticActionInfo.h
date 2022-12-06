@@ -18,7 +18,7 @@ typedef enum expressionAction {
     AGreaterThen,
     ALowerThen,
     AEq,
-    AbiggerThenEq,
+    AGreaterThenEq,
     ALowerThenEq,
     ANotAnAction
 } expressionAction_t;
