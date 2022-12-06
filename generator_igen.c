@@ -61,7 +61,6 @@ void functionDefRet(token_t token) {
 
 symbol_t *findExistingVariable(char *variableName) {
     symbol_t *symbol = symSearchVar(&symtable, variableName);
-    printSymtable(&symtable);
     if (symbol == NULL) {
         // todo: exit with right code
         printlog("Varibale '%s' not found in symtable!\n", variableName);
@@ -124,6 +123,8 @@ void functionParam(i3Table_t program, token_t token) {
                                                     token);
             writeSymbol(program, newSymbol);
         }
+    } else {
+        // todo
     }
 }
 
@@ -190,7 +191,6 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
                                                         variable,         // we do not know variable type by now
                                                         undefinedDataType,// variable does not have param list
                                                         token);           // variable does not have return value
-
     i3Instruction_t instruction = {
             .type = I_DEFVAR,
             .arg1 = currentState.undefinedVariable};
@@ -210,6 +210,7 @@ void flushCommand(i3Table_t program) {
 }
 
 void exitCodeBlock() {
+    printSymtable(&symtable);
     if (symDelLocal(&symtable)) {
         exitFunc();
     }

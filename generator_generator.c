@@ -53,7 +53,7 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
 
 char *generateArgSymVar(symbol_t symb, char *buf) {
     if (symb.type == variable) {
-        sprintf(buf, "LF@%s", symb.identifier);
+        sprintf(buf, "TF@%s", symb.identifier);
         return buf;
     }
     return generateArgSymbol(symb, buf);
@@ -65,12 +65,12 @@ void generateWrite(i3Instruction_t instruction) {
 }
 
 void generateDefvar(i3Instruction_t instruction) {
-    printf("DEFVAR LF@%s", instruction.arg1.token.data.valueString->string);
+    printf("DEFVAR TF@%s", instruction.arg1.token.data.valueString->string);
 }
 
 void generateMove(i3Instruction_t instruction) {
     char buf[2048];
-    printf("MOVE LF@%s %s",
+    printf("MOVE TF@%s %s",
            instruction.dest.token.data.valueString->string,
            generateArgSymVar(instruction.arg1, buf));
 }
@@ -220,7 +220,7 @@ void generateInstructionArray(i3InstructionArray_t array) {
 void generate(i3Table_t program) {
     generateHeader();
     printf("\n");
-    printf("CREATEFRAME\nPUSHFRAME\n");
+    printf("CREATEFRAME\n");
     for (int i = 0; i < MAX_HTSIZE; ++i) {
         generateInstructionArray(program[i]);
     }

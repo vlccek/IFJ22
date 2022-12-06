@@ -281,7 +281,7 @@ void symInsertFunction(symtable_t *symtable, symbol_t symbol) {
 symbol_t *symSearchVar(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
     for (int i = 0; i <= symtable->last; i++) {
-        found = htSearch(&(symtable->main[i]), identifier);
+        found = htSearch(&(symtable->current[i]), identifier);
         if (found) {
             found->value.symtablePos = symtable->last - i;
             return &(found->value);
@@ -400,15 +400,22 @@ void printSymbol(symbol_t *symbol) {
             InternalError("DataType of symbol (%d) is unknown", symbol->dataType);
             break;
     }
-    printlog("(%s, %s, %s)", symbol->identifier, type, dataType);
+    printlog("(%s, %s, %s, %d:%d)", symbol->identifier, type, dataType, symbol->token.rowNumber, symbol->token.rowPosNumber);
 }
 
 void printSymtable(symtable_t *symtable) {
     printHashtable(&(symtable->functions), "functions");
     for (int i = 0; i < MAX_SYMTABLES; i++) {
-        char number[16];
-        sprintf(number, "%d", i);
+        char number[128];
+        sprintf(number, "MAINBODY %d", i);
         printHashtable(&(symtable->main[i]), number);
+    }
+    if (symtable->isInFunction) {
+        for (int i = 0; i < MAX_SYMTABLES; i++) {
+            char number[128];
+            sprintf(number, "INFUNC %d", i);
+            printHashtable(&(symtable->infunc[i]), number);
+        }
     }
 }
 // endregion
