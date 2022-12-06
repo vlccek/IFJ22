@@ -27,7 +27,7 @@ void actionPlus(i3Table_t program);
 void actionMultiplication(i3Table_t program);
 void actionDivision(i3Table_t program);
 void actionSubtraction(i3Table_t program);
-void actionConcat(i3InstructionArray_t *program);
+void actionConcat(i3Table_t program);
 
 
 void exitCodeBlock();

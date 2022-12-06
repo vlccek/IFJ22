@@ -308,19 +308,19 @@ void actionPlus(i3Table_t program) {
     prepareOperandTypes(program, false);
     action(program, I_ADDS);
 }
-void actionSubtraction(i3InstructionArray_t *program) {
+void actionSubtraction(i3Table_t program) {
     prepareOperandTypes(program, false);
     action(program, I_SUBS);
 }
-void actionMultiplication(i3InstructionArray_t *program) {
+void actionMultiplication(i3Table_t program) {
     prepareOperandTypes(program, false);
     action(program, I_MULS);
 }
-void actionConcat(i3InstructionArray_t *program) {
+void actionConcat(i3Table_t program) {
     prepareOperandTypes(program, false);
     action(program, I_MULS);
 }
-void actionDivision(i3InstructionArray_t *program) {
+void actionDivision(i3Table_t program) {
     // todo: covert both to float
     prepareOperandTypes(program, true);
     action(program, I_DIVS);
