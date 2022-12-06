@@ -250,10 +250,11 @@ void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
 
 void action(i3Table_t program, i3InstructionType_t type) {
     if (currentState.tmp1.type == undefinedType)
-        InternalError("There is nothing to add!");
+        InternalError("There is nothing to add/div/...!");
 
     // push another
     createPushInstruction(program, currentState.tmp1);
+    currentState.lastDataTypeOnStack = currentState.tmp1.dataType;
     currentState.tmp1.type = undefinedType;
 
     if (currentState.tmp2.type != undefinedType) {
@@ -264,24 +265,62 @@ void action(i3Table_t program, i3InstructionType_t type) {
     createStackInstruction(program, type);
 }
 
+void convertTypes(symbolDataType_t convertTo, symbol_t *toBeConverted) {
+    if (toBeConverted->dataType == convertTo)
+        return;
+
+    if (convertTo == floating && toBeConverted->dataType == integer) {
+        toBeConverted->dataType = floating;
+        toBeConverted->token.data.valueFloat = (float) toBeConverted->token.data.valueInteger;
+        return;
+    }
+
+    InternalError("Cannot convert!\n");
+}
+
+void convertTopToFloat(i3Table_t program) {
+    if (currentState.lastDataTypeOnStack != integer)// todo: probably aritmetic error
+        InternalError("Cannot convert anything else than int");
+    i3Instruction_t instruction = {
+            .type = I_INT2FLOATS,
+    };
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+void prepareOperandTypes(i3Table_t program, bool convToFloat) {
+    // if one of them if floating, then both of them has to be floating
+    if (currentState.tmp1.dataType == floating ||
+        currentState.tmp2.dataType == floating) {
+        convertTypes(floating, &currentState.tmp1);
+        convertTypes(floating, &currentState.tmp2);
+    } else if (convToFloat) {// if division
+        convertTypes(floating, &currentState.tmp1);
+        convertTypes(floating, &currentState.tmp2);
+    }
+    if (currentState.lastDataTypeOnStack != undefinedDataType) {
+        if (currentState.tmp1.dataType == floating)
+            convertTopToFloat(program);
+    }
+}
+
+
 void actionPlus(i3Table_t program) {
+    prepareOperandTypes(program, false);
     action(program, I_ADDS);
-    currentState.lastDataTypeOnStack = integer;
 }
 void actionSubtraction(i3InstructionArray_t *program) {
+    prepareOperandTypes(program, false);
     action(program, I_SUBS);
-    currentState.lastDataTypeOnStack = integer;
 }
 void actionMultiplication(i3InstructionArray_t *program) {
+    prepareOperandTypes(program, false);
     action(program, I_MULS);
-    currentState.lastDataTypeOnStack = integer;
 }
 void actionConcat(i3InstructionArray_t *program) {
+    prepareOperandTypes(program, false);
     action(program, I_MULS);
 }
 void actionDivision(i3InstructionArray_t *program) {
-    // todo: Find out types (convert one to float) and decide between
-    // todo: IDIVS or DIVS
-    action(program, I_IDIVS);
-    currentState.lastDataTypeOnStack = integer;
+    // todo: covert both to float
+    prepareOperandTypes(program, true);
+    action(program, I_DIVS);
 }

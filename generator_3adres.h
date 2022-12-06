@@ -41,7 +41,10 @@ typedef enum i3InstructionType {
     I_DEFVAR,
     I_PUSHS,
     I_POPS,
-
+    I_INT2FLOATS,
+    I_FLOAT2INTS,
+    I_INT2CHARS,
+    I_STRI2INTS
 } i3InstructionType_t;
 
 /**

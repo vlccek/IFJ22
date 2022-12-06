@@ -47,7 +47,7 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
     } else if (symb.dataType == integer)
         sprintf(buf, "int@%d", symb.token.data.valueInteger);
     else if (symb.dataType == floating)
-        sprintf(buf, "float@%a", symb.token.data.valueFloat);
+        sprintf(buf, "float@%a   # %f", symb.token.data.valueFloat, symb.token.data.valueFloat);
     return buf;
 }
 
@@ -92,26 +92,26 @@ void generatePops(i3Instruction_t instruction) {
     printf("POPS %s", generateArgSymVar(instruction.dest, buf));
 }
 
-void generateStackInstruction(const char *instructionName) {
+void generateSimpleIns(const char *instructionName) {
     printf("%s", instructionName);
 }
 
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
         case I_ADDS:
-            generateStackInstruction("ADDS");
+            generateSimpleIns("ADDS");
             break;
         case I_SUBS:
-            generateStackInstruction("SUBS");
+            generateSimpleIns("SUBS");
             break;
         case I_MULS:
-            generateStackInstruction("MULS");
+            generateSimpleIns("MULS");
             break;
         case I_DIVS:
-            generateStackInstruction("DIVS");
+            generateSimpleIns("DIVS");
             break;
         case I_IDIVS:
-            generateStackInstruction("IDIVS");
+            generateSimpleIns("IDIVS");
             break;
         case I_CONCAT:
             break;
@@ -165,6 +165,18 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_POPS:
             generatePops(instruction);
+            break;
+        case I_INT2FLOATS:
+            generateSimpleIns("INT2FLOATS");
+            break;
+        case I_FLOAT2INTS:
+            generateSimpleIns("FLOAT2INTS");
+            break;
+        case I_INT2CHARS:
+            generateSimpleIns("INT2CHARS");
+            break;
+        case I_STRI2INTS:
+            generateSimpleIns("STRI2INTS");
             break;
     }
     printf("\n");
