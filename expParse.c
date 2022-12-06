@@ -9,14 +9,15 @@
 
 precendenceType precedenceTable[indexCount][indexCount] = {
         //a
-        // +- | */ | ID lit... | . | lpar | rpar  | dollar
-        {precR, precR, precL, precR, precL, precR, precR}, // +-             //// top b
-        {precR, precR, precL, precR, precL, precR, precR}, // */
-        {precR, precR, precE, precR, precE, precR, precR}, // ID LIT
-        {precE, precE, precL, precE, precL, precE, precR}, // .
-        {precR, precR, precL, precR, precR, precEq, precR},// lpar
-        {precR, precR, precL, precR, precE, precR, precR}, // rpar
-        {precL, precL, precL, precL, precL, precL, precE}  // dollar
+        // +- | */ | ID lit... | . | lpar | rpar  | boolOP |dollar
+        {precR, precR, precL, precR, precL, precR, precL,  precR}, // +-             //// top b
+        {precR, precR, precL, precR, precL, precR, precL, precR}, // */
+        {precR, precR, precE, precR, precE, precR, precR, precR}, // ID LIT
+        {precE, precE, precL, precE, precL, precE, precL, precR}, // .
+        {precR, precR, precL, precR, precR, precEq, precL, precR},// lpar
+        {precR, precR, precL, precR, precE, precR, precL, precR}, // rpar
+        {precL, precL, precL, precL, precL, precL, precL, precL},// boolOP |
+        {precL, precL, precL, precL, precL, precL, precL, precE}  // dollar
 };
 
 
@@ -61,8 +62,18 @@ precedenceTableIndex indexInPrecTable(lexType t) {
             loging("Index in precedenc table: %d", indexDollar);
             return indexDollar;
             break;
+        case lesserEqOp:
+        case lesserThanOp:
+        case greaterThanOp:
+        case greaterEqOp:
+        case eqOp:
+        case notEqOp:
+            loging("Index in precedenc is comapring (bool) symbol for, index : %d", indexCmp);
+            return indexCmp;
+            break;
         default:
-            InternalError("unknown type");
+            loging("Index in precedenc table not foung: %d", t);
+            break;
     }
 }
 
@@ -153,14 +164,14 @@ void expAnal() {
         switch (precSymb(a, b)) {
             case precR:
                 loging("Entering precR case")
-                        ruleNum = derivateTopStack(sTokens);
+                ruleNum = derivateTopStack(sTokens);
                 pushExpNonTerminal(sTokens);
                 // najde se první < pak se přejde
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)
                 loging("Entering precL case")
-                        addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
+                addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
                 gStackPush(sTokens, b);
                 b = getTokenP();
                 break;

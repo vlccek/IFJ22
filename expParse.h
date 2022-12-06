@@ -21,6 +21,7 @@ typedef enum {
     indexOpConcat,
     indexLpar,
     indexRpar,
+    indexCmp,
     indexDollar,
     indexCount
 } precedenceTableIndex;
