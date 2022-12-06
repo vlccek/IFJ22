@@ -150,26 +150,32 @@ void moveToVariable(i3Table_t program, symbol_t symbol) {
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
+symbol_t tokenToSymbol(token_t token) {
+    symbol_t newSymbol;
+    if (token.type == identifierVar) {
+        symbol_t *found = findExistingVariable(token.data.valueString->string);
+        if (!found) {
+            printlog("Chyba: proměnná $%s nenalezena ", token.data.valueString->string);
+            PrettyExit(ERR_IDENTIFIER_NAME);
+        }
+        newSymbol = *found;
+    } else {
+        // statement is part of the expression
+        newSymbol = createSymbolVarLit("",
+                                       literal,
+                                       tokenTypeToSymbolType(token.type),
+                                       token);
+    }
+    return newSymbol;
+}
+
 void newStatement(i3Table_t program, token_t token) {
     if (currentState.callingFunction != NULL) {
         // if in the middle of function call
         functionParam(program, token);
     } else {
-        symbol_t newSymbol;
-        if (token.type == identifierVar) {
-            symbol_t *found = findExistingVariable(token.data.valueString->string);
-            if (!found) {
-                printlog("Chyba: proměnná $%s nenalezena ", token.data.valueString->string);
-                PrettyExit(ERR_IDENTIFIER_NAME);
-            }
-            newSymbol = *found;
-        } else {
-            // statement is part of the expression
-            newSymbol = createSymbolVarLit("",
-                                           literal,
-                                           tokenTypeToSymbolType(token.type),
-                                           token);
-        }
+        symbol_t newSymbol = tokenToSymbol(token);
+
         if (currentState.tmp1.type == undefinedType) {
             currentState.tmp1 = newSymbol;
         } else if (currentState.tmp2.type == undefinedType) {
