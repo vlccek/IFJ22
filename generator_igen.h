@@ -39,6 +39,7 @@ void ifstart();
 void exitCodeBlock();
 void enterFunc(i3InstructionArray_t *program, char *identifier);
 void exitFunc();
+void prepareReturn(i3Table_t program);
 
 
 #endif// IFJ22_IGEN_H

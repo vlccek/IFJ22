@@ -96,8 +96,12 @@ void SA_ExpressionAction(semanticActionInfo info) {
     }
 }
 
-void ifkey(semanticActionInfo info){
+void ifkey(semanticActionInfo info) {
     ifStart();
+}
+
+void SA_Return(semanticActionInfo info) {
+    prepareReturn(program);
 }
 
 void semanticActionsInit() {
@@ -129,6 +133,9 @@ void semanticActionsInit() {
 
     // IF
     setSemanticAction(Condition, ifKey, &ifkey);
+
+    // Return
+    setSemanticAction(Return, returnKey, &SA_Return);
 }
 
 void SA_EndOfCommand() {

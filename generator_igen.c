@@ -347,3 +347,7 @@ symbol_t getReturnSymbol() {
     };
     return symbol;
 }
+
+void prepareReturn(i3Table_t program) {
+    symbol_t symbol = getReturnSymbol();
+}
