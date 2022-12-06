@@ -81,6 +81,14 @@ void SA_ExpressionAction(semanticActionInfo info) {
             actionGT(program);
         case ANotAnAction:
             InternalError("Expression action called at very wrong time.");
+        case ALowerThen:
+            break;
+        case AEq:
+            break;
+        case AbiggerThenEq:
+            break;
+        case ALowerThenEq:
+            break;
     }
 }
 
