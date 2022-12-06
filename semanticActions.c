@@ -11,10 +11,6 @@
 
 i3Table_t program;
 
-void testingSemanticAction(semanticActionInfo info) {
-    loging("Semanticka akce detekovana!!!");
-}
-
 void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
     if (!pravidlo) {
         loging("Pravidlo je NULL");
@@ -45,10 +41,11 @@ void SA_FceCall(semanticActionInfo info) {
 }
 
 void SA_FceDefine(semanticActionInfo info) {
-    functionDefBegin(info.lastToken.data.valueString);
+    enterFunc(program, dstrGet(info.lastToken.data.valueString));
+    functionDefBegin(dstrGet(info.lastToken.data.valueString));
 }
 void SA_FceDefParam(semanticActionInfo info) {
-    functionDefParam(info.lastToken.data.valueString);
+    functionDefParam(dstrGet(info.lastToken.data.valueString));
 }
 void SA_FceDefType(semanticActionInfo info) {
     functionDefParamRememberType(info.lastToken.type);
@@ -79,7 +76,6 @@ void semanticActionsInit() {
     initIgen(program);
     initializeProgram(&program);
 
-    setSemanticAction(ProgramBody, ifKey, &testingSemanticAction);
     setSemanticAction(ProgramBody, identifierVar, &SA_programBody);
     setSemanticAction(Command, identifierVar, &SA_Command_identifierVar);
 

@@ -107,7 +107,7 @@ void htDestroy(htTable_t *table);
 void symInit(symtable_t *symtable);
 void symDestroy(symtable_t *symtable);
 void symNewLocal(symtable_t *symtable);
-void symDelLocal(symtable_t *symtable);
+bool symDelLocal(symtable_t *symtable);
 void symInsert(symtable_t *symtable, symbol_t symbol);
 void symInsertFunction(symtable_t *symtable, symbol_t symbol);
 symbol_t *symSearchVar(symtable_t *symtable, const char *identifier);

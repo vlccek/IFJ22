@@ -99,7 +99,7 @@ void htInsertItem(htTable_t *table, const char *key, symbol_t value) {
         printHashtable(table, "Overwritten");
         return;
     }
-    int hash = ht_get_hash(key);
+    size_t hash = ht_get_hash(key);
     item = malloc(sizeof(struct htItem));
     if (item == NULL) {
         fprintf(stderr, "Malloc fail in htInsertItem, key '%s'.\n", key);
@@ -253,18 +253,20 @@ void symNewLocal(symtable_t *symtable) {
     symtable->last++;
 }
 
-void symDelLocal(symtable_t *symtable) {
+bool symDelLocal(symtable_t *symtable) {
     if (symtable->last == 0) {
         if (symtable->isInFunction) {
             loging("INFO: Switching back to main symtable.");
+            printSymtable(symtable);
             symSwitchBack(symtable);
-            return;
+            return true;
         }
-        fprintf(stderr, "ERROR: attempted to delete non existent symtable.\n");
-        return;
+        InternalError("ERROR: attempted to delete non existent symtable");
+        return false;
     }
     htDestroy(&(symtable->current[symtable->last]));
     symtable->last--;
+    return false;
 }
 
 void symInsert(symtable_t *symtable, symbol_t symbol) {

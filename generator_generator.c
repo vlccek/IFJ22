@@ -171,11 +171,30 @@ void generateInstruction(i3Instruction_t instruction) {
     printf("\n");
 }
 
+void generateLabel(char *label) {
+    printf("LABEL %s\n", label);
+}
+void generateJump(char *label) {
+    printf("JUMP %s\n", label);
+}
+
 void generateInstructionArray(i3InstructionArray_t array) {
     if (array.instructions == NULL)
         return;
+    if (strcmp(array.functionName, "$MainBody") != 0) {
+        char buffer[2048];
+        sprintf(buffer, "$BEGIN_%s", array.functionName);
+        generateLabel(buffer);
+    }
     for (int i = 0; i < array.size; ++i) {
         generateInstruction(array.instructions[i]);
+    }
+    if (strcmp(array.functionName, "$MainBody") != 0) {
+        char buffer[2048];
+        sprintf(buffer, "$END_%s", array.functionName);
+        generateLabel(buffer);
+    } else {
+        generateJump("$PROGRAM_END");
     }
     loging("Vygenerovana funkce: %s\n", array.functionName);
 }
@@ -188,4 +207,5 @@ void generate(i3Table_t program) {
     for (int i = 0; i < MAX_HTSIZE; ++i) {
         generateInstructionArray(program[i]);
     }
+    generateLabel("$PROGRAM_END");
 }

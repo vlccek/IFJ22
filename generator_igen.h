@@ -25,6 +25,8 @@ void functionDefRet(token_t token);
 void flushCommand(i3Table_t program);
 void actionPlus(i3Table_t program);
 void exitCodeBlock();
+void enterFunc(i3InstructionArray_t *program, char *identifier);
+void exitFunc();
 
 
-#endif // IFJ22_IGEN_H
+#endif// IFJ22_IGEN_H

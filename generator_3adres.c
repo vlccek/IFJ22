@@ -10,14 +10,13 @@
 
 
 void initializeProgram(i3Table_t *program) {
-    (*program)[0].functionName = "P_MainBody";
     for (int i = 0; i < MAX_HTSIZE; ++i) {
         (*program)[i].functionName = NULL;
         (*program)[i].instructions = NULL;
         (*program)[i].size = 0;
         (*program)[i].capacity = 0;
     }
-    initializeInstructionArray(100, program[0], "F_MainBody");
+    initializeInstructionArray(100, program[0], "$MainBody");
 }
 
 void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, char *functionName) {
