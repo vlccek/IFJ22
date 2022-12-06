@@ -51,7 +51,11 @@ add_executable(main
         semanticActionInfo.h
         semanticActions.h
         stack.h
-        symtable.h)
+        symtable.h
+        stackIf.c
+        stackIf.h
+)
+
 
 add_library(stack
         stack.c
@@ -118,6 +122,7 @@ add_library(expParseTests
         common
         stack
         lex)
+
 
 target_compile_definitions(expParseTests PUBLIC)
 
