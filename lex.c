@@ -247,6 +247,7 @@ void decrementCounters(int c) {
             // TODO rowPos = 0;
             break;
         case '\t':
+            rowPos -= 4;
         case '\r':
         case '\v':
         case '\f':
@@ -497,8 +498,8 @@ token_t getToken(FILE *stream) {
                             // converting from hex string to int
                             int res = (int) strtol(dstrGet(number), NULL, 0);
                             // converting back to string
-                            char string[4];
-                            sprintf(string, "%d", res);
+                            char string[2];
+                            sprintf(string, "%c", res);
                             // writing the number to the buffer
                             dstrAppend(buffer, string);
                             dstrFree(number);
@@ -583,8 +584,8 @@ token_t getToken(FILE *stream) {
                         // converting from hex string to int
                         int res = (int) strtol(dstrGet(number), NULL, 0);
                         // converting back to string
-                        char string[4];
-                        sprintf(string, "%d", res);
+                        char string[2];
+                        sprintf(string, "%c", res);
                         // writing the number to the buffer
                         dstrAppend(buffer, string);
                         dstrFree(number);
@@ -629,8 +630,8 @@ token_t getToken(FILE *stream) {
                                 currentState = string_lit_s;
                             } else {
                                 // converting back to string
-                                char string[4];
-                                sprintf(string, "%d", res);
+                                char string[2];
+                                sprintf(string, "%c", res);
                                 // writing the number to the buffer
                                 dstrAppend(buffer, string);
                                 currentState = string_lit_s;
@@ -1234,6 +1235,9 @@ token_t getToken(FILE *stream) {
                     case com_block_s:
                         currentState = com_block_ast_s;
                         break;
+                    case com_block_ast_s:
+                        currentState = com_block_ast_s;
+                        break;
                     case com_line_f_s:
                         currentState = com_line_f_s;
                         break;
@@ -1263,7 +1267,7 @@ token_t getToken(FILE *stream) {
                         currentState = string_lit_s;
                         break;
                     case com_block_s:
-                        currentState = com_block_ast_s;
+                        currentState = com_block_s;
                         break;
                     case com_line_f_s:
                         currentState = com_line_f_s;
@@ -1348,6 +1352,37 @@ token_t getToken(FILE *stream) {
                         break;
                 }
                 break;
+            case '\t':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = init_s;
+                        break;
+                    case string_lit_s:
+                        dstrAppend(buffer, "\t");
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        stop = true;
+                        break;
+                }
+                break;
             case '\n':
                 switch (currentState) {
                     case init_s:
@@ -1379,7 +1414,6 @@ token_t getToken(FILE *stream) {
                         break;
                 }
                 break;
-            case '\t':
             case '\r':
             case '\v':
             case '\f':
@@ -1584,9 +1618,7 @@ token_t getToken(FILE *stream) {
         }
     }
 
-    // frees all buffers and returns the output token
-    dstrFree(buffer);
-    dstrFree(escSeqBuffer);
+    // returns the output token
     lastToken = outputToken;
     return outputToken;
 }
