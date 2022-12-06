@@ -261,7 +261,7 @@ bool symDelLocal(symtable_t *symtable) {
             symSwitchBack(symtable);
             return true;
         }
-        InternalError("ERROR: attempted to delete non existent symtable");
+        loging("ERROR: attempted to delete non existent symtable");
         return false;
     }
     htDestroy(&(symtable->current[symtable->last]));

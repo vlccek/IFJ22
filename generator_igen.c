@@ -27,6 +27,7 @@ currentState_T currentState;
 
 void initIgen(i3Table_t program) {
     symInit(&symtable);
+    currentState.undefinedVariable.type = undefinedType;
     currentState.currentArray = 0;
     currentState.lastUsedArray = 0;
     currentState.callingFunction = NULL;

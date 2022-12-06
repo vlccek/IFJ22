@@ -11,7 +11,7 @@ all: prekladac
 %.o : %.c %.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
-OBJECTS = symtable.o parser.o lex.o main.o LLtable.o dynstring.o expParse.o stack.o common.o queue.o semanticActions.o generator_3adres.o generator_generator.o generator_igen.o stackIf.c stackIf.h
+OBJECTS = symtable.o parser.o lex.o main.o LLtable.o dynstring.o expParse.o stack.o common.o queue.o semanticActions.o generator_3adres.o generator_generator.o generator_igen.o stackIf.o
 
 prekladac: $(OBJECTS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^
