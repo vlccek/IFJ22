@@ -38,7 +38,6 @@ char *convertString(dynStr_t *dynStr, char *string) {
 /// \return buf parameter
 char *generateArgSymbol(symbol_t symb, char *buf) {
     if (symb.type != literal) {
-        printSymbol(&symb);
         InternalError("Printed symbol is not literal.");
     }
     if (symb.dataType == string) {
@@ -73,13 +72,13 @@ void generateMove(i3Instruction_t instruction) {
     char buf[2048];
     printf("MOVE LF@%s %s",
            instruction.dest.token.data.valueString->string,
-           generateArgSymbol(instruction.arg1, buf));
+           generateArgSymVar(instruction.arg1, buf));
 }
 
 void generatePushs(i3Instruction_t instruction) {
     char buf[2048];
     printf("PUSHS %s",
-           generateArgSymbol(instruction.arg1, buf));
+           generateArgSymVar(instruction.arg1, buf));
 }
 
 void generatePops(i3Instruction_t instruction) {
@@ -177,6 +176,12 @@ void generateLabel(char *label) {
 void generateJump(char *label) {
     printf("JUMP %s\n\n", label);
 }
+void generateExit(int code) {
+    if (code < 0 || code > 49) {
+        loging("Invalid exit code (%d), will throw error 57 when run", code);
+    }
+    printf("EXIT int@%d\n\n", code);
+}
 
 void generateInstructionArray(i3InstructionArray_t array) {
     if (array.instructions == NULL)
@@ -194,7 +199,7 @@ void generateInstructionArray(i3InstructionArray_t array) {
         sprintf(buffer, "$END_%s", array.functionName);
         generateLabel(buffer);
     } else {
-        generateJump("$PROGRAM_END");
+        generateExit(0);
     }
     loging("Vygenerovana funkce: %s\n", array.functionName);
 }

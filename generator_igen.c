@@ -41,8 +41,10 @@ void functionDefBegin(char *identifier) {
     symSwitch(&symtable);
     currentState.newFunction = *createSymbolFunction(identifier, function, NULL, undefinedDataType);
 }
-void functionDefParam(char *identifier) {
+void functionDefParam(char *identifier, token_t token) {
     insDTList(currentState.newFunction.firstParam, tokenTypeToSymbolType(currentState.lastVarType), identifier);
+    symbol_t symbol = createSymbolVarLit(identifier, variable, tokenTypeToSymbolType(currentState.lastVarType), token);
+    symInsert(&symtable, symbol);
 }
 void functionDefParamRememberType(lexType type) {
     currentState.lastVarType = type;
@@ -59,9 +61,11 @@ void functionDefRet(token_t token) {
 
 symbol_t *findExistingVariable(char *variableName) {
     symbol_t *symbol = symSearchVar(&symtable, variableName);
+    printSymtable(&symtable);
     if (symbol == NULL) {
         // todo: exit with right code
-        InternalError("Varibale '%s' not found in symtable!", variableName);
+        printlog("Varibale '%s' not found in symtable!\n", variableName);
+        PrettyExit(ERR_IDENTIFIER_NAME);
     }
     return symbol;
 }
@@ -69,12 +73,8 @@ symbol_t *findExistingVariable(char *variableName) {
 void startFunctionCall(token_t token) {
     // todo: vložit název funkce a počet parametrů do nějaké tabulky, pozdější kontroly
     // todo: a nakonec parsování kontrola podle reálného záznamu
-    symbol_t *fceSymbol = symSearchFunc(&symtable, token.data.valueString->string);
-    if (fceSymbol == NULL) {
-        // todo: exit right value
-        InternalError("Function %s not found in symtable!", token.data.valueString->string);
-    }
-    currentState.callingFunction = fceSymbol;
+    symbol_t *symbol = createSymbolFunction(token.data.valueString->string, function, NULL, undefinedDataType);
+    currentState.callingFunction = symbol;
 }
 
 
@@ -154,11 +154,21 @@ void newStatement(i3Table_t program, token_t token) {
         // if in the middle of function call
         functionParam(program, token);
     } else {
-        // statement is part of the expression
-        symbol_t newSymbol = createSymbolVarLit("",
-                                                literal,
-                                                tokenTypeToSymbolType(token.type),
-                                                token);
+        symbol_t newSymbol;
+        if (token.type == identifierVar) {
+            symbol_t *found = findExistingVariable(token.data.valueString->string);
+            if (!found) {
+                printlog("Chyba: proměnná $%s nenalezena ", token.data.valueString->string);
+                PrettyExit(ERR_IDENTIFIER_NAME);
+            }
+            newSymbol = *found;
+        } else {
+            // statement is part of the expression
+            newSymbol = createSymbolVarLit("",
+                                           literal,
+                                           tokenTypeToSymbolType(token.type),
+                                           token);
+        }
         if (currentState.tmp1.type == undefinedType) {
             currentState.tmp1 = newSymbol;
         } else if (currentState.tmp2.type == undefinedType) {

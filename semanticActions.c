@@ -16,7 +16,6 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
         loging("Pravidlo je NULL");
         return;
     }
-    fprintf(stderr, "%p", pravidlo->semanticAction);
     if (pravidlo->semanticAction == NULL) {
         loging("Pravidlo nema semantickou akci. ID: %2d, nt: %s", pravidlo->id, getNonTerminalName(pravidlo->from));
         return;
@@ -45,7 +44,7 @@ void SA_FceDefine(semanticActionInfo info) {
     functionDefBegin(dstrGet(info.lastToken.data.valueString));
 }
 void SA_FceDefParam(semanticActionInfo info) {
-    functionDefParam(dstrGet(info.lastToken.data.valueString));
+    functionDefParam(dstrGet(info.lastToken.data.valueString), info.lastToken);
 }
 void SA_FceDefType(semanticActionInfo info) {
     functionDefParamRememberType(info.lastToken.type);
