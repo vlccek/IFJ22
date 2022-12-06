@@ -30,7 +30,7 @@ void actionDivision(i3Table_t program);
 void actionSubtraction(i3Table_t program);
 void actionConcat(i3Table_t program);
 void actionGT(i3InstructionArray_t *program);
-void ifstart();
+void ifStart();
 
 void exitCodeBlock();
 void enterFunc(i3InstructionArray_t *program, char *identifier);

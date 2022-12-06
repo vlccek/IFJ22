@@ -93,7 +93,7 @@ void SA_ExpressionAction(semanticActionInfo info) {
 }
 
 void ifkey(semanticActionInfo info){
-    ifstart();
+    ifStart();
 }
 
 void semanticActionsInit() {

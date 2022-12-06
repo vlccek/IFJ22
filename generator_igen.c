@@ -322,6 +322,22 @@ void actionGT(i3InstructionArray_t *program) {
     createStackInstruction(program, I_GTS);
 }
 
-void ifstart() {
+void ifStart() {
     currentState.immersion++;
+}
+
+symbol_t getReturnSymbol() {
+    dynStr_t *name = dstrInit();
+    dstrAppend(name, "RETURN_PARAM");
+    symbol_t symbol = {
+            .type = variable,
+            .dataType = undefinedDataType,
+            .identifier = dstrGet(name),
+            .token = {
+                    .type = stringLiteral,
+                    .data.valueString = name,
+                    .rowNumber = -1,
+                    .rowPosNumber = -1},
+    };
+    return symbol;
 }
