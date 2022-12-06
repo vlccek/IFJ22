@@ -9,12 +9,12 @@
 #ifndef LUAINTERPRET_LLTABLE_H
 #define LUAINTERPRET_LLTABLE_H
 
-#include "lex.h"
 #include "common.h"
+#include "lex.h"
 #include "semanticActionInfo.h"
 
-#define MAX_RULE_LEN 10
-#define MAX_RULES_IN_CELL 10
+#define MAX_RULE_LEN 15
+#define MAX_RULES_IN_CELL 15
 
 #define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rules[ruleIndex]->to[countOfRule] = member;
 #define partOfRulesRightSide(name) createPSAStackMember(name, getDataType(#name))

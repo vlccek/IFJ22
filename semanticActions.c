@@ -115,5 +115,6 @@ void SA_EndOfBlock() {
 }
 
 void SA_EndOfParsing() {
+    // todo: preprocessing
     generate(program);
 }
