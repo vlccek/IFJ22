@@ -16,4 +16,9 @@
   pak bude pushovat frame jenom když bude volat nějakou další funkci.
 - takže volající vytvoří TF, nastaví argumenty a return, zavolá funkci.
 - volaná si pracuje v tomto TF, ale když bude volat nějakou funkci, tak ho pushne, a udělá viz bod výše
-  -v 
+  -v
+
+### Post processing
+
+- Bude stačit procházet jednou.
+- datové typy při interním generování nejsme schopní všechny znát
