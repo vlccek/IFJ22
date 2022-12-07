@@ -199,7 +199,7 @@ void freeToken(token_t *input) {
     return;
 }
 
-// TODO edge cases, finish the function
+// increments the counters
 void incrementCounters(int c) {
     switch (c) {
         // the alphabet
@@ -230,7 +230,7 @@ void incrementCounters(int c) {
     return;
 }
 
-// TODO edge cases, finish the function
+// decrements the counters
 void decrementCounters(int c) {
     switch (c) {
         // the alphabet
@@ -244,7 +244,6 @@ void decrementCounters(int c) {
             break;
         case '\n':
             row--;
-            // TODO rowPos = 0;
             break;
         case '\t':
             rowPos -= 4;
@@ -265,11 +264,11 @@ int getNextChar(FILE *stream) {
     int outputChar = getc(stream);
     incrementCounters(outputChar);
     if (lexLog)
-        loging("Next char: %c %d", outputChar, outputChar);// TODO
+        loging("Next char: %c %d", outputChar, outputChar);
     return outputChar;
 }
 
-// TODO ungets next char and automatically decrements counters
+// ungets next char and automatically decrements counters
 void ungetNextChar(FILE *stream, int currentChar) {
     ungetc(currentChar, stream);
     decrementCounters(currentChar);
@@ -337,7 +336,7 @@ void clearBuffer(dynStr_t *buffer) {
     buffer = dstrInit();
 }
 
-// gets the next token and advances the pointer TODO
+// gets the next token and advances the pointer
 token_t getToken(FILE *stream) {
 
     if (useLastToken) {
@@ -356,7 +355,7 @@ token_t getToken(FILE *stream) {
 
     int currentChar = getc(stream);
     if (lexLog)
-        loging("Next char: %c", currentChar);// TODO
+        loging("Next char: %c", currentChar);
 
     bool stop = false;
     int commentCounter = 0;
@@ -401,7 +400,6 @@ token_t getToken(FILE *stream) {
         // FSM
         switch (currentChar) {
             // the alphabet
-            // TODO e for float literal
             case 'a' ... 'z':
             case 'A' ... 'Z':
                 switch (currentState) {
@@ -648,7 +646,7 @@ token_t getToken(FILE *stream) {
                         break;
                 }
                 break;
-            // TODO special characters
+            // special characters
             case '=':
                 switch (currentState) {
                     case init_s:
@@ -1347,7 +1345,7 @@ token_t getToken(FILE *stream) {
                         break;
                 }
                 break;
-            // TODO whitespaces
+            // whitespaces
             case ' ':
                 switch (currentState) {
                     case init_s:
@@ -1357,7 +1355,6 @@ token_t getToken(FILE *stream) {
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
-                    // TODO
                     case com_line_f_s:
                         currentState = com_line_f_s;
                         break;
@@ -1418,7 +1415,6 @@ token_t getToken(FILE *stream) {
                         bufferOn = true;
                         currentState = string_lit_s;
                         break;
-                    // TODO
                     case com_line_f_s:
                         currentState = init_s;
                         break;
@@ -1491,7 +1487,7 @@ token_t getToken(FILE *stream) {
         }
     }
 
-    // TODO assigns correct lexType to the output token
+    // assigns correct lexType to the output token
     if (!endingMark) {
         switch (currentState) {
             // literal states
