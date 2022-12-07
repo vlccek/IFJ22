@@ -11,6 +11,7 @@
 #include "common.h"
 #include "generator_3adres.h"
 #include "symtable.h"
+#include "stackIf.h"
 
 void initIgen(i3Table_t program);
 void startFunctionCall(i3Table_t program, token_t token);

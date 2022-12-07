@@ -16,6 +16,7 @@ typedef struct currentState {
     symbol_t newFunction;          // symbol nové funkce, který si pamatujeme
     lexType lastVarType;           // typ proměnné při definici funkce, kterou si pamatujeme
     size_t functionCallParamNumber;// kolikátý parametr funkce právě zpracováme
+    genericStack *ifLabelStack;     // stack pro jméne labelů co se pooužívají v ifech
 
     // used by expression parsing
     int immersion;
@@ -32,6 +33,7 @@ void initIgen(i3Table_t program) {
     currentState.lastUsedArray = 0;
     currentState.callingFunction = NULL;
     currentState.functionCallParamNumber = 0;
+    currentState.ifLabelStack = ifS_Init();
 }
 
 
@@ -323,16 +325,19 @@ void actionLTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_LTS);
 }
 void actionEQS(i3InstructionArray_t *program) {
-    createStackInstruction(program, I_LTS);
+    createStackInstruction(program, I_EQS);
 }
 void actionLTSEQ(i3InstructionArray_t *program) {
+    // todo
     createStackInstruction(program, I_LTS);
 }
 void actionGTSEQ(i3InstructionArray_t *program) {
-    createStackInstruction(program, I_LTS);
+    // todo
+    createStackInstruction(program, I_GTS);
 }
 
 void ifStart() {
+    ifS_new(currentState.ifLabelStack);
     currentState.immersion++;
 }
 

@@ -149,6 +149,14 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_GT:
             break;
+        case I_GTS:
+            generateSimpleIns("GTS");
+        case I_LTS:
+            generateSimpleIns("LTS");
+            break;
+        case I_EQS:
+            generateSimpleIns("EQS");
+            break;
         case I_LEQ:
             break;
         case I_GEQ:
