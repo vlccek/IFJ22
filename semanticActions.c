@@ -119,11 +119,11 @@ void semanticActionsInit() {
     setSemanticAction(CommaOrEpsParam, rightPar, &SA_FceCallEnd);
 
     // Variables assignment
-    setSemanticAction(Command, identifierVar, &SA_DeclareNewVariable);
+    setSemanticAction(DeclareVariable, identifierVar, &SA_DeclareNewVariable);
     setSemanticAction(DefVarAss, nullKey, &SA_Destroy_NULL);
 
     // Function definition
-            setSemanticAction(FceHeader, identifierFunc, &SA_FceDefine);
+    setSemanticAction(FceHeader, identifierFunc, &SA_FceDefine);
     setSemanticActionRow(DataType, &SA_FceDefType, 0);
     setSemanticAction(DeclareParam, identifierVar, &SA_FceDefParam);
     setSemanticActionRow(FuncReturnColonType, &SA_FceDefRet, 0);
