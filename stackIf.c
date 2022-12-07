@@ -118,3 +118,7 @@ void ifS_SetinIfbranch(genericStack *stack, bool end) {
 bool ifS_isEmpty(genericStack *stack) {
     return gStackIsEmpty(stack);
 }
+
+typeOfIfStackMem ifs_getType(genericStack *stack) {
+    return ((ifsState *) gStackTop(stack))->type;
+}

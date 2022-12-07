@@ -53,6 +53,8 @@ void ifS_SetinIfbranch(genericStack *stack, bool end);
 
 bool ifS_isEmpty(genericStack *stack);
 
+typeOfIfStackMem ifs_getType(genericStack *stack);
+
 void printifState(void *p);
 
 #endif//IFJ22_STACKIF_H
