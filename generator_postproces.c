@@ -20,7 +20,9 @@ void postProcArrayFunctionParams(i3InstructionArray_t *array, symtable_t *symtab
 void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
     symbol_t *symbol = symSearchFunc(symtable, array->functionName);
     if (!symbol) {
-        InternalError("Generuju funkci, co není v symtabulce :(");
+        if (strcmp(array->functionName, "$MainBody") != 0) {
+            InternalError("Generuju funkci, co není v symtabulce :(");
+        }
     }
     postProcArrayFunctionParams(array, symtable, symbol);
 }
