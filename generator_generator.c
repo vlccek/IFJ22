@@ -123,7 +123,7 @@ void generateLabel(const char *label) {
     printf("\nLABEL %s\n", label);
 }
 void generateJump(const char *label) {
-    printf("JUMP %s\n\n", label);
+    printf("JUMP %s\n", label);
 }
 void generateCall(const char *function_name) {
     printf("CALL $BEGIN_%s\n", function_name);
@@ -165,6 +165,7 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_GTS:
             generateSimpleIns("GTS");
+            break;
         case I_LTS:
             generateSimpleIns("LTS");
             break;
@@ -211,6 +212,7 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_JUMPS_NEQ:
             generateJumps(instruction);
+            break;
         case I_CALL:
             generateCall(instruction.arg1.identifier);
             break;

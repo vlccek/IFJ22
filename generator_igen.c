@@ -400,6 +400,15 @@ void actionDivision(i3Table_t program) {
 
 void actionGTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_GTS);
+    const char *label = ifS_else(currentState.ifLabelStack)->string;
+
+    symbol_t data = {
+            .type = literal,
+            .dataType = booltype,
+            .token.data.valueInteger = 1,
+    };
+    createPushInstruction(program, data);
+    if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
 void actionLTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_LTS);
@@ -415,14 +424,42 @@ void actionLTS(i3InstructionArray_t *program) {
 }
 void actionEQS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_EQS);
+    const char *label = ifS_else(currentState.ifLabelStack)->string;
+
+    symbol_t data = {
+            .type = literal,
+            .dataType = booltype,
+            .token.data.valueInteger = 1,
+    };
+    createPushInstruction(program, data);
+    if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
 void actionLTSEQ(i3InstructionArray_t *program) {
-    // todo
     createStackInstruction(program, I_LTS);
+
+
+    const char *label = ifS_else(currentState.ifLabelStack)->string;
+
+    symbol_t data = {
+            .type = literal,
+            .dataType = booltype,
+            .token.data.valueInteger = 1,
+    };
+    createPushInstruction(program, data);
+    if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
 void actionGTSEQ(i3InstructionArray_t *program) {
     // todo
     createStackInstruction(program, I_GTS);
+    const char *label = ifS_else(currentState.ifLabelStack)->string;
+
+    symbol_t data = {
+            .type = literal,
+            .dataType = booltype,
+            .token.data.valueInteger = 1,
+    };
+    createPushInstruction(program, data);
+    if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
 
 void ifStart() {

@@ -71,6 +71,7 @@ void SA_ExpressionAction(semanticActionInfo info) {
             break;
         case AGreaterThen:
             actionGTS(program);
+            break;
         case ALowerThen:
             actionLTS(program);
             break;
