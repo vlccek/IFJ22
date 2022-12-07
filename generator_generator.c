@@ -268,16 +268,6 @@ void generateInstructionArray(i3InstructionArray_t array, symtable_t *symtable) 
         char buffer[2048];
         sprintf(buffer, "$BEGIN_%s", array.functionName);
         generateLabel(buffer);
-        symbol_t *funkce = symSearchFunc(symtable, array.functionName);
-        int len = funkce->firstParam->len;
-        printf("# len: %d\n", len);
-        DTListMem_T *member = funkce->firstParam->first;
-        size_t count = 0;
-        while (member) {
-            member = member->next;
-        }
-        // todo vygenerovat $param1 -> $reálný identifikátor
-        //symSearchFunc(&symtable);
     }
     for (int i = 0; i < array.size; ++i) {
         generateInstruction(array.instructions[i]);
