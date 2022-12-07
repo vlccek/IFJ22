@@ -275,6 +275,7 @@ void generateInstructionArray(i3InstructionArray_t array, symtable_t *symtable) 
     if (strcmp(array.functionName, "$MainBody") != 0) {
         char buffer[2048];
         sprintf(buffer, "$END_%s", array.functionName);
+        generateSimpleIns("RETURN");
         generateLabel(buffer);
     } else {
         generateExit(0);

@@ -94,28 +94,24 @@ void startFunctionCall(i3Table_t program, token_t token) {
     if (strcmp(currentState.callingFunction->identifier, "write") != 0) {
         pushFrame(program);
         createFrame(program);
-        if (currentState.undefinedVariable.type == variable) {
-
-            token_t newtoken = {
-                    .type = identifierVar,
-                    .data.valueString = dstrInitChar("$return"),
-                    .rowNumber = token.rowNumber,
-                    .rowPosNumber = token.rowPosNumber,
-            };
-            i3Instruction_t instruction = {
-                    .type = I_DEFVAR,
-                    .arg1 = createSymbolVarLit("$return", variable, undefinedDataType, newtoken)};
-            pushToArray(&program[currentState.currentArray], instruction);
-            token_t niltoken = {
-                    .type = nullKey,
-            };
-            i3Instruction_t instnil = {
-                    .type = I_MOVE,
-                    .dest = createSymbolVarLit("$return", variable, undefinedDataType, newtoken),
-
-                    .arg1 = createSymbolVarLit(NULL, literal, nil, niltoken)};
-            pushToArray(&program[currentState.currentArray], instnil);
-        }
+        token_t newtoken = {
+                .type = identifierVar,
+                .data.valueString = dstrInitChar("$return"),
+                .rowNumber = token.rowNumber,
+                .rowPosNumber = token.rowPosNumber,
+        };
+        i3Instruction_t instruction = {
+                .type = I_DEFVAR,
+                .arg1 = createSymbolVarLit("$return", variable, undefinedDataType, newtoken)};
+        pushToArray(&program[currentState.currentArray], instruction);
+        token_t niltoken = {
+                .type = nullKey,
+        };
+        i3Instruction_t instnil = {
+                .type = I_MOVE,
+                .dest = createSymbolVarLit("$return", variable, undefinedDataType, newtoken),
+                .arg1 = createSymbolVarLit(NULL, literal, nil, niltoken)};
+        pushToArray(&program[currentState.currentArray], instnil);
     }
 }
 void endFunctionCall(i3Table_t program, token_t token) {
@@ -334,16 +330,14 @@ void exitCodeBlock(i3Table_t program) {
         if (currentState.ifImmersion > 0) {
             // je to konec if bloku
             currentState.ifImmersion--;
-            const char * label = ifS_ending(currentState.ifLabelStack)->string;
+            const char *label = ifS_ending(currentState.ifLabelStack)->string;
             createJumpIns(program, label);
             label = ifS_else(currentState.ifLabelStack)->string;
             createLabelIns(program, label);
-        }
-        else {
+        } else {
             currentState.ifImmersion--;
-            const char * label = ifS_ending(currentState.ifLabelStack)->string;
+            const char *label = ifS_ending(currentState.ifLabelStack)->string;
             createLabelIns(program, label);
-
         }
     }
 }
@@ -367,7 +361,7 @@ void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
-void if_creatJumpS(i3Table_t program, i3InstructionType_t type, const char* id) {
+void if_creatJumpS(i3Table_t program, i3InstructionType_t type, const char *id) {
     i3Instruction_t instruction = {
             .type = type,
             .arg1.identifier = id,

@@ -117,6 +117,7 @@ void semanticActionsInit() {
     setSemanticAction(Statement, floatLiteral, &SA_Statement);
     setSemanticAction(Statement, identifierVar, &SA_Statement);
     setSemanticAction(CommaOrEpsParam, rightPar, &SA_FceCallEnd);
+    setSemanticAction(FirstFceParam, rightPar, &SA_FceCallEnd);
 
     // Variables assignment
     setSemanticAction(DeclareVariable, identifierVar, &SA_DeclareNewVariable);
