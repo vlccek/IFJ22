@@ -40,6 +40,7 @@ void actionLTSEQ(i3InstructionArray_t *program);// >=
 void actionGTSEQ(i3InstructionArray_t *program);// <=
 void ifStart();
 void elseStart();
+void whilestarts();
 void checkIfHaveElseBranch(i3InstructionArray_t *program);
 void createNewSymtableFrame();
 

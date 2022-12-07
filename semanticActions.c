@@ -116,6 +116,10 @@ void SA_NewCommand() {
     checkIfHaveElseBranch(program);
 }
 
+void SA_whileKey() {
+    whilestarts();
+}
+
 void semanticActionsInit() {
     initIgen(program);
     initializeProgram(&program);
@@ -147,11 +151,15 @@ void semanticActionsInit() {
     setSemanticAction(ElseCond, elseKey, &SA_elseKey);
     setSemanticActionRow(Command, &SA_NewCommand, 0);
 
+    // while
+    setSemanticAction(While, whileKey, &SA_whileKey);
+
+
     // Return
     setSemanticAction(Return, returnKey, &SA_Return);
 
     // Creating new symtable frame
-    setSemanticAction(While, whileKey, &SA_NewSymtableFrame);
+    // setSemanticAction(While, whileKey, &SA_NewSymtableFrame);
 }
 
 

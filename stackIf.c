@@ -2,8 +2,10 @@
 // Created by jvlk on 6.12.22.
 //
 #include "stackIf.h"
-#define endlabelid "ENDE"
-#define elseLbaelId "ELSE"
+#define endlabelidIF "ENDE"
+#define elseLbaelIdIF "ELSE"
+#define endlabelidWHILE "ENDE"
+#define elseLbaelIdWHILE "ELSE"
 #define buffersize 100
 
 
@@ -12,7 +14,7 @@ genericStack *ifS_Init() {
     return gs;
 }
 
-void ifS_new(genericStack *stack) {
+void ifS_newIf(genericStack *stack) {
     static int c = 0;
     c++;
 
@@ -23,14 +25,37 @@ void ifS_new(genericStack *stack) {
     char buff[buffersize] = {0};
     sprintf(buff, "%d", c);
 
-    is->elselabel = dstrInitChar(elseLbaelId);
+    is->elselabel = dstrInitChar(elseLbaelIdIF);
     dstrAppend(is->elselabel, buff);
-    is->endlabel = dstrInitChar(endlabelid);
+    is->endlabel = dstrInitChar(endlabelidIF);
     dstrAppend(is->endlabel, buff);
     is->isEndingGenerated = false;
     is->inElse = false;
     is->expectinElse = false;
     is->inIfbranch = false;
+    is->type = if_type;
+
+    gStackPush(stack, is);
+}
+
+void ifS_newWhile(genericStack *stack) {
+    static int c = 0;
+    c++;
+
+    ifsState *is = malloc(sizeof(ifsState));
+    checkNullPointer(is);
+
+    // add unikátnost
+    char buff[buffersize] = {0};
+    sprintf(buff, "%d", c);
+
+    is->elselabel = NULL;// else label is not use in while type
+    is->endlabel = dstrInitChar(endlabelidIF);
+    dstrAppend(is->endlabel, buff);
+
+    is->inWhileBody = false;
+    is->endOfWhile;
+    is->type = while_type;
 
     gStackPush(stack, is);
 }

@@ -16,7 +16,7 @@ typedef struct currentState {
     symbol_t newFunction;          // symbol nové funkce, který si pamatujeme
     lexType lastVarType;           // typ proměnné při definici funkce, kterou si pamatujeme
     size_t functionCallParamNumber;// kolikátý parametr funkce právě zpracováme
-    genericStack *ifLabelStack;    // stack pro jméne labelů co se pooužívají v ifech
+    genericStack *labelStack;      // stack pro jméne labelů co se pooužívají v ifech a whilech
 
     // used by expression parsing
     int ifImmersion;
@@ -35,7 +35,7 @@ void initIgen(i3Table_t program) {
     currentState.lastUsedArray = 0;
     currentState.callingFunction = NULL;
     currentState.functionCallParamNumber = 0;
-    currentState.ifLabelStack = ifS_Init();
+    currentState.labelStack = ifS_Init();
     currentState.generateReturn = false;
 }
 
@@ -321,9 +321,9 @@ void flushCommand(i3Table_t program) {
 }
 
 void genereateEndOfCondition(i3Table_t program) {
-    const char *label = ifS_ending(currentState.ifLabelStack)->string;
+    const char *label = ifS_ending(currentState.labelStack)->string;
     createLabelIns(program, label);
-    ifS_old(currentState.ifLabelStack);
+    ifS_old(currentState.labelStack);
 }
 
 void exitCodeBlock(i3Table_t program) {
@@ -333,16 +333,16 @@ void exitCodeBlock(i3Table_t program) {
         exitFunc();
     } else {
         // tady vylezl z nejakeho zanoreni co neni funkce
-        if (ifS_inIfbranch(currentState.ifLabelStack)) {
+        if (ifS_inIfbranch(currentState.labelStack)) {
             // je to konec if bloku
-            const char *label = ifS_ending(currentState.ifLabelStack)->string;
+            const char *label = ifS_ending(currentState.labelStack)->string;
             createJumpIns(program, label);
-            label = ifS_else(currentState.ifLabelStack)->string;
+            label = ifS_else(currentState.labelStack)->string;
             createLabelIns(program, label);
 
             // skočil kladná věte očekávám else
-            ifS_SetExpectingElse(currentState.ifLabelStack, true);
-            ifS_SetinIfbranch(currentState.ifLabelStack, false);
+            ifS_SetExpectingElse(currentState.labelStack, true);
+            ifS_SetinIfbranch(currentState.labelStack, false);
         } else {
             genereateEndOfCondition(program);
         }
@@ -394,7 +394,7 @@ void actionDivision(i3Table_t program) {
 
 void actionGTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_GTS);
-    const char *label = ifS_else(currentState.ifLabelStack)->string;
+    const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
             .type = literal,
@@ -406,7 +406,7 @@ void actionGTS(i3InstructionArray_t *program) {
 }
 void actionLTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_LTS);
-    const char *label = ifS_else(currentState.ifLabelStack)->string;
+    const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
             .type = literal,
@@ -418,7 +418,7 @@ void actionLTS(i3InstructionArray_t *program) {
 }
 void actionEQS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_EQS);
-    const char *label = ifS_else(currentState.ifLabelStack)->string;
+    const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
             .type = literal,
@@ -429,10 +429,11 @@ void actionEQS(i3InstructionArray_t *program) {
     if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
 void actionLTSEQ(i3InstructionArray_t *program) {
+    // todo
     createStackInstruction(program, I_LTS);
 
 
-    const char *label = ifS_else(currentState.ifLabelStack)->string;
+    const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
             .type = literal,
@@ -445,7 +446,7 @@ void actionLTSEQ(i3InstructionArray_t *program) {
 void actionGTSEQ(i3InstructionArray_t *program) {
     // todo
     createStackInstruction(program, I_GTS);
-    const char *label = ifS_else(currentState.ifLabelStack)->string;
+    const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
             .type = literal,
@@ -457,18 +458,22 @@ void actionGTSEQ(i3InstructionArray_t *program) {
 }
 
 void ifStart() {
-    ifS_new(currentState.ifLabelStack);
+    ifS_newIf(currentState.labelStack);
     currentState.ifImmersion++;
-    ifS_SetinIfbranch(currentState.ifLabelStack, true);
+    ifS_SetinIfbranch(currentState.labelStack, true);
 }
 void elseStart() {
-    ifS_SetsinElse(currentState.ifLabelStack, true);
-    ifS_SetExpectingElse(currentState.ifLabelStack, false);
+    ifS_SetsinElse(currentState.labelStack, true);
+    ifS_SetExpectingElse(currentState.labelStack, false);
+}
+
+void whilestarts() {
+    ifS_newWhile(currentState.labelStack);
 }
 
 void checkIfHaveElseBranch(i3InstructionArray_t *program) {
     // není
-    if (ifS_expectingElse(currentState.ifLabelStack)) {
+    if (ifS_expectingElse(currentState.labelStack)) {
         genereateEndOfCondition(program);
     }
 }

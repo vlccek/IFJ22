@@ -1,18 +1,31 @@
-//
-// Created by jvlk on 6.12.22.
-//
-
+/**
+* @file generator_igen.h
+* @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+* @brief Wrapper pro stack. Generuje unikátní názvy návěští a pamatuje si jejich chiearchci pro pouští v generování skoků
+* Implementace překladače jazyka IFJ22
+*/
 #ifndef IFJ22_STACKIF_H
 #define IFJ22_STACKIF_H
 #include "dynstring.h"
 #include "stack.h"
 #include <string.h>
 
+typedef enum {
+    while_type,
+    if_type,
+} typeOfIfStackMem;
+
 typedef struct {
+    typeOfIfStackMem type;
+    // for if
     bool inIfbranch;
     bool isEndingGenerated;
     bool expectinElse;
     bool inElse;
+
+    //for while
+    bool inWhileBody;
+    bool endOfWhile;
     dynStr_t *endlabel; // ending label for label
     dynStr_t *elselabel;// label else label
 } ifsState;
@@ -20,7 +33,8 @@ typedef struct {
 genericStack *ifS_Init();
 
 // next if id  :) unique id
-void ifS_new(genericStack *stack);
+void ifS_newIf(genericStack *stack);
+void ifS_newWhile(genericStack *stack);
 void ifS_old(genericStack *stack);
 
 dynStr_t *ifS_ending(genericStack *stack);
