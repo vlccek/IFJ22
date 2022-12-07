@@ -93,10 +93,10 @@ htItem_t *htSearch(htTable_t *table, const char *key) {
 void htInsertItem(htTable_t *table, const char *key, symbol_t value) {
     htItem_t *item = htSearch(table, key);
     if (item != NULL) {
-        printHashtable(table, "Original");
+        if (debug) printHashtable(table, "Original");
         item->value = value;
         loging("Symbol %s already exists, overwriting", key);
-        printHashtable(table, "Overwritten");
+        if (debug) printHashtable(table, "Overwritten");
         return;
     }
     size_t hash = ht_get_hash(key);
