@@ -14,7 +14,7 @@
 #include "common.h"
 
 // logging switch
-#define lexLog true
+#define lexLog false
 
 // for tests
 token_t *testTokens;
