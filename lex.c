@@ -14,7 +14,7 @@
 #include "common.h"
 
 // logging switch
-#define lexLog false
+#define lexLog true
 
 // for tests
 token_t *testTokens;
@@ -664,6 +664,13 @@ token_t getToken(FILE *stream) {
                         currentState = eq_f_s;
                         stop = true;
                         break;
+                    case not_eq_1_s:
+                        currentState = not_eq_2_s;
+                        break;
+                    case not_eq_2_s:
+                        currentState = not_eq_f_s;
+                        stop = true;
+                        break;
                     case lesser_than_f_s:
                         currentState = lesser_eq_f_s;
                         stop = true;
@@ -671,6 +678,38 @@ token_t getToken(FILE *stream) {
                     case greater_than_f_s:
                         currentState = greater_eq_f_s;
                         stop = true;
+                        break;
+                    case string_lit_s:
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    case com_line_f_s:
+                        currentState = com_line_f_s;
+                        break;
+                    case com_block_s:
+                    case com_block_ast_s:
+                        currentState = com_block_s;
+                        break;
+                    case string_lit_backslash_s:
+                    case string_lit_backslash_1_s:
+                    case string_lit_backslash_2_s:
+                    case string_lit_backslash_x_s:
+                    case string_lit_backslash_x_1_s:
+                        flushEscSeqBuffer(buffer, escSeqBuffer);
+                        bufferOn = true;
+                        currentState = string_lit_s;
+                        break;
+                    default:
+                        ungetNextChar(stream, currentChar);
+                        stop = true;
+                        break;
+                }
+                break;
+            case '!':
+                switch (currentState)
+                {
+                    case init_s:
+                        currentState = not_eq_1_s;
                         break;
                     case string_lit_s:
                         bufferOn = true;
