@@ -74,7 +74,8 @@ void exitNoRule(token_t token, nonTerminalType topOfTheStack) {
 
 void exitWrongToken(token_t actualToken, lexType expectedLexType) {
     pErrSyntaxExit(actualToken.type, actualToken.rowNumber, actualToken.rowPosNumber,
-                   "Expected token is: '%s'\nInstead got token: ", getTerminalName(expectedLexType));
+                   "Expected token is: '%s'\nInstead got token: ",
+                   getTerminalName(expectedLexType));
 }
 
 

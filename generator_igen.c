@@ -42,11 +42,16 @@ void initIgen(i3Table_t program) {
 
 void functionDefBegin(char *identifier) {
     symSwitch(&symtable);
-    currentState.newFunction = *createSymbolFunction(identifier, function, NULL, undefinedDataType);
+    currentState.newFunction = *createSymbolFunction(identifier,
+                                                     function,
+                                                     NULL,
+                                                     undefinedDataType);
 }
 void functionDefParam(char *identifier, token_t token) {
-    insDTList(currentState.newFunction.firstParam, tokenTypeToSymbolType(currentState.lastVarType), identifier);
-    symbol_t symbol = createSymbolVarLit(identifier, variable, tokenTypeToSymbolType(currentState.lastVarType), token);
+    insDTList(currentState.newFunction.firstParam,
+              tokenTypeToSymbolType(currentState.lastVarType), identifier);
+    symbol_t symbol = createSymbolVarLit(identifier, variable,
+                                         tokenTypeToSymbolType(currentState.lastVarType), token);
     symInsert(&symtable, symbol);
 }
 void functionDefParamRememberType(lexType type) {
@@ -87,7 +92,10 @@ void createFrame(i3Table_t program) {
 }
 
 void startFunctionCall(i3Table_t program, token_t token) {
-    symbol_t *symbol = createSymbolFunction(token.data.valueString->string, function, NULL, undefinedDataType);
+    symbol_t *symbol = createSymbolFunction(token.data.valueString->string,
+                                            function,
+                                            NULL,
+                                            undefinedDataType);
     symbol->token = token;
     currentState.callingFunction = symbol;
     currentState.functionCallParamNumber = 0;
@@ -290,9 +298,9 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
     symbol_t *found;
     if ((found = symSearchVar(&symtable, token.data.valueString->string)) == NULL) {
         currentState.undefinedVariable = createSymbolVarLit(token.data.valueString->string,
-                                                            variable,         // we do not know variable type by now
-                                                            undefinedDataType,// variable does not have param list
-                                                            token);           // variable does not have return value
+                                                            variable,
+                                                            undefinedDataType,
+                                                            token);
         i3Instruction_t instruction = {
                 .type = I_DEFVAR,
                 .arg1 = currentState.undefinedVariable};

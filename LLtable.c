@@ -9,13 +9,17 @@
 
 table Table;
 
-void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*semanticAction)(semanticActionInfo)) {
+void setSemanticAction(nonTerminalType nonTerminal,
+                       lexType terminal,
+                       void (*semanticAction)(semanticActionInfo)) {
     if (Table[nonTerminal][terminal]->rules[0]->semanticAction != NULL)
         InternalError("Prepisujes si semantickou akci");
     Table[nonTerminal][terminal]->rules[0]->semanticAction = semanticAction;
 }
 
-void setSemanticActionRow(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo), size_t except, ...) {
+void setSemanticActionRow(nonTerminalType nonTerminal,
+                          void (*semanticAction)(semanticActionInfo),
+                          size_t except, ...) {
     for (int i = 0; i < lexTypeCount; ++i) {
         if (Table[nonTerminal][i]) {
             Table[nonTerminal][i]->rules[0]->semanticAction = semanticAction;
@@ -33,7 +37,8 @@ void setSemanticActionRow(nonTerminalType nonTerminal, void (*semanticAction)(se
     va_end(list);
 }
 
-void setSemanticActionAllRules(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo)) {
+void setSemanticActionAllRules(nonTerminalType nonTerminal,
+                               void (*semanticAction)(semanticActionInfo)) {
     // func is called ony to insert Exp actions
     // and first is statement, so first should be skipped
     int firstRule = 1;
@@ -135,7 +140,11 @@ tableMember *getMember(int terminal, int nonTerminal) {
 }
 
 
-void InserRules(int terminal, int nonTerminal, int memberCount, va_list members, int ruleIndex) {
+void InserRules(int terminal,
+                int nonTerminal,
+                int memberCount,
+                va_list members,
+                int ruleIndex) {
     rule *r = (rule *) malloc(sizeof(rule));
     checkNullPointer(r);
     static int counter = 0;
@@ -149,7 +158,8 @@ void InserRules(int terminal, int nonTerminal, int memberCount, va_list members,
         int i;
         for (i = 0; i < MAX_RULES_IN_CELL; ++i) {
             if (i < memberCount) {
-                AddToRightSide(terminal, nonTerminal, i, va_arg(members, PSAStackMember *), ruleIndex);
+                AddToRightSide(terminal, nonTerminal, i,
+                               va_arg(members, PSAStackMember *), ruleIndex);
             } else {
                 AddToRightSide(terminal, nonTerminal, i, NULL, ruleIndex);
             }
@@ -195,30 +205,6 @@ void insertMember(lexType terminal, nonTerminalType nonTerminal, int memberCount
     }
 }
 
-/*
-void printTable () {
-    if (debug) {
-        int radekIndex = 0, sloupecIndex = 0;
-        while (radekIndex < 20) {
-            fprintf(stderr, "Line: %d\n", radekIndex);
-            while (Table[radekIndex] != NULL && Table[radekIndex][sloupecIndex] != NULL) {
-                fprintf(stderr, "   Nonterminal type (ze kterého derivuju): `%d` \n",
-                        Table[radekIndex][sloupecIndex]->rules.from);
-                int i = 0;
-                while (Table[radekIndex][sloupecIndex]->rules.to[i] != NULL && i < MAX_RULE_LEN) {
-                    // vypíše typdat,value
-                    fprintf(stderr, "\t\t%d;%d ", Table[radekIndex][sloupecIndex]->rules.to[i]->typeOfData,
-                            Table[radekIndex][sloupecIndex]->rules.to[i]->value);
-                    i++;
-                }
-                fprintf(stderr, " derivuje na `%d` hodnot\n", i);
-                sloupecIndex++;
-            }
-            radekIndex++;
-        }
-    }
-}
-*/
 PSADataType getDataType(char *name) {
     for (int i = 0; i < nonTerminalCount; ++i) {
         if (!strcmp(name, getNonTerminalName(i)))

@@ -15,22 +15,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// exit codsorry mojey
-#define ERR_LEX 1                            //chyba v programu v rámci lexikální analýzy (chybná struktura aktuálního lexému).
-#define ERR_SYNTAX 2                         //chyba v programu v rámci syntaktické analýzy (chybná syntaxe programu, chybějící hlavička, atp.).
-#define ERR_FUNCTION_IDENTIFIER 3            //sémantická chyba v programu – nedefinovaná funkce, pokus o redefinice funkce
-#define ERR_FUNC_PARAM_RET_TYPE_OR_QUANTITY 4//špatný počet/typ parametrů u volání funkce či typ návratové hodnoty z funkce.
-#define ERR_UNDEFINED_VAR 5                  //sémantická chyba v programu – použití nedefinované proměnné.
-#define ERR_RETURN_QUANTITY 6                //sémantická/běhová chyba v programu – chybějící/přebývající výraz v příkazu návratu z funkce
-#define ERR_TYPES 7                          //sémantická/běhová chyba typové kompatibility v aritmetických, řetězcových a relačních výrazech
-#define ERR_OTHER 8                          //ostatní sémantické chyby.
-#define ERR_RUNTIME 99                       //interní chyba překladače tj. neovlivněná vstupním programem
+#define ERR_LEX 1
+#define ERR_SYNTAX 2
+#define ERR_FUNCTION_IDENTIFIER 3
+#define ERR_FUNC_PARAM_RET_TYPE_OR_QUANTITY 4
+#define ERR_UNDEFINED_VAR 5
+#define ERR_RETURN_QUANTITY 6
+#define ERR_TYPES 7
+#define ERR_OTHER 8
+#define ERR_RUNTIME 99
 
-// řídící makra
-#define debug 1// pokud je `1` vypisují se logy z pomocí maker printErr
+#define debug 1
 
-// makra pro logování a easy exity
-//region logginAndExitingMacros
 #define InternalError(message, args...) PrintErrorExit("%15s:%-3d | in %s() | " message "\n", ERR_RUNTIME, __FILE__, __LINE__, __FUNCTION__, ##args)
 #define PrintErrorExit(format, ERR_CODE, ...) \
     do {                                      \
@@ -44,10 +40,8 @@
 
 #define printlog(...)    do{  fprintf(stderr, __VA_ARGS__);}while(0)
 #define loging(message, args...)    if (debug == 1) {printlog("%15s:%-3d | in %s() | " message "\n", __FILE__, __LINE__,  __FUNCTION__, ## args);}
-//endregion
 
 
-// makra pro příjemější programování
 #define checkNullPointer(p)   if ((p) == NULL){InternalError("Not enough memory. "); exit(ERR_RUNTIME);} // pro malloc
 #define checkNotZeroReturn(Expression) {\
                 int err;\

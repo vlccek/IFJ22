@@ -3,7 +3,7 @@
 //
 
 #include "generator_postproces.h"
-void postProcArrayFunctionParams(i3InstructionArray_t *array, symtable_t *symtable, symbol_t *symbol) {
+void assignTypeToParams(i3InstructionArray_t *array, symtable_t *symtable, symbol_t *symbol) {
     int len = symbol->firstParam->len;
     DTListMem_T *member = symbol->firstParam->first;
     int i = 0;
@@ -14,7 +14,10 @@ void postProcArrayFunctionParams(i3InstructionArray_t *array, symtable_t *symtab
                 .type = identifierVar,
                 .data.valueString = dynStr,
         };
-        symbol_t symb_param = createSymbolVarLit(dstrGet(dynStr), variable, member->type, tokenDefVar);
+        symbol_t symb_param = createSymbolVarLit(dstrGet(dynStr),
+                                                 variable,
+                                                 member->type,
+                                                 tokenDefVar);
         i3Instruction_t instruction_defvar = {
                 .type = I_DEFVAR,
                 .arg1 = symb_param,
@@ -25,7 +28,10 @@ void postProcArrayFunctionParams(i3InstructionArray_t *array, symtable_t *symtab
                 .type = identifierVar,
                 .data.valueString = name,
         };
-        symbol_t symb_name = createSymbolVarLit(dstrGet(name), variable, member->type, tokenParam);
+        symbol_t symb_name = createSymbolVarLit(dstrGet(name),
+                                                variable,
+                                                member->type,
+                                                tokenParam);
         i3Instruction_t instruction_move = {
                 .type = I_MOVE,
                 .dest = symb_param,
@@ -185,7 +191,7 @@ void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
     }
     if (symbol) {
         // do not process in main body
-        postProcArrayFunctionParams(array, symtable, symbol);
+        assignTypeToParams(array, symtable, symbol);
     }
     assignFuncReturnTypes(array, symtable);
     convertTypesOnStack(array);

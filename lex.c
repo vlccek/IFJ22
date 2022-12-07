@@ -6,12 +6,12 @@
  */
 
 
+#include "lex.h"
+#include "common.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lex.h"
-#include "common.h"
 
 // logging switch
 #define lexLog false
@@ -279,12 +279,10 @@ void ungetNextChar(FILE *stream, int currentChar) {
 // tell getToken to just return the last token and not parse the next one
 void ungetToken(FILE *stream) {
     loging("Ungetting token");
-    if (useLastToken)
-    {
+    if (useLastToken) {
         InternalError("ungetToken called twice in a row");
     }
     useLastToken = true;
-    
 }
 
 // writes in dynamic string serving as a buffer
@@ -346,7 +344,7 @@ token_t getToken(FILE *stream) {
         useLastToken = false;
         return lastToken;
     }
-    
+
     // initial declarations
     state currentState = init_s;
     token_t outputToken;
@@ -621,9 +619,9 @@ token_t getToken(FILE *stream) {
                             char *octal = dstrGet(number);
                             char octalArray[3];
                             for (int i = 0; i < 3; i++) {
-                                octalArray[i] = octal[i];
+                                octalArray[i] = octal[i] - 48;
                             }
-                            int res = (octalArray[0] - 48) * (8 * 8) + (octalArray[1] - 48) * (8) + (octalArray[2] - 48);
+                            int res = (octalArray[0]) * 8 * 8 + (octalArray[1]) * 8 + (octalArray[2]);
                             // checking if the number is in range
                             if (res < 1 || res > 255) {
                                 flushEscSeqBuffer(buffer, escSeqBuffer);
@@ -652,8 +650,7 @@ token_t getToken(FILE *stream) {
                 break;
             // TODO special characters
             case '=':
-                switch (currentState)
-                {
+                switch (currentState) {
                     case init_s:
                         currentState = equals_f_s;
                         break;
@@ -1002,8 +999,7 @@ token_t getToken(FILE *stream) {
                 }
                 break;
             case '>':
-                switch (currentState)
-                {
+                switch (currentState) {
                     case init_s:
                         currentState = greater_than_f_s;
                         break;
@@ -1143,12 +1139,9 @@ token_t getToken(FILE *stream) {
             case '-':
                 switch (currentState) {
                     case init_s:
-                        if (currentChar == '+')
-                        {
+                        if (currentChar == '+') {
                             currentState = plus_f_s;
-                        }
-                        else
-                        {
+                        } else {
                             currentState = minus_f_s;
                         }
                         stop = true;
@@ -1257,8 +1250,7 @@ token_t getToken(FILE *stream) {
                 }
                 break;
             case '<':
-                switch (currentState)
-                {
+                switch (currentState) {
                     case init_s:
                         currentState = lesser_than_f_s;
                         break;
@@ -1353,8 +1345,7 @@ token_t getToken(FILE *stream) {
                 }
                 break;
             case '\t':
-                switch (currentState)
-                {
+                switch (currentState) {
                     case init_s:
                         currentState = init_s;
                         break;
@@ -1602,7 +1593,8 @@ token_t getToken(FILE *stream) {
             // unknown state and default
             case unknown_f_s:
             default:
-                PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
+                PrintErrorExit("Lexical error on ln %d, col %d!\n",
+                               ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
                 break;
         }
     }
@@ -1613,7 +1605,8 @@ token_t getToken(FILE *stream) {
                 outputToken.type = ending;
                 break;
             default:
-                PrintErrorExit("Lexical error on ln %d, col %d!\n", ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
+                PrintErrorExit("Lexical error on ln %d, col %d!\n",
+                               ERR_LEX, outputToken.rowNumber, outputToken.rowPosNumber);
                 break;
         }
     }

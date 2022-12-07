@@ -151,7 +151,10 @@ void htDestroy(htTable_t *table) {
 // endregion
 // region SymTable
 
-symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_t dataType, token_t token) {
+symbol_t createSymbolVarLit(const char *name,
+                            symbolType_t type,
+                            symbolDataType_t dataType,
+                            token_t token) {
     symbol_t newSymbol;
     newSymbol.identifier = name;
     newSymbol.type = type;
@@ -165,7 +168,10 @@ symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_
 }
 
 
-symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType) {
+symbol_t *createSymbolFunction(const char *name,
+                               symbolType_t type,
+                               DTList_T *paramList,
+                               symbolDataType_t returnType) {
     symbol_t *newSymbol = (symbol_t *) malloc(sizeof(symbol_t));
     if (newSymbol == NULL) {
         InternalError("Malloc failed.");
@@ -400,7 +406,12 @@ void printSymbol(symbol_t *symbol) {
             InternalError("DataType of symbol (%d) is unknown", symbol->dataType);
             break;
     }
-    printlog("(%s, %s, %s, %d:%d)", symbol->identifier, type, dataType, symbol->token.rowNumber, symbol->token.rowPosNumber);
+    printlog("(%s, %s, %s, %d:%d)",
+             symbol->identifier,
+             type,
+             dataType,
+             symbol->token.rowNumber,
+             symbol->token.rowPosNumber);
 }
 
 void printSymtable(symtable_t *symtable) {

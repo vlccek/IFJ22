@@ -13,7 +13,7 @@ int leftparc = 0;
 precendenceType precedenceTable[indexCount][indexCount] = {
         //a
         // +- | */ | ID lit... | . | lpar | rpar  | boolOP |dollar
-        {precR, precL, precL, precR, precL, precR, precR, precR}, // +-             //// top b
+        {precR, precL, precL, precR, precL, precR, precR, precR}, // +-   //// top b
         {precR, precR, precL, precR, precL, precR, precR, precR}, // */
         {precR, precR, precE, precR, precE, precR, precR, precR}, // ID LIT
         {precE, precE, precL, precE, precL, precR, precR, precR}, // .
@@ -58,8 +58,10 @@ precedenceTableIndex indexInPrecTable(lexType t) {
             loging("Index in precedenc table: %d", indexLpar);
             return indexLpar;
         case rightPar:
-            if (leftparc == 0 &&  isExpInIf ){
-                loging("Found `(` token, i this context is end of exp Index in precedenc table: %d", indexDollar);
+            if (leftparc == 0 &&  isExpInIf ) {
+                loging("Found `(` token, i this context is end of exp "
+                       "Index in precedenc table: %d",
+                       indexDollar);
                 return indexDollar;
             }
             loging("Index in precedenc table: %d", indexRpar);
@@ -283,7 +285,7 @@ rule *derivateTopStack(genericStack *sTokens) {
     while (indexOfPrec != 0) {
         tmp = gStackPop(sTokens);
         if (tmp->type == exp) {
-            handle[--indexOfPrec] = createPSAStackMember(Exp, nonTerminal);// hovno kod ale couž:)
+            handle[--indexOfPrec] = createPSAStackMember(Exp, nonTerminal);
         } else {
             handle[--indexOfPrec] = createPSAStackMember(tmp->type, terminal);
         }
@@ -294,7 +296,7 @@ rule *derivateTopStack(genericStack *sTokens) {
     rule *r;
     if ((r = findRuleByHandle(handle)) == NULL) {
         //todo exit semntika
-        loging("Nebylo nalezeno pravidlo :(");
+        loging("Nebylo nalezeno pravidlo");
         PrettyExit(ERR_SYNTAX);
     } else if (checkIfHandlerIsTrvial(r->to)){
         semanticActionInfo a;

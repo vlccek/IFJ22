@@ -1,7 +1,8 @@
 /**
 * @file generator_igen.h
 * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
-* @brief Wrapper pro stack. Generuje unikátní názvy návěští a pamatuje si jejich chiearchci pro pouští v generování skoků
+* @brief Wrapper pro stack.
+ * Generuje unikátní názvy návěští a pamatuje si jejich chiearchci pro pouští v generování skoků
 * Implementace překladače jazyka IFJ22
 */
 #ifndef IFJ22_STACKIF_H
