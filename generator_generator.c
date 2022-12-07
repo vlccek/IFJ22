@@ -121,6 +121,9 @@ void generateJump(const char *label) {
     printf("JUMP %s\n\n", label);
 }
 
+void generateJumps(i3Instruction_t instruction){
+    printf("JUMPIFNEQS %s",instruction.arg1.identifier );
+}
 
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
@@ -194,6 +197,8 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_JUMP_IF_FALSE:
             break;
+        case I_JUMPS_NEQ:
+            generateJumps(instruction);
         case I_CALL:
             break;
         case I_RETURN:

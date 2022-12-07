@@ -302,6 +302,14 @@ void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
+void if_creatJumpS(i3Table_t program, i3InstructionType_t type, const char* id) {
+    i3Instruction_t instruction = {
+            .type = type,
+            .arg1.identifier = id,
+    };
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+
 void actionPlus(i3Table_t program) {
     createStackInstruction(program, I_ADDS);
 }
@@ -323,6 +331,8 @@ void actionGTS(i3InstructionArray_t *program) {
 }
 void actionLTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_LTS);
+    const char * label = ifS_else(currentState.ifLabelStack)->string;
+    if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
 void actionEQS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_EQS);
