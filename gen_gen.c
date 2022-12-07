@@ -291,7 +291,7 @@ void generateJumps(i3Instruction_t instruction) {
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
         case I_NOOP:
-            printlog("noop");
+            loging("noop");
             break;
         case I_ADDS:
             generateSimpleIns("ADDS");
