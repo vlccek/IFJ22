@@ -136,6 +136,7 @@ void generateFooter() {
            "GT GF@type GF@j GF@strlen\n"
            "JUMPIFEQ $substring_nil GF@type bool@true\n"
            "MOVE TF@$return string@\n"
+           "SUB GF@j GF@j int@1\n"
            "LABEL $substring_loop\n"
            "GETCHAR GF@strlen TF@$param0 GF@i\n"
            "CONCAT TF@$return TF@$return GF@strlen\n"
