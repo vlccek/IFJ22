@@ -28,41 +28,58 @@
 #define debug 1
 #define debugStack 1
 
-#define InternalError(message, args...) PrintErrorExit("%15s:%-3d | in %s() | " message "\n", ERR_RUNTIME, __FILE__, __LINE__, __FUNCTION__, ##args)
+#define InternalError(message, args...) PrintErrorExit("%15s:%-3d | in %s() | " message "\n", \
+                                                       ERR_RUNTIME,                           \
+                                                       __FILE__,                              \
+                                                       __LINE__,                              \
+                                                       __FUNCTION__, ##args)
 #define PrintErrorExit(format, ERR_CODE, ...) \
     do {                                      \
         fprintf(stderr, format, __VA_ARGS__); \
         fflush(stderr);                       \
-        exit(0 / 0);                          \
+        exit(ERR_CODE);                       \
     } while (0)
-#define PrettyExit(ERR_CODE)                                                                             \
-    printlog("%15s:%-3d | in %s() | Exit with code: %d \n", __FILE__, __LINE__, __FUNCTION__, ERR_CODE); \
+#define PrettyExit(ERR_CODE)                                \
+    printlog("%15s:%-3d | in %s() | Exit with code: %d \n", \
+             __FILE__,                                      \
+             __LINE__,                                      \
+             __FUNCTION__,                                  \
+             ERR_CODE);                                     \
     exit(ERR_CODE)
 
-#define printlog(...)    do{  fprintf(stderr, __VA_ARGS__);}while(0)
-#define loging(message, args...)    if (debug == 1) {printlog("%15s:%-3d | in %s() | " message "\n", __FILE__, __LINE__,  __FUNCTION__, ## args);}
+#define printlog(...) \
+    do { fprintf(stderr, __VA_ARGS__); } while (0)
+#define loging(message, args...)                                      \
+    if (debug == 1) { printlog("%15s:%-3d | in %s() | " message "\n", \
+                               __FILE__,                              \
+                               __LINE__,                              \
+                               __FUNCTION__, ##args); }
 
 
-#define checkNullPointer(p)   if ((p) == NULL){InternalError("Not enough memory. "); exit(ERR_RUNTIME);} // pro malloc
-#define checkNotZeroReturn(Expression) {\
-                int err;\
-                if((err = Expression) != 0){  \
-                    return err; \
-                }\
-                }
+#define checkNullPointer(p)                   \
+    if ((p) == NULL) {                        \
+        InternalError("Not enough memory. "); \
+        exit(ERR_RUNTIME);                    \
+    }// pro malloc
+#define checkNotZeroReturn(Expression) \
+    {                                  \
+        int err;                       \
+        if ((err = Expression) != 0) { \
+            return err;                \
+        }                              \
+    }
 
 /**
 * Generates code for malloc (if null and err output)
 */
-#define make_var(name, type, size) \
-type name;                                                                              \
-if ((name = (type )malloc(size) ) == NULL) {                                             \
-    fprintf(stderr,                                                                     \
-    "Not enought memory (malloc err) in line `%d`, in file `%s`, in function: `%s`",    \
-    __LINE__, __FILE__, __func__);                                                      \
-    exit(ERR_RUNTIME);                                                                   \
-    };                                                                                  \
-
+#define make_var(name, type, size)                                                               \
+    type name;                                                                                   \
+    if ((name = (type) malloc(size)) == NULL) {                                                  \
+        fprintf(stderr,                                                                          \
+                "Not enought memory (malloc err) in line `%d`, in file `%s`, in function: `%s`", \
+                __LINE__, __FILE__, __func__);                                                   \
+        exit(ERR_RUNTIME);                                                                       \
+    };
 
 
 void pErrArgsSyntax(int terminalEnum, int rowNum, int rowPos, char *format, va_list args);
@@ -80,4 +97,4 @@ char *getTerminalName(int i);
 char *getNonTerminalName(int i);
 char *getPrecedentTerminalName(int i);
 
-#endif //IFJ22_COMMON_H
+#endif//IFJ22_COMMON_H
