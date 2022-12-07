@@ -25,8 +25,8 @@
 #define ERR_OTHER 8
 #define ERR_RUNTIME 99
 
-#define debug 1
-#define debugStack 1
+#define debug 0
+#define debugStack 0
 
 #define InternalError(message, args...) PrintErrorExit("%15s:%-3d | in %s() | " message "\n", \
                                                        ERR_RUNTIME,                           \
@@ -39,8 +39,8 @@
         fflush(stderr);                       \
         exit(ERR_CODE);                       \
     } while (0)
-#define PrettyExit(ERR_CODE)                                \
-    printlog("%15s:%-3d | in %s() | Exit with code: %d \n", \
+#define PrettyExit(ERR_CODE)                                \git checkout master
+printlog("%15s:%-3d | in %s() | Exit with code: %d \n", \
              __FILE__,                                      \
              __LINE__,                                      \
              __FUNCTION__,                                  \
