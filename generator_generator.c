@@ -267,6 +267,7 @@ void generateInstructionArray(i3InstructionArray_t array, symtable_t *symtable) 
         DTListMem_T *member = funkce->firstParam->first;
         size_t count = 0;
         while (member) {
+            member = member->next;
         }
         // todo vygenerovat $param1 -> $reálný identifikátor
         //symSearchFunc(&symtable);
