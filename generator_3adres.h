@@ -67,6 +67,8 @@ typedef struct i3Instruction {
     symbol_t dest;
     symbol_t arg1;
     symbol_t arg2;
+
+    bool checkedType;
 } i3Instruction_t;
 
 /**

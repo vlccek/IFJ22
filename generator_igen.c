@@ -364,7 +364,8 @@ void exitFunc() {
 void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
     i3Instruction_t instruction = {
             .type = type,
-    };
+            .arg1 = {
+                    .dataType = undefinedDataType}};
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
