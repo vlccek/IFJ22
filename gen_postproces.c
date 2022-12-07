@@ -56,6 +56,7 @@ symbol_t *callInsToSymb(i3Instruction_t instruction, symtable_t *symtable) {
     }
     return funcSymbol;
 }
+
 void assignFuncReturnTypes(i3InstructionArray_t *array, symtable_t *symtable) {
     for (int i = 0; i < array->size; ++i) {
         if (array->instructions[i].type == I_MOVE_RETURN) {
@@ -168,6 +169,12 @@ size_t convToSameType(i3InstructionArray_t *array, i3Instruction_t *i1, i3Instru
 
 void findDataTypeIns(i3Instruction_t *ins, size_t lookAt, i3InstructionArray_t *array) {
     for (int i = (int) lookAt; i >= 0; --i) {
+        if (array->instructions[i].type == I_MOVE_RETURN) {
+            if (!strcmp(ins->arg1.identifier, array->instructions[i].dest.identifier)) {
+                ins->arg1.dataType = array->instructions[i].dest.dataType;
+                return;
+            }
+        }
         if (array->instructions[i].type == I_POPS) {
             ins->arg1.dataType = array->instructions[i].dest.dataType;
             return;
@@ -216,15 +223,48 @@ size_t assignTypeToStackIns(i3InstructionArray_t *array, size_t insAtPos) {
     return addedIns;
 }
 
-void assignTypeToPopsIns(i3InstructionArray_t *array, size_t insAtPos) {
+
+bool isReturnPop(i3Instruction_t instruction) {
+    if (!strcmp(instruction.dest.identifier, "$return"))
+        return true;
+    return false;
+}
+
+void checkFunctionReturnType(i3Instruction_t i2, symbol_t *funcSymb) {
+    bool fail = false;
+    if (funcSymb->returnType == integerNullable) {
+        fail = funcSymb->returnType != integer && funcSymb->returnType != integerNullable;
+
+    } else if (funcSymb->returnType == floatingNullable) {
+        fail = funcSymb->returnType != floating && funcSymb->returnType != floatingNullable;
+
+    } else if (funcSymb->returnType == stringNullable) {
+        fail = funcSymb->returnType != string && funcSymb->returnType != stringNullable;
+
+    } else {
+        fail = i2.arg1.dataType != funcSymb->returnType;
+    }
+    if (fail) {
+        printSymbol(&i2.arg1);
+        PrintErrorExit("%s", ERR_FUNC_PARAM_RET_TYPE_OR_QUANTITY, "Wrong return type at token above!");
+    }
+}
+
+void assignTypeToPopsIns(i3InstructionArray_t *array, size_t insAtPos, symtable_t *symtable) {
     i3Instruction_t *i1 = getNextNotCheckedIns(array, insAtPos - 1);
+    findTypes(i1, insAtPos - 1, array);
+    if (isReturnPop(array->instructions[insAtPos])) {
+        symbol_t *funcSymb = symSearchFunc(symtable, array->functionName);
+        checkFunctionReturnType(*i1, funcSymb);
+    }
     array->instructions[insAtPos].dest.dataType = i1->arg1.dataType;
 }
-void convertTypesOnStack(i3InstructionArray_t *array) {
+
+void convertTypesOnStack(i3InstructionArray_t *array, symtable_t *symtable) {
     setCheckedPushToFalse(array);
     for (size_t i = 0; i < array->size; ++i) {
         if (array->instructions[i].type == I_POPS) {
-            assignTypeToPopsIns(array, i);
+            assignTypeToPopsIns(array, i, symtable);
         }
         if (isStackIns(array->instructions[i].type)) {
             if (array->instructions[i].arg1.dataType == undefinedDataType) {
@@ -232,6 +272,10 @@ void convertTypesOnStack(i3InstructionArray_t *array) {
             }
         }
     }
+}
+
+void assignTypesCallFunc(i3InstructionArray_t *array, symtable_t *symtable) {
+    // assign type when call functions
 }
 
 void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
@@ -247,8 +291,12 @@ void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
         assignTypeToParams(array, symtable, symbol);
     }
     assignFuncReturnTypes(array, symtable);
-    convertTypesOnStack(array);
-    // todo: return types and calling errors
+    assignTypesCallFunc(array, symtable);
+    convertTypesOnStack(array, symtable);
+    // checkReturnTypes();
+    // 1. chech RETURN TYPES
+    // 2. assign when calling function
+    // 3. check function calls types
 }
 
 void postprocess(i3Table_t program, symtable_t symtable) {
