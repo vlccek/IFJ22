@@ -181,8 +181,10 @@ void findDataTypeIns(i3Instruction_t *ins, size_t lookAt, i3InstructionArray_t *
             }
         }
         if (array->instructions[i].type == I_POPS) {
-            ins->arg1.dataType = array->instructions[i].dest.dataType;
-            return;
+            if (!strcmp(ins->arg1.identifier, array->instructions[i].dest.identifier)) {
+                ins->arg1.dataType = array->instructions[i].dest.dataType;
+                return;
+            }
         }
     }
 }
@@ -354,6 +356,10 @@ void assignTypesCallFunc(i3InstructionArray_t *array, symtable_t *symtable) {
     for (size_t i = 0; i < array->size; ++i) {
         if (array->instructions[i].type == I_CALL) {
             i3Instruction_t *callIns = &array->instructions[i];
+            if (!strcmp(callIns->arg1.identifier, "strval") ||
+                !strcmp(callIns->arg1.identifier, "intval") ||
+                !strcmp(callIns->arg1.identifier, "floatval"))
+                continue;
             symbol_t *symbol = symSearchFunc(symtable, callIns->arg1.identifier);
             i3Instruction_t *createFrameIns = findCreateFrameIns(&array->instructions[i]);
             compareParams(symbol->firstParam, callIns, createFrameIns);
