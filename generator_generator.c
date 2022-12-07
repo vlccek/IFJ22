@@ -48,6 +48,8 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
         sprintf(buf, "int@%d", symb.token.data.valueInteger);
     else if (symb.dataType == floating)
         sprintf(buf, "float@%a   # %f", symb.token.data.valueFloat, symb.token.data.valueFloat);
+    else if (symb.dataType == nil)
+        sprintf(buf, "nil@nil");
     return buf;
 }
 
@@ -106,7 +108,7 @@ void generateMoveSpecial(i3Instruction_t instruction, bool param) {
     char buf[2048];
     if (param) {
         printf("MOVE TF@%s %s",
-               instruction.dest.token.data.valueString->string,
+               instruction.dest.identifier,
                generateArgSymVarLF(instruction.arg1, buf));
     } else {
         printf("MOVE %s TF@%s",
@@ -120,6 +122,9 @@ void generateLabel(const char *label) {
 void generateJump(const char *label) {
     printf("JUMP %s\n\n", label);
 }
+void generateCall(const char *function_name) {
+    printf("CALL $BEGIN_%s\n", function_name);
+}
 
 void generateJumps(i3Instruction_t instruction){
     printf("JUMPIFNEQS %s",instruction.arg1.identifier );
@@ -127,6 +132,9 @@ void generateJumps(i3Instruction_t instruction){
 
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
+        case I_NOOP:
+            printlog("noop");
+            break;
         case I_ADDS:
             generateSimpleIns("ADDS");
             break;
@@ -201,6 +209,7 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_JUMPS_NEQ:
             generateJumps(instruction);
         case I_CALL:
+            generateCall(instruction.arg1.identifier);
             break;
         case I_RETURN:
             generateSimpleIns("RETURN");
@@ -247,13 +256,20 @@ void generateExit(int code) {
     printf("EXIT int@%d\n\n", code);
 }
 
-void generateInstructionArray(i3InstructionArray_t array) {
+void generateInstructionArray(i3InstructionArray_t array, symtable_t *symtable) {
     if (array.instructions == NULL)
         return;
     if (strcmp(array.functionName, "$MainBody") != 0) {
         char buffer[2048];
         sprintf(buffer, "$BEGIN_%s", array.functionName);
         generateLabel(buffer);
+        symbol_t *funkce = symSearchFunc(symtable, array.functionName);
+        DTListMem_T *member = funkce->firstParam->first;
+        size_t count = 0;
+        while (member) {
+        }
+        // todo vygenerovat $param1 -> $reálný identifikátor
+        //symSearchFunc(&symtable);
     }
     for (int i = 0; i < array.size; ++i) {
         generateInstruction(array.instructions[i]);
@@ -269,14 +285,12 @@ void generateInstructionArray(i3InstructionArray_t array) {
 }
 
 
-void generate(i3Table_t program) {
+void generate(i3Table_t program, symtable_t symtable) {
     generateHeader();
     printf("\n");
     printf("CREATEFRAME\n");
     for (int i = 0; i < MAX_HTSIZE; ++i) {
-        generateInstructionArray(program[i]);
+        generateInstructionArray(program[i], &symtable);
     }
     generateLabel("$PROGRAM_END");
 }
-
-

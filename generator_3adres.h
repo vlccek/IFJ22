@@ -12,6 +12,7 @@
 #include "symtable.h"
 
 typedef enum i3InstructionType {
+    I_NOOP,
     I_ADDS,
     I_SUBS,
     I_MULS,

@@ -87,19 +87,45 @@ void createFrame(i3Table_t program) {
 }
 
 void startFunctionCall(i3Table_t program, token_t token) {
-    // todo: a nakonec parsování kontrola podle reálného záznamu
     symbol_t *symbol = createSymbolFunction(token.data.valueString->string, function, NULL, undefinedDataType);
     currentState.callingFunction = symbol;
     currentState.functionCallParamNumber = 0;
     if (strcmp(currentState.callingFunction->identifier, "write") != 0) {
         pushFrame(program);
         createFrame(program);
+        if (currentState.undefinedVariable.type == variable) {
+
+            token_t newtoken = {
+                    .type = identifierVar,
+                    .data.valueString = dstrInitChar("$return"),
+                    .rowNumber = token.rowNumber,
+                    .rowPosNumber = token.rowPosNumber,
+            };
+            i3Instruction_t instruction = {
+                    .type = I_DEFVAR,
+                    .arg1 = createSymbolVarLit("$return", variable, undefinedDataType, newtoken)};
+            pushToArray(&program[currentState.currentArray], instruction);
+            token_t niltoken = {
+                    .type = nullKey,
+            };
+            i3Instruction_t instnil = {
+                    .type = I_MOVE,
+                    .dest = createSymbolVarLit("$return", variable, undefinedDataType, newtoken),
+
+                    .arg1 = createSymbolVarLit(NULL, literal, nil, niltoken)};
+            pushToArray(&program[currentState.currentArray], instnil);
+        }
     }
 }
 void endFunctionCall(i3Table_t program, token_t token) {
-    //todo konec volani funkce
-    loging("konec volani funkce");
     if (strcmp(currentState.callingFunction->identifier, "write") != 0) {
+        i3Instruction_t instruction = {
+                .type = I_CALL,
+                .arg1 = *currentState.callingFunction};
+        pushToArray(&program[currentState.currentArray], instruction);
+        if (currentState.undefinedVariable.type == variable) {
+            functionReturnAssignment(program, currentState.undefinedVariable);
+        }
         popFrame(program);
     }
 }
@@ -162,6 +188,22 @@ void functionParamAssignment(i3Table_t program, symbol_t symbol) {
             .type = I_MOVE_PARAM,
             .dest = instruction.arg1,
             .arg1 = symbol};
+    pushToArray(&program[currentState.currentArray], instructionMove);
+}
+
+void functionReturnAssignment(i3InstructionArray_t *program, symbol_t symbol) {
+    char *identifier = "$return";
+    dynStr_t *string = dstrInitChar(identifier);
+    token_t token = {
+            .type = identifierVar,
+            .rowNumber = symbol.token.rowNumber,
+            .rowPosNumber = symbol.token.rowPosNumber,
+            .data.valueString = string,
+    };
+    i3Instruction_t instructionMove = {
+            .type = I_MOVE_RETURN,
+            .dest = symbol,
+            .arg1 = createSymbolVarLit(identifier, variable, undefinedDataType, token)};
     pushToArray(&program[currentState.currentArray], instructionMove);
 }
 
@@ -277,7 +319,7 @@ void createReturnIns(i3InstructionArray_t *program) {
 }
 /// Complete the command action
 void flushCommand(i3Table_t program) {
-    if (currentState.undefinedVariable.type != undefinedType) {
+    if (currentState.undefinedVariable.type != undefinedType && !currentState.callingFunction) {
         createPops(program);
         if (currentState.generateReturn) {
             createReturnIns(program);
@@ -415,4 +457,7 @@ void createLabelIns(i3Table_t program, const char *label) {
     };
 
     pushToArray(&program[currentState.currentArray], instruction);
+}
+void finalGeneration(i3Table_t program) {
+    generate(program, symtable);
 }

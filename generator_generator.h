@@ -11,6 +11,6 @@
 #include "common.h"
 #include "generator_3adres.h"
 
-void generate(i3Table_t program);
+void generate(i3Table_t program, symtable_t symtable);
 
 #endif // IFJ22_GENERATOR_H
