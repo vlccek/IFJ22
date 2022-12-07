@@ -109,10 +109,16 @@ void generateMoveSpecial(i3Instruction_t instruction, bool param) {
                instruction.dest.token.data.valueString->string,
                generateArgSymVarLF(instruction.arg1, buf));
     } else {
-        printf("MOVE %s TF%s",
+        printf("MOVE %s TF@%s",
                generateArgSymVarLF(instruction.dest, buf),
-               instruction.arg1.token.data.valueString->string);
+               instruction.arg1.identifier);
     }
+}
+void generateLabel(const char *label) {
+    printf("\nLABEL %s\n", label);
+}
+void generateJump(const char *label) {
+    printf("JUMP %s\n\n", label);
 }
 
 
@@ -172,6 +178,7 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_STRLEN:
             break;
         case I_LABEL:
+            generateLabel(instruction.arg1.identifier);
             break;
         case I_JUMP:
             break;
@@ -217,12 +224,7 @@ void generateInstruction(i3Instruction_t instruction) {
     printf("\n");
 }
 
-void generateLabel(char *label) {
-    printf("\nLABEL %s\n", label);
-}
-void generateJump(char *label) {
-    printf("JUMP %s\n\n", label);
-}
+
 void generateExit(int code) {
     if (code < 0 || code > 49) {
         loging("Invalid exit code (%d), will throw error 57 when run", code);
