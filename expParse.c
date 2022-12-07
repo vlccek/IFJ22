@@ -50,6 +50,7 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case stringLiteral:
         case floatLiteral:
         case integerLiteral:
+        case nullKey:
             loging("Index in precedenc table: %d", indexId);
             return indexId;
             break;
