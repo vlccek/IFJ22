@@ -1,6 +1,9 @@
-//
-// Created by jvlk on 6.12.22.
-//
+/**
+* @file stackIf.c
+* @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+* @brief Wrapper pro stack.
+ * Generates unique labels for jumps and memorizes state using stack
+*/
 #include "stackIf.h"
 #define endlabelidIF "ENDE"
 #define elseLbaelIdIF "ELSE"

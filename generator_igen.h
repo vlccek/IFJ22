@@ -2,8 +2,9 @@
  * @file generator_igen.h
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief generator tříadresného kódu
- * Implementace překladače jazyka IFJ22
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Generator of internal three adress code
+ * Implementation IFJ22 compiler
  */
 
 #ifndef IFJ22_IGEN_H

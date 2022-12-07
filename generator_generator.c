@@ -2,8 +2,8 @@
  * @file generator_generator.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief generátor výsledného kódu
- * Implementace překladače jazyka IFJ22
+ * @brief Generator of final code
+ * Implementation IFJ22 compiler
  */
 
 #include "generator_generator.h"

@@ -3,7 +3,7 @@
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief definice datových typů pro práci s tříadresným kódem
- * Implementace překladače jazyka IFJ22
+ * Implementation IFJ22 compiler
  */
 #ifndef IFJ22_3ADRES_H
 #define IFJ22_3ADRES_H

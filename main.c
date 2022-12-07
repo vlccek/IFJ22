@@ -1,8 +1,8 @@
 /**
  * @file main.c
  * @author Jan Brudný (xbrudn02@stud.fit.vut.cz)
- * @brief Hlavní soubor programu
- * Implementace překladače jazyka IFJ22
+ * @brief Main
+ * Implementation IFJ22 compiler
  */
 
 #include "parser.h"

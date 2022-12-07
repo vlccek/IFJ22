@@ -4,9 +4,9 @@
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief Tabulka symbolů
- * Implementace překladače jazyka IFJ22
+ * Implementation IFJ22 compiler
  *
- * Při implementaci bylo použito řešení hashtabulky z 2. domacího úkolu IAL 2021/Z
+ * The implementation used the hash table solution from the 2nd homework of IAL 2021/Z
  */
 #include "symtable.h"
 

@@ -2,7 +2,7 @@
 ## @file Makefile
 ## @brief Makefile pro kompilaci projektu
 ## @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
-## Implementace překladače jazyka IFJ22
+## Implementation IFJ22 compiler
 ##
 all: prekladac
 .PHONY: prekladac %.o tar clean clean_o

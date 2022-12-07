@@ -1,10 +1,10 @@
 /**
- * @file LLTable.c
- * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Hlavičkový soubor tabulky
- * Implementace překladače jazyka IFJ22
- */
+* @file LLTable.c
+* @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+* @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+* @brief Table containing all rules
+* Implementation IFJ22 compiler
+*/
 
 #ifndef LUAINTERPRET_LLTABLE_H
 #define LUAINTERPRET_LLTABLE_H

@@ -1,8 +1,8 @@
 /**
  * @file queue.c
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Fronta
- * Implementace překladače jazyka IFJ22
+ * @brief Queue
+ * Implementation IFJ22 compiler
  */
 #include "queue.h"
 

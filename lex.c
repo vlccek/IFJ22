@@ -1,8 +1,8 @@
 /**
  * @file lex.c
  * @author Jindřich Vodák (xvodak06@stud.fit.vutbr.cz)
- * @brief Lexikální analyzátor
- * Implementace překladače jazyka IFJ22
+ * @brief Lexical analyzator
+ * Implementation IFJ22 compiler
  */
 
 

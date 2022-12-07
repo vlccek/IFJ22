@@ -2,8 +2,8 @@
  * @file generator_3adres.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief definice datových typů pro práci s tříadresným kódem
- * Implementace překladače jazyka IFJ22
+ * @brief Definitions of internal 3 address structures
+ * Implementation IFJ22 compiler
  */
 
 #include "generator_3adres.h"

@@ -4,8 +4,8 @@
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @author Jindřich Vodák (xvodak06@stud.fit.vutbr.cz)
- * @brief Pomocné funkce a makra
- * Implementace překladače imperativního jazyka IFJ21
+ * @brief Helper functions and marcos
+ * Implementation IFJ22 compiler
  */
 
 #ifndef IFJ22_COMMON_H

@@ -1,8 +1,8 @@
 /**
  * @file stack.c
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Zásobník
- * Implementace překladače jazyka IFJ22
+ * @brief Generic stack implemented using void pointer
+ * Implementation IFJ22 compiler
  */
 #include "stack.h"
 

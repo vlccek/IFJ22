@@ -2,8 +2,8 @@
  * @file LLTable.c
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Tabulka, která obsahuje všechna pravidla
- * Implementace překladače jazyka IFJ22
+ * @brief Table containing all rules
+ * Implementation IFJ22 compiler
  */
 #include "LLtable.h"
 

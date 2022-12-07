@@ -1,6 +1,10 @@
-//
-// Created by tonda on 07/12/22.
-//
+/**
+* @file generator_postproces.c
+* @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
+* @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+* @brief Post processing of 3 address instructions
+* Implementation IFJ22 compiler
+*/
 
 #include "generator_postproces.h"
 void assignTypeToParams(i3InstructionArray_t *array, symtable_t *symtable, symbol_t *symbol) {
