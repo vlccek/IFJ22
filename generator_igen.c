@@ -20,6 +20,7 @@ typedef struct currentState {
 
     // used by expression parsing
     int immersion;
+    bool generateReturn;
 } currentState_T;
 
 
@@ -34,6 +35,7 @@ void initIgen(i3Table_t program) {
     currentState.callingFunction = NULL;
     currentState.functionCallParamNumber = 0;
     currentState.ifLabelStack = ifS_Init();
+    currentState.generateReturn = false;
 }
 
 
@@ -265,10 +267,20 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
     }
 }
 
+void createReturnIns(i3InstructionArray_t *program) {
+    i3Instruction_t instruction = {
+            .type = I_RETURN,
+    };
+    pushToArray(&program[currentState.currentArray], instruction);
+    currentState.generateReturn = false;
+}
 /// Complete the command action
 void flushCommand(i3Table_t program) {
     if (currentState.undefinedVariable.type != undefinedType) {
         createPops(program);
+        if (currentState.generateReturn) {
+            createReturnIns(program);
+        }
     }
     currentState.callingFunction = NULL;
 }
@@ -353,7 +365,7 @@ void ifStart() {
 
 symbol_t getReturnSymbol() {
     dynStr_t *name = dstrInit();
-    dstrAppend(name, "RETURN_PARAM");
+    dstrAppend(name, "$return");
     symbol_t symbol = {
             .type = variable,
             .dataType = undefinedDataType,
@@ -369,4 +381,6 @@ symbol_t getReturnSymbol() {
 
 void prepareReturn(i3Table_t program) {
     symbol_t symbol = getReturnSymbol();
+    currentState.undefinedVariable = symbol;
+    currentState.generateReturn = true;
 }

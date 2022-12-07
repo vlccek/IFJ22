@@ -202,6 +202,7 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_CALL:
             break;
         case I_RETURN:
+            generateSimpleIns("RETURN");
             break;
         case I_DEFVAR:
             generateDefvar(instruction);
