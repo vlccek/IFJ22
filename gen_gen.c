@@ -302,6 +302,7 @@ void generateInstruction(i3Instruction_t instruction) {
             generateSimpleIns("IDIVS");
             break;
         case I_CONCAT:
+            generateSimpleIns("CONCATS");
             break;
         case I_EQ:
             break;

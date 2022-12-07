@@ -400,7 +400,7 @@ void actionMultiplication(i3Table_t program) {
     createStackInstruction(program, I_MULS);
 }
 void actionConcat(i3Table_t program) {
-    createStackInstruction(program, I_MULS);
+    createStackInstruction(program, I_CONCATS);
 }
 void actionDivision(i3Table_t program) {
     createStackInstruction(program, I_DIVS);

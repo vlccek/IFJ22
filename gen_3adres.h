@@ -19,6 +19,7 @@ typedef enum i3InstructionType {
     I_DIVS,
     I_IDIVS,
     I_CONCAT,
+    I_CONCATS,//SPECIAL
     I_EQ,
     I_NEQ,
     I_LT,
