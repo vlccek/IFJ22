@@ -26,6 +26,7 @@
 #define ERR_RUNTIME 99
 
 #define debug 1
+#define debugStack 1
 
 #define InternalError(message, args...) PrintErrorExit("%15s:%-3d | in %s() | " message "\n", ERR_RUNTIME, __FILE__, __LINE__, __FUNCTION__, ##args)
 #define PrintErrorExit(format, ERR_CODE, ...) \
