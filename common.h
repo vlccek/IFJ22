@@ -39,8 +39,8 @@
         fflush(stderr);                       \
         exit(ERR_CODE);                       \
     } while (0)
-#define PrettyExit(ERR_CODE)                                \git checkout master
-printlog("%15s:%-3d | in %s() | Exit with code: %d \n", \
+#define PrettyExit(ERR_CODE)                                \
+    printlog("%15s:%-3d | in %s() | Exit with code: %d \n", \
              __FILE__,                                      \
              __LINE__,                                      \
              __FUNCTION__,                                  \
