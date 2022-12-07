@@ -39,6 +39,7 @@ void actionLTSEQ(i3InstructionArray_t *program);// >=
 void actionGTSEQ(i3InstructionArray_t *program);// <=
 void ifStart();
 void createNewSymtableFrame();
+void elseStart();
 
 void createJumpIns(i3Table_t program, const char *label);
 void createLabelIns(i3Table_t program, const char *label);

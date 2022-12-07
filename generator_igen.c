@@ -343,6 +343,12 @@ void exitCodeBlock(i3Table_t program) {
             label = ifS_else(currentState.ifLabelStack)->string;
             createLabelIns(program, label);
         }
+        else {
+            currentState.ifImmersion--;
+            const char * label = ifS_ending(currentState.ifLabelStack)->string;
+            createLabelIns(program, label);
+
+        }
     }
 }
 
@@ -394,7 +400,14 @@ void actionGTS(i3InstructionArray_t *program) {
 }
 void actionLTS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_LTS);
-    const char * label = ifS_else(currentState.ifLabelStack)->string;
+    const char *label = ifS_else(currentState.ifLabelStack)->string;
+
+    symbol_t data = {
+            .type = literal,
+            .dataType = booltype,
+            .token.data.valueInteger = 1,
+    };
+    createPushInstruction(program, data);
     if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
 void actionEQS(i3InstructionArray_t *program) {
@@ -412,6 +425,9 @@ void actionGTSEQ(i3InstructionArray_t *program) {
 void ifStart() {
     ifS_new(currentState.ifLabelStack);
     currentState.ifImmersion++;
+}
+void elseStart() {
+    currentState.elseImmersion++;
 }
 
 symbol_t getReturnSymbol() {

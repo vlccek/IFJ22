@@ -50,6 +50,9 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
         sprintf(buf, "float@%a   # %f", symb.token.data.valueFloat, symb.token.data.valueFloat);
     else if (symb.dataType == nil)
         sprintf(buf, "nil@nil");
+    else if(symb.dataType == booltype){
+        sprintf(buf, symb.token.data.valueInteger == 1 ? "bool@true" : "bool@false");
+    }
     return buf;
 }
 

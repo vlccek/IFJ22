@@ -46,6 +46,7 @@ typedef enum symbolDataType {
     integerNullable,
     nil,
     undefinedDataType, // void ekvivalent
+    booltype,
     symbolDataTypeLength
 } symbolDataType_t;
 
