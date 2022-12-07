@@ -387,6 +387,9 @@ void createLLTable() {
     insertMember(integerLiteral, FirstFceParam, 2,
                  partOfRulesRightSide(Statement),
                  partOfRulesRightSide(CommaOrEpsParam));
+    insertMember(nullKey, FirstFceParam, 2,
+                 partOfRulesRightSide(Statement),
+                 partOfRulesRightSide(CommaOrEpsParam));
     insertMember(rightPar, CommaOrEpsParam, 0);
     insertMember(comma, CommaOrEpsParam, 3,
                  partOfRulesRightSide(comma),
@@ -400,6 +403,8 @@ void createLLTable() {
                  partOfRulesRightSide(stringLiteral));
     insertMember(integerLiteral, Statement, 1,
                  partOfRulesRightSide(integerLiteral));
+    insertMember(nullKey, Statement, 1,
+                 partOfRulesRightSide(nullKey));
     insertMember(leftPar, Exp, 3,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(minusOp),
@@ -632,9 +637,8 @@ void createLLTable() {
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(notEqOp),
                  partOfRulesRightSide(Exp));
-    insertMember(nullKey, Exp, 2,
-                 partOfRulesRightSide(nullKey),
-                 partOfRulesRightSide(Exp));
+    insertMember(nullKey, Exp, 1,
+                 partOfRulesRightSide(Statement));
     insertMember(nullKey, Exp, 3,
                  partOfRulesRightSide(Exp),
                  partOfRulesRightSide(minusOp),

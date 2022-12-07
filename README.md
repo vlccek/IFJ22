@@ -20,5 +20,5 @@
 
 ### Post processing
 
-- Bude stačit procházet jednou.
+- Nebude stačit procházet jednou.
 - datové typy při interním generování nejsme schopní všechny znát
