@@ -26,8 +26,9 @@ typedef struct {
     //for while
     bool inWhileBody;
     bool endOfWhile;
-    dynStr_t *endlabel; // ending label for label
-    dynStr_t *elselabel;// label else label
+    dynStr_t *endlabel;  // ending label for label
+    dynStr_t *elselabel; // label else label
+    dynStr_t *startlabel;// label else label
 } ifsState;
 
 genericStack *ifS_Init();
@@ -39,6 +40,8 @@ void ifS_old(genericStack *stack);
 
 dynStr_t *ifS_ending(genericStack *stack);
 dynStr_t *ifS_else(genericStack *stack);
+dynStr_t *ifS_start(genericStack *stack);
+
 bool ifS_isEndingGenerated(genericStack *stack);
 void ifS_isSetEndingGenerated(genericStack *stack, bool end);
 

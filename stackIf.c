@@ -7,8 +7,8 @@
 #include "stackIf.h"
 #define endlabelidIF "ENDE"
 #define elseLbaelIdIF "ELSE"
-#define endlabelidWHILE "ENDE"
-#define elseLbaelIdWHILE "ELSE"
+#define endlabelidWHILE "WENDE"
+#define startdWHILE "WSTART"
 #define buffersize 100
 
 
@@ -32,6 +32,7 @@ void ifS_newIf(genericStack *stack) {
     dstrAppend(is->elselabel, buff);
     is->endlabel = dstrInitChar(endlabelidIF);
     dstrAppend(is->endlabel, buff);
+    is->startlabel = NULL;
     is->isEndingGenerated = false;
     is->inElse = false;
     is->expectinElse = false;
@@ -52,9 +53,11 @@ void ifS_newWhile(genericStack *stack) {
     char buff[buffersize] = {0};
     sprintf(buff, "%d", c);
 
-    is->elselabel = NULL;// else label is not use in while type
-    is->endlabel = dstrInitChar(endlabelidIF);
+    is->endlabel = dstrInitChar(endlabelidWHILE);
     dstrAppend(is->endlabel, buff);
+    is->elselabel = is->endlabel;// else label is not use in while type
+    is->startlabel = dstrInitChar(startdWHILE);
+    dstrAppend(is->startlabel, buff);
 
     is->inWhileBody = false;
     is->endOfWhile;
@@ -72,6 +75,9 @@ dynStr_t *ifS_ending(genericStack *stack) {
 }
 dynStr_t *ifS_else(genericStack *stack) {
     return ((ifsState *) gStackTop(stack))->elselabel;
+}
+dynStr_t *ifS_start(genericStack *stack) {
+    return ((ifsState *) gStackTop(stack))->startlabel;
 }
 
 bool ifS_isEndingGenerated(genericStack *stack) {

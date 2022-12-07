@@ -118,8 +118,9 @@ void SA_NewCommand() {
     checkIfHaveElseBranch(program);
 }
 
-void SA_whileKey() {
-    whilestarts();
+void SA_whileKey(semanticActionInfo info) {
+    SA_NewSymtableFrame(info);
+    whilestarts(program);
 }
 
 void semanticActionsInit() {

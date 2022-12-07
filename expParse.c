@@ -308,7 +308,7 @@ rule *derivateTopStack(genericStack *sTokens) {
                 InternalError("This should definitely be terminal!");
             a.action = convertToAction(handle[1]->data);
         }
-        r->semanticAction(a);
+        callSemanticAction(r, a);
         loging("END derivate top Ofstack");
         return r;
     }

@@ -353,6 +353,10 @@ void exitCodeBlock(i3Table_t program) {
             ifS_SetExpectingElse(currentState.labelStack, true);
             ifS_SetinIfbranch(currentState.labelStack, false);
         } else {
+            if (ifs_getType(currentState.labelStack) == while_type) {
+                const char *label = ifS_start(currentState.labelStack)->string;
+                createJumpIns(program, label);
+            }
             genereateEndOfCondition(program);
         }
     }
@@ -428,7 +432,7 @@ void actionLTS(i3InstructionArray_t *program) {
 }
 void actionEQS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_EQS);
-    const char *label = ifS_else(currentState.labelStack)->string;
+    const char *label = ifS_start(currentState.labelStack)->string;
 
     symbol_t data = {
             .type = literal,
@@ -477,8 +481,9 @@ void elseStart() {
     ifS_SetExpectingElse(currentState.labelStack, false);
 }
 
-void whilestarts() {
+void whilestarts(i3InstructionArray_t *program) {
     ifS_newWhile(currentState.labelStack);
+    createLabelIns(program, ifS_start(currentState.labelStack)->string);
 }
 
 void checkIfHaveElseBranch(i3InstructionArray_t *program) {

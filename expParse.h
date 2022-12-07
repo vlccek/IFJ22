@@ -10,6 +10,7 @@
 #include "LLtable.h"
 #include "common.h"
 #include "lex.h"
+#include "semanticActions.h"
 #include "stack.h"
 
 
