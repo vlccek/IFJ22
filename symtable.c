@@ -415,6 +415,7 @@ void printSymbol(symbol_t *symbol) {
 }
 
 void printSymtable(symtable_t *symtable) {
+    if (!debug) { return; }
     printHashtable(&(symtable->functions), "functions");
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         char number[128];
