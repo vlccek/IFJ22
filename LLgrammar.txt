@@ -37,10 +37,10 @@ Statement ::= identifierVar
 Statement ::= floatLiteral
 Statement ::= stringLiteral
 Statement ::= integerLiteral
+Statement ::= nullKey
 
 ## Exp
 Exp ::= Statement
-Exp ::= nullKey
 Exp ::= Exp minusOp Exp
 Exp ::= Exp plusOp Exp
 Exp ::= Exp divisionOp Exp
