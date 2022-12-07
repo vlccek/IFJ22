@@ -65,9 +65,23 @@ void assignFuncReturnTypes(i3InstructionArray_t *array, symtable_t *symtable) {
     }
 }
 
+bool isCompareIns(i3InstructionType_t type) {
+    i3InstructionType_t types[] = {
+            I_LTS,
+            I_GTS,
+            I_EQS,
+    };
+    size_t n = sizeof(types) / sizeof(i3InstructionType_t);
+    for (int i = 0; i < n; ++i) {
+        if (types[i] == type) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool isStackIns(i3InstructionType_t type) {
     i3InstructionType_t types[] = {
-            I_PUSHS,
 
             I_ADDS,
             I_SUBS,
@@ -87,9 +101,14 @@ bool isStackIns(i3InstructionType_t type) {
     return false;
 }
 
-i3Instruction_t *getNextNotCheckedPushs(i3InstructionArray_t *array, size_t lookAt) {
+bool isPushOrStackIns(i3InstructionType_t type) {
+    return I_PUSHS == type || isStackIns(type);
+}
+
+
+i3Instruction_t *getNextNotCheckedIns(i3InstructionArray_t *array, size_t lookAt) {
     for (int i = (int) lookAt; i >= 0; --i) {
-        if (isStackIns(array->instructions[i].type)) {
+        if (isPushOrStackIns(array->instructions[i].type)) {
             if (array->instructions[i].checkedType == false) {
                 array->instructions[i].checkedType = true;
                 return &array->instructions[i];
@@ -101,9 +120,7 @@ i3Instruction_t *getNextNotCheckedPushs(i3InstructionArray_t *array, size_t look
 
 void setCheckedPushToFalse(i3InstructionArray_t *array) {
     for (size_t i = 0; i < array->size; ++i) {
-        if (isStackIns(array->instructions[i].type)) {
-            array->instructions[i].checkedType = false;
-        }
+        array->instructions[i].checkedType = false;
     }
 }
 int whichConvert(symbolDataType_t type1, symbolDataType_t type2) {
@@ -149,17 +166,36 @@ size_t convToSameType(i3InstructionArray_t *array, i3Instruction_t *i1, i3Instru
     return 0;
 };
 
+void findDataTypeIns(i3Instruction_t *ins, size_t lookAt, i3InstructionArray_t *array) {
+    for (int i = (int) lookAt; i >= 0; --i) {
+        if (array->instructions[i].type == I_POPS) {
+            ins->arg1.dataType = array->instructions[i].dest.dataType;
+            return;
+        }
+    }
+}
+
+void findTypes(i3Instruction_t *ins, size_t insAtPos, i3InstructionArray_t *array) {
+    if (ins->arg1.dataType == undefinedDataType) {
+        findDataTypeIns(ins, insAtPos, array);
+    }
+}
+
+
 /// Convert two instructions to same type by adding INT2FLOATS ins
 /// \param array Array of instructions
 /// \param insAtPos Position of the instruction
 /// \return number of instructions added
 size_t assignTypeToStackIns(i3InstructionArray_t *array, size_t insAtPos) {
-    i3Instruction_t *i1 = getNextNotCheckedPushs(array, insAtPos - 1);
-    i3Instruction_t *i2 = getNextNotCheckedPushs(array, insAtPos - 1);
+    size_t addedIns = 0;
+    i3Instruction_t *i1 = getNextNotCheckedIns(array, insAtPos - 1);
+    i3Instruction_t *i2 = getNextNotCheckedIns(array, insAtPos - 1);
+    // i2 has to be called first
+    findTypes(i2, insAtPos - 1, array);
+    findTypes(i1, insAtPos - 1, array);
     if (i1 == NULL || i2 == NULL) {
         InternalError("Wrongly using stack instructions");
     }
-    size_t addedIns;
     if (array->instructions[insAtPos].type == I_DIVS) {
         addedIns = 2;
         floatConvert(array, i1);
@@ -167,15 +203,41 @@ size_t assignTypeToStackIns(i3InstructionArray_t *array, size_t insAtPos) {
     } else {
         addedIns = convToSameType(array, i1, i2);
     }
-    // todo: If converting only to float, then next line is good, otherwise should convert to more types
-    array->instructions[insAtPos + addedIns].arg1.dataType = floating;
+
+    if (isCompareIns(array->instructions[insAtPos + addedIns].type)) {
+        array->instructions[insAtPos + addedIns].arg1.dataType = booltype;
+    } else {
+        if (addedIns > 0) {
+            array->instructions[insAtPos + addedIns].arg1.dataType = floating;
+        } else {
+            array->instructions[insAtPos + addedIns].arg1.dataType = i1->arg1.dataType;
+        }
+    }
+    /*
+    if(addedIns == 0){
+        // if same types, then final have this type
+        array->instructions[insAtPos + addedIns].arg1.dataType = i1->arg1.dataType;
+    } else {
+        // if not same type, than surely converted to float
+        // todo if not bool type
+        array->instructions[insAtPos + addedIns].arg1.dataType = floating;
+    }
+     */
     array->instructions[insAtPos + addedIns].checkedType = false;
     return addedIns;
 }
 
+void assignTypeToPopsIns(i3InstructionArray_t *array, size_t insAtPos) {
+    i3Instruction_t *i1 = getNextNotCheckedIns(array, insAtPos - 1);
+    // findTypes(i1, insAtPos - 1, array);
+    array->instructions[insAtPos].dest.dataType = i1->arg1.dataType;
+}
 void convertTypesOnStack(i3InstructionArray_t *array) {
     setCheckedPushToFalse(array);
     for (size_t i = 0; i < array->size; ++i) {
+        if (array->instructions[i].type == I_POPS) {
+            assignTypeToPopsIns(array, i);
+        }
         if (isStackIns(array->instructions[i].type)) {
             if (array->instructions[i].arg1.dataType == undefinedDataType) {
                 i += assignTypeToStackIns(array, i);
@@ -186,7 +248,6 @@ void convertTypesOnStack(i3InstructionArray_t *array) {
 
 void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
     // todo: nechceme double DEFVAR instrukce - nastavit na NOOP
-    // todo: vyřeš typové konverze
     symbol_t *symbol = symSearchFunc(symtable, array->functionName);
     if (!symbol) {
         if (strcmp(array->functionName, "$MainBody") != 0) {
@@ -199,6 +260,7 @@ void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
     }
     assignFuncReturnTypes(array, symtable);
     convertTypesOnStack(array);
+    // todo: return types and calling errors
 }
 
 void postprocess(i3Table_t program, symtable_t symtable) {
