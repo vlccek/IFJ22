@@ -117,6 +117,9 @@ void insertTopToFloat(i3Table_t program, size_t pos) {
 }
 
 void floatConvert(i3InstructionArray_t *array, i3Instruction_t *convertAfter) {
+    if (convertAfter->arg1.dataType == floating)
+        return;
+
     size_t insAtPos = convertAfter - array->instructions + 1;
     // add one to insert AFTER this instruction
     insertTopToFloat(array, insAtPos);
@@ -143,9 +146,17 @@ size_t convToSameType(i3InstructionArray_t *array, i3Instruction_t *i1, i3Instru
 size_t assignTypeToStackIns(i3InstructionArray_t *array, size_t insAtPos) {
     i3Instruction_t *i1 = getNextNotCheckedPushs(array, insAtPos - 1);
     i3Instruction_t *i2 = getNextNotCheckedPushs(array, insAtPos - 1);
-    if (i1 == NULL || i2 == NULL)
+    if (i1 == NULL || i2 == NULL) {
         InternalError("Wrongly using stack instructions");
-    size_t addedIns = convToSameType(array, i1, i2);
+    }
+    size_t addedIns;
+    if (array->instructions[insAtPos].type == I_DIVS) {
+        addedIns = 2;
+        floatConvert(array, i1);
+        floatConvert(array, i2);
+    } else {
+        addedIns = convToSameType(array, i1, i2);
+    }
     // todo: If converting only to float, then next line is good, otherwise should convert to more types
     array->instructions[insAtPos + addedIns].arg1.dataType = floating;
     array->instructions[insAtPos + addedIns].checkedType = false;
