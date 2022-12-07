@@ -12,11 +12,12 @@
 #include "symtable.h"
 
 typedef enum i3InstructionType {
-    I_ADD,
-    I_SUB,
-    I_MUL,
-    I_DIV,
-    I_IDIV,
+    I_NOOP,
+    I_ADDS,
+    I_SUBS,
+    I_MULS,
+    I_DIVS,
+    I_IDIVS,
     I_CONCAT,
     I_EQ,
     I_NEQ,
@@ -28,6 +29,11 @@ typedef enum i3InstructionType {
     I_OR,
     I_NOT,
     I_MOVE,
+    I_MOVE_PARAM,
+    I_MOVE_RETURN,
+    I_POPFRAME,
+    I_PUSHFRAME,
+    I_CREATEFRAME,
     I_INT2FLOAT,
     I_READ,
     I_WRITE,
@@ -36,9 +42,20 @@ typedef enum i3InstructionType {
     I_JUMP,
     I_JUMP_IF_TRUE,
     I_JUMP_IF_FALSE,
+    I_JUMPS_NEQ,
+    I_JUMPS_EQ,
+    I_LTS,// mensi
+    I_GTS,// vetší
+    I_EQS, // stejné
     I_CALL,
     I_RETURN,
-    I_DEFVAR 
+    I_DEFVAR,
+    I_PUSHS,
+    I_POPS,
+    I_INT2FLOATS,
+    I_FLOAT2INTS,
+    I_INT2CHARS,
+    I_STRI2INTS
 } i3InstructionType_t;
 
 /**
@@ -70,4 +87,9 @@ void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction);
 void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, char *functionName);
 
 void initializeProgram(i3Table_t *program);
-#endif //IFJ22_3ADRES_H
+char *copyString(char *toCopy);
+void insertInstruction(i3InstructionArray_t *array, i3Instruction_t toInsert, size_t pos);
+dynStr_t *functionParamInternalName(size_t number);
+
+
+#endif//IFJ22_3ADRES_H

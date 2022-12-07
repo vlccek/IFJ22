@@ -21,6 +21,7 @@ typedef enum {
     indexOpConcat,
     indexLpar,
     indexRpar,
+    indexCmp,
     indexDollar,
     indexCount
 } precedenceTableIndex;
@@ -34,6 +35,9 @@ typedef enum {
     dollar,
     precendenceTypeCount
 } precendenceType;
+
+extern bool isExpInIf;
+extern int leftparc;
 
 extern char *precTypeString[];
 extern precendenceType precedenceTable[indexCount][indexCount];
@@ -61,9 +65,8 @@ expParserType *stackTopTerminal(genericStack *s);
 unsigned findFirst(genericStack *s, int searchSymb);
 
 
-
 // praser for expresions
-void expAnal();
+void expAnal(bool isInIf);
 
 void printExpParserType(void *data);
 

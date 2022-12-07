@@ -58,6 +58,7 @@ ParserMemory *initializeMemory() {
     stackViewInit(mem);
     createLLTable();
     semanticActionsInit();
+    mem->parseBoolExpression = false;
     return mem;
 }
 
@@ -93,10 +94,10 @@ PSAStackMember *getTopStack(ParserMemory *memory) {
     return m;
 }
 
-bool expressionParsing(PSAStackMember *topOfStack, lexType lastTokenTypy) {
+bool expressionParsing(PSAStackMember *topOfStack, bool parseBoolExpression) {
     if (topOfStack->data == (int) Exp) {
         ungetToken(stdin);
-        expAnal();
+        expAnal(parseBoolExpression);
         ungetToken(stdin);
         return 1;
     }
@@ -140,6 +141,12 @@ bool parserEnding(token_t lastToken) {
     return 0;
 }
 
+void setBoolParsing(ParserMemory *parserMemory, lexType type) {
+    if (type == curlyBraceLeft)
+        parserMemory->parseBoolExpression = false;
+    if (type == ifKey || type == whileKey)
+        parserMemory->parseBoolExpression = true;
+}
 int parser() {
     ParserMemory *memory = initializeMemory();
 
@@ -156,12 +163,17 @@ int parser() {
                 break;
             case terminal:
                 checkTopAndLastMatch(topOfStack, &lastToken);
+                if(lastToken.type == semicolon)
+                    SA_EndOfCommand();
+                if(lastToken.type == curlyBraceRight)
+                    SA_EndOfBlock();
+                setBoolParsing(memory, lastToken.type);
 
                 gStackPop(memory->PSAStack);
                 lastToken = getToken(stdin);
                 break;
             case nonTerminal:;
-                if (expressionParsing(topOfStack, lastToken.type)) {
+                if (expressionParsing(topOfStack, memory->parseBoolExpression)) {
                     gStackPop(memory->PSAStack);
                     lastToken = getToken(stdin);
                     continue;
@@ -170,7 +182,7 @@ int parser() {
                 break;
         }
     }
-    endOfParsing();
+    SA_EndOfParsing();
     return 0;
 }
 

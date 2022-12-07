@@ -6,17 +6,21 @@
  */
 #include "expParse.h"
 
+bool isExpInIf = false;
+int leftparc = 0;
+
 
 precendenceType precedenceTable[indexCount][indexCount] = {
         //a
-        // +- | */ | ID lit... | . | lpar | rpar  | dollar
-        {precR, precR, precL, precR, precL, precR, precR}, // +-             //// top b
-        {precR, precR, precL, precR, precL, precR, precR}, // */
-        {precR, precR, precE, precR, precE, precR, precR}, // ID LIT
-        {precE, precE, precL, precE, precL, precE, precR}, // .
-        {precR, precR, precL, precR, precR, precEq, precR},// lpar
-        {precR, precR, precL, precR, precE, precR, precR}, // rpar
-        {precL, precL, precL, precL, precL, precL, precE}  // dollar
+        // +- | */ | ID lit... | . | lpar | rpar  | boolOP |dollar
+        {precR, precL, precL, precR, precL, precR, precR, precR}, // +-             //// top b
+        {precR, precR, precL, precR, precL, precR, precR, precR}, // */
+        {precR, precR, precE, precR, precE, precR, precR, precR}, // ID LIT
+        {precE, precE, precL, precE, precL, precR, precR, precR}, // .
+        {precL, precL, precL, precL, precL, precEq, precL, precL},// lpar
+        {precR, precR, precE, precR, precE, precR, precR, precR}, // rpar
+        {precL, precL, precL, precL, precL, precR, precE, precR}, // boolOP |
+        {precL, precL, precL, precL, precL, precE, precL, precE}  // dollar
 };
 
 
@@ -46,6 +50,7 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case stringLiteral:
         case floatLiteral:
         case integerLiteral:
+        case nullKey:
             loging("Index in precedenc table: %d", indexId);
             return indexId;
             break;
@@ -53,6 +58,10 @@ precedenceTableIndex indexInPrecTable(lexType t) {
             loging("Index in precedenc table: %d", indexLpar);
             return indexLpar;
         case rightPar:
+            if (leftparc == 0 &&  isExpInIf ){
+                loging("Found `(` token, i this context is end of exp Index in precedenc table: %d", indexDollar);
+                return indexDollar;
+            }
             loging("Index in precedenc table: %d", indexRpar);
             return indexRpar;
         case dollar:
@@ -60,6 +69,18 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case ending:
             loging("Index in precedenc table: %d", indexDollar);
             return indexDollar;
+            break;
+        case lesserEqOp:
+        case lesserThanOp:
+        case greaterThanOp:
+        case greaterEqOp:
+        case eqOp:
+        case notEqOp:
+            loging("Index in precedenc is comapring (bool) symbol for, index : %d", indexCmp);
+            return indexCmp;
+            break;
+        default:
+            loging("Index in precedenc table not foung: %d", t);
             break;
     }
 }
@@ -134,7 +155,8 @@ void addPrecLBefore(genericStack *s, unsigned position) {
     }
 }
 
-void expAnal() {
+void expAnal(bool isInIf) {
+    isExpInIf = isInIf;
     // )   createLLTable();// todo: remove if not testing
     genericStack *sTokens = gStackInit();
     pushPrecedencToken(sTokens, dollar);
@@ -146,24 +168,27 @@ void expAnal() {
         gStackPrint(sTokens, printExpParserType);
         a = stackTopTerminal(sTokens);
         loging("IN a (Top notnerminal): %s", generatePrintExpParsertype(a));
+        if (b->type == leftPar) {
+            leftparc++;
+        }
         loging("IN B (input): %s ", generatePrintExpParsertype(b));
         loging("precedence sympol: %s", precSymbString(precSymb(a, b)));
         switch (precSymb(a, b)) {
             case precR:
-                loging("Entering precR case")
+                loging("Entering precR case");
                 ruleNum = derivateTopStack(sTokens);
                 pushExpNonTerminal(sTokens);
                 // najde se první < pak se přejde
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)
-                loging("Entering precL case")
+                loging("Entering precL case");
                 addPrecLBefore(sTokens, stackTopTerminalIndex(sTokens));
                 gStackPush(sTokens, b);
                 b = getTokenP();
                 break;
             case precEq:
-                gStackPush(sTokens, a);
+                gStackPush(sTokens, b);
                 b = getTokenP();
                 break;
             case precE:
@@ -190,7 +215,6 @@ unsigned stackTopTerminalIndex(genericStack *s) {
     return i;
 }
 
-
 unsigned findFirst(genericStack *s, int searchSymb) {
     unsigned i = 0;
     while (((expParserType *) gStackGetNth(s, i++))->type != searchSymb) {//empty
@@ -201,6 +225,54 @@ unsigned findFirst(genericStack *s, int searchSymb) {
     return i;
 }
 
+
+expressionAction_t convertToAction(lexType data) {
+    switch (data) {
+        case plusOp:
+            return APlus;
+        case minusOp:
+            return AMinus;
+        case divisionOp:
+            return ADivision;
+        case multiplicationOp:
+            return AMultiplication;
+        case concatenationOp:
+            return AConcatenation;
+        case lesserEqOp:
+            return ALowerThenEq;
+        case lesserThanOp:
+            return ALowerThen;
+        case greaterThanOp:
+            return AGreaterThen;
+        case greaterEqOp:
+            return AGreaterThenEq;
+        case eqOp:
+            return AEq;
+        default:
+            return ANotAnAction;
+    }
+}
+
+// check if rule is (exp)
+bool checkIfHandlerIsTrvial(PSAStackMember *in[10]) {
+    PSAStackMember m[3];
+    m[0].type = terminal;
+    m[0].data = leftPar;
+    m[1].type = terminal;
+    m[1].data = Statement;
+    m[2].type = terminal;
+    m[2].data = rightPar;
+
+    for (int i = 0; i < 3; i++) {
+        if (m[i].data == in[i]->data && m[i].type == in[i]->type) {
+            return false;
+        }
+        if(in[i+1] == NULL){
+            break ;
+        }
+    }
+    return true;
+}
 rule *derivateTopStack(genericStack *sTokens) {
     loging("Entering derivate top Ofstack");
     expParserType *tmp;
@@ -224,9 +296,16 @@ rule *derivateTopStack(genericStack *sTokens) {
         //todo exit semntika
         loging("Nebylo nalezeno pravidlo :(");
         PrettyExit(ERR_SYNTAX);
-    } else {
+    } else if (checkIfHandlerIsTrvial(r->to)){
         semanticActionInfo a;
-        a.lastToken = *tmp->tokenData;
+        if (r->from == Statement) {
+            a.lastToken = *tmp->tokenData;
+            a.action = ANotAnAction;
+        } else {
+            if (handle[1]->type != terminal)
+                InternalError("This should definitely be terminal!");
+            a.action = convertToAction(handle[1]->data);
+        }
         r->semanticAction(a);
         loging("END derivate top Ofstack");
         return r;

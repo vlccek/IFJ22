@@ -10,14 +10,13 @@
 
 
 void initializeProgram(i3Table_t *program) {
-    (*program)[0].functionName = "P_MainBody";
     for (int i = 0; i < MAX_HTSIZE; ++i) {
         (*program)[i].functionName = NULL;
         (*program)[i].instructions = NULL;
         (*program)[i].size = 0;
         (*program)[i].capacity = 0;
     }
-    initializeInstructionArray(100, program[0], "F_MainBody");
+    initializeInstructionArray(100, program[0], "$MainBody");
 }
 
 void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, char *functionName) {
@@ -51,4 +50,20 @@ char *copyString(char *toCopy) {
     make_var(newString, char *, sizeof(char) * (strlen(toCopy) + 1))
             strcpy(newString, toCopy);
     return newString;
+}
+
+void insertInstruction(i3InstructionArray_t *array, i3Instruction_t toInsert, size_t pos) {
+    pushToArray(array, toInsert);
+    size_t copyCount = array->size - pos - 1;
+    memmove(&array->instructions[pos + 1], &array->instructions[pos], sizeof(i3Instruction_t) * copyCount);
+    array->instructions[pos] = toInsert;
+}
+
+dynStr_t *functionParamInternalName(size_t number) {
+    dynStr_t *string = dstrInit();
+    dstrAppend(string, "$param");
+    char buf[128];
+    sprintf(buf, "%zu", number);
+    dstrAppend(string, buf);
+    return string;
 }

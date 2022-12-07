@@ -13,13 +13,13 @@ Command ::= semicolon
 Command ::= FceCall
 
 ## Definice funkcí
-FceDefine ::= FceHeader curlyBraceLeft FunctionBody curlyBraceRight
-FceHeader ::= functionKey identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType
+FceDefine ::= functionKey FceHeader curlyBraceLeft FunctionBody curlyBraceRight
+FceHeader ::= identifierFunc leftPar FunctionDeclareParams rightPar colon FuncReturnColonType
 FunctionDeclareParams ::=''
-FunctionDeclareParams ::= DeclareParam  CommaOrEpsParams
+FunctionDeclareParams ::= DataType DeclareParam CommaOrEpsParams
 CommaOrEpsParams ::=''
-CommaOrEpsParams ::= comma DeclareParam  CommaOrEpsParams
-DeclareParam ::= DataType identifierVar
+CommaOrEpsParams ::= comma DataType DeclareParam  CommaOrEpsParams
+DeclareParam ::=  identifierVar
 
 ## FuncReturnType
 FuncReturnColonType ::= DataType
@@ -37,15 +37,23 @@ Statement ::= identifierVar
 Statement ::= floatLiteral
 Statement ::= stringLiteral
 Statement ::= integerLiteral
+Statement ::= nullKey
 
 ## Exp
 Exp ::= Statement
-Exp ::= nullKey
 Exp ::= Exp minusOp Exp
 Exp ::= Exp plusOp Exp
 Exp ::= Exp divisionOp Exp
 Exp ::= Exp multiplicationOp Exp
 Exp ::= Exp concatenationOp Exp
+
+Exp ::= Exp lesserThanOp Exp
+Exp ::= Exp lesserEqOp Exp
+Exp ::= Exp greaterThanOp Exp
+Exp ::= Exp greaterEqOp Exp
+Exp ::= Exp eqOp Exp
+Exp ::= Exp notEqOp Exp
+
 Exp ::= leftPar Exp rightPar
 
 

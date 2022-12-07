@@ -37,8 +37,7 @@ char *convertString(dynStr_t *dynStr, char *string) {
 /// \param buf buffer where output will be stored
 /// \return buf parameter
 char *generateArgSymbol(symbol_t symb, char *buf) {
-    if(symb.type != literal){
-        printSymbol(&symb);
+    if (symb.type != literal) {
         InternalError("Printed symbol is not literal.");
     }
     if (symb.dataType == string) {
@@ -48,12 +47,24 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
     } else if (symb.dataType == integer)
         sprintf(buf, "int@%d", symb.token.data.valueInteger);
     else if (symb.dataType == floating)
-        sprintf(buf, "float@%a", symb.token.data.valueFloat);
+        sprintf(buf, "float@%a   # %f", symb.token.data.valueFloat, symb.token.data.valueFloat);
+    else if (symb.dataType == nil)
+        sprintf(buf, "nil@nil");
+    else if(symb.dataType == booltype){
+        sprintf(buf, symb.token.data.valueInteger == 1 ? "bool@true" : "bool@false");
+    }
     return buf;
 }
 
 char *generateArgSymVar(symbol_t symb, char *buf) {
-    if(symb.type == variable){
+    if (symb.type == variable) {
+        sprintf(buf, "TF@%s", symb.identifier);
+        return buf;
+    }
+    return generateArgSymbol(symb, buf);
+}
+char *generateArgSymVarLF(symbol_t symb, char *buf) {
+    if (symb.type == variable) {
         sprintf(buf, "LF@%s", symb.identifier);
         return buf;
     }
@@ -66,26 +77,81 @@ void generateWrite(i3Instruction_t instruction) {
 }
 
 void generateDefvar(i3Instruction_t instruction) {
-    printf("DEFVAR LF@%s", instruction.arg1.token.data.valueString->string);
+    printf("DEFVAR TF@%s", instruction.arg1.token.data.valueString->string);
 }
 
 void generateMove(i3Instruction_t instruction) {
     char buf[2048];
-    printf("MOVE LF@%s %s",
+    printf("MOVE TF@%s %s",
            instruction.dest.token.data.valueString->string,
-           generateArgSymbol(instruction.arg1, buf));
+           generateArgSymVar(instruction.arg1, buf));
 }
+
+void generatePushs(i3Instruction_t instruction) {
+    char buf[2048];
+    printf("PUSHS %s",
+           generateArgSymVar(instruction.arg1, buf));
+}
+
+void generatePops(i3Instruction_t instruction) {
+    char buf[2048];// todo: @Kiznoh tvuj napad se mi prestal libit od doby co musim
+    // todo: mit takto buffer v kazde funkci, pls fix :-)
+    if (instruction.dest.type != variable) {
+        printSymbol(&instruction.arg1);
+        InternalError("Cannot push from stack to above symbol");
+    }
+
+    printf("POPS %s", generateArgSymVar(instruction.dest, buf));
+}
+
+void generateSimpleIns(const char *instructionName) {
+    printf("%s", instructionName);
+}
+void generateMoveSpecial(i3Instruction_t instruction, bool param) {
+    char buf[2048];
+    if (param) {
+        printf("MOVE TF@%s %s",
+               instruction.dest.identifier,
+               generateArgSymVarLF(instruction.arg1, buf));
+    } else {
+        printf("MOVE %s TF@%s",
+               generateArgSymVarLF(instruction.dest, buf),
+               instruction.arg1.identifier);
+    }
+}
+void generateLabel(const char *label) {
+    printf("\nLABEL %s\n", label);
+}
+void generateJump(const char *label) {
+    printf("JUMP %s\n", label);
+}
+void generateCall(const char *function_name) {
+    printf("CALL $BEGIN_%s\n", function_name);
+}
+
+void generateJumps(i3Instruction_t instruction) {
+    printf("JUMPIFNEQS %s", instruction.arg1.identifier);
+}
+
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
-        case I_ADD:
+        case I_NOOP:
+            printlog("noop");
             break;
-        case I_SUB:
+        case I_ADDS:
+            generateSimpleIns("ADDS");
             break;
-        case I_MUL:
+        case I_SUBS:
+            generateSimpleIns("SUBS");
             break;
-        case I_DIV:
+        case I_MULS:
+            generateSimpleIns("MULS");
             break;
-        case I_IDIV:
+        case I_DIVS:
+            generateSimpleIns("DIVS");
+            break;
+        case I_IDIVS:
+            generateSimpleIns("IDIVS");
             break;
         case I_CONCAT:
             break;
@@ -96,6 +162,15 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_LT:
             break;
         case I_GT:
+            break;
+        case I_GTS:
+            generateSimpleIns("GTS");
+            break;
+        case I_LTS:
+            generateSimpleIns("LTS");
+            break;
+        case I_EQS:
+            generateSimpleIns("EQS");
             break;
         case I_LEQ:
             break;
@@ -110,6 +185,12 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_MOVE:
             generateMove(instruction);
             break;
+        case I_MOVE_PARAM:
+            generateMoveSpecial(instruction, true);
+            break;
+        case I_MOVE_RETURN:
+            generateMoveSpecial(instruction, false);
+            break;
         case I_INT2FLOAT:
             break;
         case I_READ:
@@ -120,39 +201,95 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_STRLEN:
             break;
         case I_LABEL:
+            generateLabel(instruction.arg1.identifier);
             break;
         case I_JUMP:
+            generateJump(instruction.arg1.identifier);
             break;
         case I_JUMP_IF_TRUE:
             break;
         case I_JUMP_IF_FALSE:
             break;
+        case I_JUMPS_NEQ:
+            generateJumps(instruction);
+            break;
         case I_CALL:
+            generateCall(instruction.arg1.identifier);
             break;
         case I_RETURN:
+            generateSimpleIns("RETURN");
             break;
         case I_DEFVAR:
             generateDefvar(instruction);
+            break;
+        case I_PUSHS:
+            generatePushs(instruction);
+            break;
+        case I_POPS:
+            generatePops(instruction);
+            break;
+        case I_INT2FLOATS:
+            generateSimpleIns("INT2FLOATS");
+            break;
+        case I_FLOAT2INTS:
+            generateSimpleIns("FLOAT2INTS");
+            break;
+        case I_INT2CHARS:
+            generateSimpleIns("INT2CHARS");
+            break;
+        case I_STRI2INTS:
+            generateSimpleIns("STRI2INTS");
+            break;
+        case I_POPFRAME:
+            generateSimpleIns("POPFRAME");
+            break;
+        case I_PUSHFRAME:
+            generateSimpleIns("PUSHFRAME");
+            break;
+        case I_CREATEFRAME:
+            generateSimpleIns("CREATEFRAME");
             break;
     }
     printf("\n");
 }
 
-void generateInstructionArray(i3InstructionArray_t array) {
+
+void generateExit(int code) {
+    if (code < 0 || code > 49) {
+        loging("Invalid exit code (%d), will throw error 57 when run", code);
+    }
+    printf("EXIT int@%d\n\n", code);
+}
+
+void generateInstructionArray(i3InstructionArray_t array, symtable_t *symtable) {
     if (array.instructions == NULL)
         return;
+    if (strcmp(array.functionName, "$MainBody") != 0) {
+        char buffer[2048];
+        sprintf(buffer, "$BEGIN_%s", array.functionName);
+        generateLabel(buffer);
+    }
     for (int i = 0; i < array.size; ++i) {
         generateInstruction(array.instructions[i]);
+    }
+    if (strcmp(array.functionName, "$MainBody") != 0) {
+        char buffer[2048];
+        sprintf(buffer, "$END_%s", array.functionName);
+        generateSimpleIns("RETURN");
+        generateLabel(buffer);
+    } else {
+        generateExit(0);
     }
     loging("Vygenerovana funkce: %s\n", array.functionName);
 }
 
 
-void generate(i3Table_t program) {
+void generate(i3Table_t program, symtable_t symtable) {
     generateHeader();
     printf("\n");
-    printf("CREATEFRAME\nPUSHFRAME\n");
+    printf("CREATEFRAME\n");
     for (int i = 0; i < MAX_HTSIZE; ++i) {
-        generateInstructionArray(program[i]);
+        generateInstructionArray(program[i], &symtable);
     }
+    generateLabel("$PROGRAM_END");
 }

@@ -22,7 +22,7 @@ DTList_T *createDTL(int count, ...) {
     va_list args;
     va_start(args, count);
     for (int i = 0; i < count; ++i) {
-        insDTList(DTL, va_arg(args, symbolDataType_t));
+        insDTList(DTL, va_arg(args, symbolDataType_t), NULL);
     }
     va_end(args);
 
@@ -35,21 +35,18 @@ DTList_T *createDTL(int count, ...) {
  * @param list DTL seznam
  * @param typ typ symbolu
  */
-void insDTList(DTList_T *list, symbolDataType_t typ) {
+void insDTList(DTList_T *list, symbolDataType_t typ, char* identifier) {
     DTListMem_T *actualMem = list->first;
+        DTListMem_T *newMember = malloc(sizeof(DTListMem_T));
+        checkNullPointer(newMember);
+        newMember->type = typ;
+        newMember->next = NULL;
+        newMember->identifier = identifier;
     if (list->first != NULL) {
         while (actualMem->next != NULL)
             actualMem = actualMem->next;
-        DTListMem_T *newMember = malloc(sizeof(DTListMem_T));
-        checkNullPointer(newMember);
-        newMember->next = NULL;
-        newMember->type = typ;
         actualMem->next = newMember;
     } else {
-        DTListMem_T *newMember = malloc(sizeof(DTListMem_T));
-        checkNullPointer(newMember);
-        newMember->next = NULL;
-        newMember->type = typ;
         list->first = newMember;
     }
     list->len++;
@@ -102,7 +99,7 @@ void htInsertItem(htTable_t *table, const char *key, symbol_t value) {
         printHashtable(table, "Overwritten");
         return;
     }
-    int hash = ht_get_hash(key);
+    size_t hash = ht_get_hash(key);
     item = malloc(sizeof(struct htItem));
     if (item == NULL) {
         fprintf(stderr, "Malloc fail in htInsertItem, key '%s'.\n", key);
@@ -162,7 +159,7 @@ symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_
 
     newSymbol.token = token;
     newSymbol.firstParam = NULL;
-    newSymbol.returnType = undefined;
+    newSymbol.returnType = undefinedDataType;
 
     return newSymbol;
 }
@@ -174,14 +171,14 @@ symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *pa
         InternalError("Malloc failed.");
     }
     newSymbol->type = type;
-    newSymbol->dataType = undefined;
+    newSymbol->dataType = undefinedDataType;
     newSymbol->identifier = name;
     newSymbol->returnType = returnType;
     DTList_T *newPList = createDTL(0);
     if (paramList != NULL) {
         DTListMem_T *tmp = paramList->first;
         while (tmp != NULL) {
-            insDTList(newPList, tmp->type);
+            insDTList(newPList, tmp->type, NULL);
             tmp = tmp->next;
         }
     }
@@ -191,39 +188,39 @@ symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *pa
 
 
 void saveBuildInFunctions(symtable_t *symtable) {
-    symIFunction(symtable, *createSymbolFunction("reads", function,
-                                                 createDTL(0),
-                                                 stringNullable));
-    symIFunction(symtable, *createSymbolFunction("readi", function,
-                                                 createDTL(0),
-                                                 integerNullable));
-    symIFunction(symtable, *createSymbolFunction("readf", function,
-                                                 createDTL(0),
-                                                 floatingNullable));
-    symIFunction(symtable, *createSymbolFunction("write", function,
-                                                 createDTL(0),
-                                                 undefined));
-    symIFunction(symtable, *createSymbolFunction("intval", function,
-                                                 createDTL(1, floatingNullable),
-                                                 integer));
-    symIFunction(symtable, *createSymbolFunction("floatval", function,
-                                                 createDTL(1, integerNullable),
-                                                 floating));
-    symIFunction(symtable, *createSymbolFunction("strval", function,
-                                                 createDTL(1, stringNullable),
-                                                 string));
-    symIFunction(symtable, *createSymbolFunction("substring", function,
-                                                 createDTL(3, string, integer, integer),
-                                                 stringNullable));
-    symIFunction(symtable, *createSymbolFunction("strlen", function,
-                                                 createDTL(1, string),
-                                                 integer));
-    symIFunction(symtable, *createSymbolFunction("ord", function,
-                                                 createDTL(1, string),
-                                                 integer));
-    symIFunction(symtable, *createSymbolFunction("chr", function,
-                                                 createDTL(1, integer),
-                                                 string));
+    symInsertFunction(symtable, *createSymbolFunction("reads", function,
+                                                      createDTL(0),
+                                                      stringNullable));
+    symInsertFunction(symtable, *createSymbolFunction("readi", function,
+                                                      createDTL(0),
+                                                      integerNullable));
+    symInsertFunction(symtable, *createSymbolFunction("readf", function,
+                                                      createDTL(0),
+                                                      floatingNullable));
+    symInsertFunction(symtable, *createSymbolFunction("write", function,
+                                                      createDTL(0),
+                                                      undefinedDataType));
+    symInsertFunction(symtable, *createSymbolFunction("intval", function,
+                                                      createDTL(1, floatingNullable),
+                                                      integer));
+    symInsertFunction(symtable, *createSymbolFunction("floatval", function,
+                                                      createDTL(1, integerNullable),
+                                                      floating));
+    symInsertFunction(symtable, *createSymbolFunction("strval", function,
+                                                      createDTL(1, stringNullable),
+                                                      string));
+    symInsertFunction(symtable, *createSymbolFunction("substring", function,
+                                                      createDTL(3, string, integer, integer),
+                                                      stringNullable));
+    symInsertFunction(symtable, *createSymbolFunction("strlen", function,
+                                                      createDTL(1, string),
+                                                      integer));
+    symInsertFunction(symtable, *createSymbolFunction("ord", function,
+                                                      createDTL(1, string),
+                                                      integer));
+    symInsertFunction(symtable, *createSymbolFunction("chr", function,
+                                                      createDTL(1, integer),
+                                                      string));
 }
 
 void symInit(symtable_t *symtable) {
@@ -256,18 +253,20 @@ void symNewLocal(symtable_t *symtable) {
     symtable->last++;
 }
 
-void symDelLocal(symtable_t *symtable) {
+bool symDelLocal(symtable_t *symtable) {
+    htDestroy(&(symtable->current[symtable->last]));
     if (symtable->last == 0) {
         if (symtable->isInFunction) {
             loging("INFO: Switching back to main symtable.");
+            printSymtable(symtable);
             symSwitchBack(symtable);
-            return;
+            return true;
         }
-        fprintf(stderr, "ERROR: attempted to delete non existent symtable.\n");
-        return;
+        InternalError("ERROR: attempted to delete non existent symtable");
+        return false;
     }
-    htDestroy(&(symtable->current[symtable->last]));
     symtable->last--;
+    return false;
 }
 
 void symInsert(symtable_t *symtable, symbol_t symbol) {
@@ -275,14 +274,14 @@ void symInsert(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->current[symtable->last]), symbol.identifier, symbol);
 }
 
-void symIFunction(symtable_t *symtable, symbol_t symbol) {
+void symInsertFunction(symtable_t *symtable, symbol_t symbol) {
     htInsertItem(&(symtable->functions), symbol.identifier, symbol);
 }
 
 symbol_t *symSearchVar(symtable_t *symtable, const char *identifier) {
     htItem_t *found;
     for (int i = 0; i <= symtable->last; i++) {
-        found = htSearch(&(symtable->main[i]), identifier);
+        found = htSearch(&(symtable->current[i]), identifier);
         if (found) {
             found->value.symtablePos = symtable->last - i;
             return &(found->value);
@@ -366,6 +365,9 @@ void printSymbol(symbol_t *symbol) {
         case literal:
             type = "literal";
             break;
+        case undefinedType:
+            type = "undefinedType";
+            break;
         default:
             InternalError("Type of symbol (%d) is unknown", symbol->type);
     }
@@ -391,22 +393,29 @@ void printSymbol(symbol_t *symbol) {
         case nil:
             dataType = "nil";
             break;
-        case undefined:
+        case undefinedDataType:
             dataType = "undefined";
             break;
         default:
             InternalError("DataType of symbol (%d) is unknown", symbol->dataType);
             break;
     }
-    printlog("(%s, %s, %s)", symbol->identifier, type, dataType);
+    printlog("(%s, %s, %s, %d:%d)", symbol->identifier, type, dataType, symbol->token.rowNumber, symbol->token.rowPosNumber);
 }
 
 void printSymtable(symtable_t *symtable) {
     printHashtable(&(symtable->functions), "functions");
     for (int i = 0; i < MAX_SYMTABLES; i++) {
-        char number[16];
-        sprintf(number, "%d", i);
+        char number[128];
+        sprintf(number, "MAINBODY %d", i);
         printHashtable(&(symtable->main[i]), number);
+    }
+    if (symtable->isInFunction) {
+        for (int i = 0; i < MAX_SYMTABLES; i++) {
+            char number[128];
+            sprintf(number, "INFUNC %d", i);
+            printHashtable(&(symtable->infunc[i]), number);
+        }
     }
 }
 // endregion

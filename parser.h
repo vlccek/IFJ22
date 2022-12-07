@@ -48,9 +48,10 @@ typedef enum {
     fceReturnsSt
 }state_t;
 
-typedef struct parserMemory{
-    genericStack* PSAStack;
-    char* stackView[MAX_STACK_VIEWABLE];
+typedef struct parserMemory {
+    genericStack *PSAStack;
+    char *stackView[MAX_STACK_VIEWABLE];
+    bool parseBoolExpression;
     // here goes other structures
 } ParserMemory;
 

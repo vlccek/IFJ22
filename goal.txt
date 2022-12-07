@@ -1,0 +1,17 @@
+.IFJcode22
+PUSHS int@5
+PUSHS int@10
+
+
+GTS
+PUSHS bool@true
+
+JUMPIFNEQS next
+# PRAVDA
+WRITE string@aaaaaa
+JUMP END
+
+LABEL next
+#nepravda
+WRITE string@bbbbbbbbb
+LABEL END
