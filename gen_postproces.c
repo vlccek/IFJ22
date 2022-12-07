@@ -250,7 +250,7 @@ void checkFunctionReturnType(i3Instruction_t i2, symbol_t *funcSymb) {
         fail = i2.arg1.dataType != funcSymb->returnType;
     }
     if (fail) {
-        printSymbol(&i2.arg1);
+        printSymbol(&i2.arg1);// TODO MBY PRINT DIFFERENT ERROR
         PrintErrorExit("%s", ERR_FUNC_PARAM_RET_TYPE_OR_QUANTITY, "Wrong return type at token above!");
     }
 }
@@ -310,9 +310,56 @@ void postProcDefvar(i3InstructionArray_t *array) {
     htDestroy(&table);
 }
 
+i3Instruction_t *findCreateFrameIns(i3Instruction_t *instruction) {
+    // there should definitely be CREATEFRAME above
+    // this will find and return it by pointer arithmetics
+    while (instruction->type != I_CREATEFRAME) {
+        instruction--;
+    }
+    return instruction;
+}
+void exitBadParamsCall(symbol_t *symb) {
+    printSymbol(symb);
+    printlog("\n");
+    exit(ERR_FUNC_PARAM_RET_TYPE_OR_QUANTITY);
+}
+
+void compareParams(struct DTList *paramList, i3Instruction_t *callIns, i3Instruction_t *createFrameIns) {
+    size_t expectedCount = countDtList(paramList);
+    DTListMem_T *param = paramList->first;
+    size_t paramCounter = 0;
+    while (callIns != ++createFrameIns) {
+        if (createFrameIns->type != I_MOVE_PARAM) {
+            continue;
+        }
+        if (param == NULL) {
+            loging("Function params do not match! Expected %zu, got more.", expectedCount);
+            exitBadParamsCall(&callIns->arg1);
+        }
+        if (param->type != createFrameIns->arg1.dataType) {
+            loging("Function param types do not match!");
+            exitBadParamsCall(&callIns->arg1);
+        }
+        param = param->next;
+        paramCounter++;
+    }
+    if (param != NULL) {
+        loging("Function params do not match! Got %zu, expected %zu", paramCounter, expectedCount);
+        exitBadParamsCall(&callIns->arg1);
+    }
+}
 void assignTypesCallFunc(i3InstructionArray_t *array, symtable_t *symtable) {
     // assign type when call functions
+    for (size_t i = 0; i < array->size; ++i) {
+        if (array->instructions[i].type == I_CALL) {
+            i3Instruction_t *callIns = &array->instructions[i];
+            symbol_t *symbol = symSearchFunc(symtable, callIns->arg1.identifier);
+            i3Instruction_t *createFrameIns = findCreateFrameIns(&array->instructions[i]);
+            compareParams(symbol->firstParam, callIns, createFrameIns);
+        }
+    }
 }
+
 
 void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
     symbol_t *symbol = symSearchFunc(symtable, array->functionName);
@@ -326,13 +373,10 @@ void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
         // do not process in main body
         assignTypeToParams(array, symtable, symbol);
     }
+    // don't you dare to change order of next calls
     assignFuncReturnTypes(array, symtable);
     assignTypesCallFunc(array, symtable);
     convertTypesOnStack(array, symtable);
-    // checkReturnTypes();
-    // 1. chech RETURN TYPES
-    // 2. assign when calling function
-    // 3. check function calls types
 }
 
 void postprocess(i3Table_t program, symtable_t symtable) {

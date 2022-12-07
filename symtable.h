@@ -128,4 +128,5 @@ symbol_t *createSymbolFunction(const char *name,
 void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);
 void insDTList(DTList_T *list, symbolDataType_t typ, char *identifier);
+size_t countDtList(DTList_T *list);
 #endif//IFJ22_SYMTABLE_H
