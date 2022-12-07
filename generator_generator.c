@@ -129,8 +129,8 @@ void generateCall(const char *function_name) {
     printf("CALL $BEGIN_%s\n", function_name);
 }
 
-void generateJumps(i3Instruction_t instruction){
-    printf("JUMPIFNEQS %s",instruction.arg1.identifier );
+void generateJumps(i3Instruction_t instruction) {
+    printf("JUMPIFNEQS %s", instruction.arg1.identifier);
 }
 
 void generateInstruction(i3Instruction_t instruction) {
@@ -267,6 +267,8 @@ void generateInstructionArray(i3InstructionArray_t array, symtable_t *symtable) 
         sprintf(buffer, "$BEGIN_%s", array.functionName);
         generateLabel(buffer);
         symbol_t *funkce = symSearchFunc(symtable, array.functionName);
+        int len = funkce->firstParam->len;
+        printf("# len: %d\n", len);
         DTListMem_T *member = funkce->firstParam->first;
         size_t count = 0;
         while (member) {

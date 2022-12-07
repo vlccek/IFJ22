@@ -100,6 +100,10 @@ void SA_ifKey(semanticActionInfo info) {
     SA_NewSymtableFrame(info);
     ifStart();
 }
+void SA_Destroy_NULL(semanticActionInfo info) {
+    printlog("NULL nelze přiřadit přímo do proměnné!");
+    PrettyExit(ERR_TYPES);
+}
 
 void semanticActionsInit() {
     initIgen(program);
@@ -115,10 +119,11 @@ void semanticActionsInit() {
 
     // Variables assignment
     setSemanticAction(Command, identifierVar, &SA_DeclareNewVariable);
+    setSemanticAction(DefVarAss, nullKey, &SA_Destroy_NULL)
 
-    // Function definition
-    setSemanticAction(FceHeader, identifierFunc, &SA_FceDefine);
-    setSemanticActionRow(FunctionDeclareParams, &SA_FceDefType, 1, rightPar);
+            // Function definition
+            setSemanticAction(FceHeader, identifierFunc, &SA_FceDefine);
+    setSemanticActionRow(DataType, &SA_FceDefType, 0);
     setSemanticAction(DeclareParam, identifierVar, &SA_FceDefParam);
     setSemanticActionRow(FuncReturnColonType, &SA_FceDefRet, 0);
 

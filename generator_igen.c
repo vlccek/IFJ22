@@ -58,7 +58,7 @@ void functionDefRet(token_t token) {
     symbol_t *search = symSearchFunc(&symtable, currentState.newFunction.identifier);
     if (search) {
         printlog("Pokus o redefinici funkce '%s'\n", currentState.newFunction.identifier);
-        PrettyExit(ERR_IDENTIFIER_NAME);
+        PrettyExit(ERR_FUNCTION_IDENTIFIER);
     }
     symInsertFunction(&symtable, currentState.newFunction);
 }
@@ -67,7 +67,7 @@ symbol_t *findExistingVariable(char *variableName) {
     symbol_t *symbol = symSearchVar(&symtable, variableName);
     if (symbol == NULL) {
         printlog("Proměnná '%s' nebyla nalezena v tabulce symbolů!\n", variableName);
-        PrettyExit(ERR_IDENTIFIER_NAME);
+        PrettyExit(ERR_UNDEFINED_VAR);
     }
     return symbol;
 }
@@ -125,6 +125,8 @@ void endFunctionCall(i3Table_t program, token_t token) {
                 .arg1 = *currentState.callingFunction};
         pushToArray(&program[currentState.currentArray], instruction);
         if (currentState.undefinedVariable.type == variable) {
+            currentState.undefinedVariable.dataType = undefinedDataType;
+            symInsert(&symtable, currentState.undefinedVariable);
             functionReturnAssignment(program, currentState.undefinedVariable);
         }
         popFrame(program);
@@ -262,7 +264,7 @@ symbol_t tokenToSymbol(token_t token) {
         symbol_t *found = findExistingVariable(token.data.valueString->string);
         if (!found) {
             printlog("Chyba: proměnná $%s nenalezena ", token.data.valueString->string);
-            PrettyExit(ERR_IDENTIFIER_NAME);
+            PrettyExit(ERR_UNDEFINED_VAR);
         }
         newSymbol = *found;
     } else {
