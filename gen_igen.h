@@ -39,6 +39,7 @@ void actionLTS(i3InstructionArray_t *program);
 void actionEQS(i3InstructionArray_t *program);
 void actionLTSEQ(i3InstructionArray_t *program);// >=
 void actionGTSEQ(i3InstructionArray_t *program);// <=
+void actionNEQS(i3InstructionArray_t *program); // <=
 void ifStart();
 void elseStart();
 void whilestarts(i3InstructionArray_t *program);

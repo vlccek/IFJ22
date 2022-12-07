@@ -250,6 +250,8 @@ expressionAction_t convertToAction(lexType data) {
             return AGreaterThenEq;
         case eqOp:
             return AEq;
+        case notEqOp:
+            return ANotEq;
         default:
             return ANotAnAction;
     }
