@@ -181,7 +181,6 @@ void findTypes(i3Instruction_t *ins, size_t insAtPos, i3InstructionArray_t *arra
     }
 }
 
-
 /// Convert two instructions to same type by adding INT2FLOATS ins
 /// \param array Array of instructions
 /// \param insAtPos Position of the instruction
@@ -213,23 +212,12 @@ size_t assignTypeToStackIns(i3InstructionArray_t *array, size_t insAtPos) {
             array->instructions[insAtPos + addedIns].arg1.dataType = i1->arg1.dataType;
         }
     }
-    /*
-    if(addedIns == 0){
-        // if same types, then final have this type
-        array->instructions[insAtPos + addedIns].arg1.dataType = i1->arg1.dataType;
-    } else {
-        // if not same type, than surely converted to float
-        // todo if not bool type
-        array->instructions[insAtPos + addedIns].arg1.dataType = floating;
-    }
-     */
     array->instructions[insAtPos + addedIns].checkedType = false;
     return addedIns;
 }
 
 void assignTypeToPopsIns(i3InstructionArray_t *array, size_t insAtPos) {
     i3Instruction_t *i1 = getNextNotCheckedIns(array, insAtPos - 1);
-    // findTypes(i1, insAtPos - 1, array);
     array->instructions[insAtPos].dest.dataType = i1->arg1.dataType;
 }
 void convertTypesOnStack(i3InstructionArray_t *array) {
