@@ -274,7 +274,10 @@ void flushCommand(i3Table_t program) {
 void exitCodeBlock() {
     printSymtable(&symtable);
     if (symDelLocal(&symtable)) {
+        // tady vylezl z funkce
         exitFunc();
+    } else {
+        // tady vylezl z nejakeho zanoreni co neni funkce
     }
 }
 
