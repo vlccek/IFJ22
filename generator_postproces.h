@@ -1,0 +1,8 @@
+//
+// Created by tonda on 07/12/22.
+//
+
+#ifndef IFJ22_GENERATOR_POSTPROCES_H
+#define IFJ22_GENERATOR_POSTPROCES_H
+
+#endif//IFJ22_GENERATOR_POSTPROCES_H

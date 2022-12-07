@@ -54,7 +54,9 @@ add_executable(main
         symtable.h
         stackIf.c
         stackIf.h
-)
+        generator_postproces.c
+        generator_postproces.h
+        )
 
 
 add_library(stack
