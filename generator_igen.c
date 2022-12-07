@@ -219,7 +219,7 @@ symbol_t tokenToSymbol(token_t token) {
         newSymbol = *found;
     } else {
         // statement is part of the expression
-        newSymbol = createSymbolVarLit(dstrGet(token.data.valueString),
+        newSymbol = createSymbolVarLit(NULL,// todo před odevzdáním tu dej místo null prázdný string.
                                        literal,
                                        tokenTypeToSymbolType(token.type),
                                        token);
