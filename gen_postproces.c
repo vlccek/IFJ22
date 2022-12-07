@@ -71,6 +71,8 @@ bool isCompareIns(i3InstructionType_t type) {
             I_LTS,
             I_GTS,
             I_EQS,
+            I_LT_OR_EQ,
+            I_GT_OR_EQ,
     };
     size_t n = sizeof(types) / sizeof(i3InstructionType_t);
     for (int i = 0; i < n; ++i) {
@@ -92,6 +94,9 @@ bool isStackIns(i3InstructionType_t type) {
             I_LTS,
             I_GTS,
             I_EQS,
+            I_CONCATS,
+            I_LT_OR_EQ,
+            I_GT_OR_EQ,
     };
     size_t n = sizeof(types) / sizeof(i3InstructionType_t);
     for (int i = 0; i < n; ++i) {
@@ -273,19 +278,50 @@ void convertTypesOnStack(i3InstructionArray_t *array, symtable_t *symtable) {
         }
     }
 }
+void postProcDefvar(i3InstructionArray_t *array) {
+    bool isInFuctCall = false;
+    htTable_t table;
+    htInit(&table);
+    for (int i = 0; i < array->size; ++i) {
+        if (array->instructions[i].type == I_PUSHFRAME) {
+            isInFuctCall = true;
+        }
+        if (array->instructions[i].type == I_POPFRAME) {
+            isInFuctCall = false;
+        }
+        if (isInFuctCall) {
+            continue;
+        }
+        if (array->instructions[i].type == I_DEFVAR) {
+            i3Instruction_t inst = array->instructions[i];
+            symbol_t arg1 = inst.arg1;
+            htItem_t *item = htSearch(&table, arg1.identifier);
+            if (!item) {
+                htInsertItem(&table, arg1.token.data.valueString->string, arg1);
+                insertInstruction(array, inst, 0);
+
+                i++;
+                array->instructions[i].type = I_NOOP;
+            } else {
+                array->instructions[i].type = I_NOOP;
+            }
+        }
+    }
+    htDestroy(&table);
+}
 
 void assignTypesCallFunc(i3InstructionArray_t *array, symtable_t *symtable) {
     // assign type when call functions
 }
 
 void postProcArray(i3InstructionArray_t *array, symtable_t *symtable) {
-    // todo: nechceme double DEFVAR instrukce - nastavit na NOOP
     symbol_t *symbol = symSearchFunc(symtable, array->functionName);
     if (!symbol) {
         if (strcmp(array->functionName, "$MainBody") != 0) {
             InternalError("Generuju funkci, co není v symtabulce :(");
         }
     }
+    postProcDefvar(array);
     if (symbol) {
         // do not process in main body
         assignTypeToParams(array, symtable, symbol);
