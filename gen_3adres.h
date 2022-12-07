@@ -45,11 +45,11 @@ typedef enum i3InstructionType {
     I_JUMP_IF_FALSE,
     I_JUMPS_NEQ,
     I_JUMPS_EQ,
-    I_LTS,// mensi
+    I_LTS,// lesser
     I_LT_OR_EQ,
-    I_GTS,// vetší
+    I_GTS,// greater
     I_GT_OR_EQ,
-    I_EQS,// stejné
+    I_EQS,// equal
     I_CALL,
     I_RETURN,
     I_DEFVAR,
@@ -62,7 +62,7 @@ typedef enum i3InstructionType {
 } i3InstructionType_t;
 
 /**
- * @brief tříadresná instrukce
+ * @brief three-address instruction
  * 
  */
 typedef struct i3Instruction {
@@ -75,7 +75,7 @@ typedef struct i3Instruction {
 } i3Instruction_t;
 
 /**
- * @brief seznam tříadresných instrukcí
+ * @brief list of three-address instructions
  * 
  */
 typedef struct i3InstructionArray {

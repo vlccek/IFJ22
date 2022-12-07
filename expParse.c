@@ -37,12 +37,12 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case plusOp:
         case minusOp:
         case concatenationOp:
-            loging("Index in precedenc table: %d", indexOpPlusMinus);
+            loging("Index in precedence table: %d", indexOpPlusMinus);
             return indexOpPlusMinus;
             break;
         case divisionOp:
         case multiplicationOp:
-            loging("Index in precedenc table: %d", indexOpMulDiv);
+            loging("Index in precedence table: %d", indexOpMulDiv);
             return indexOpMulDiv;
             break;
         case identifierVar:
@@ -51,25 +51,25 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case floatLiteral:
         case integerLiteral:
         case nullKey:
-            loging("Index in precedenc table: %d", indexId);
+            loging("Index in precedence table: %d", indexId);
             return indexId;
             break;
         case leftPar:
-            loging("Index in precedenc table: %d", indexLpar);
+            loging("Index in precedence table: %d", indexLpar);
             return indexLpar;
         case rightPar:
             if (leftparc == 0 &&  isExpInIf ) {
-                loging("Found `(` token, i this context is end of exp "
-                       "Index in precedenc table: %d",
+                loging("Found `(` token, in this context is end of exp "
+                       "Index in precedence table: %d",
                        indexDollar);
                 return indexDollar;
             }
-            loging("Index in precedenc table: %d", indexRpar);
+            loging("Index in precedence table: %d", indexRpar);
             return indexRpar;
         case dollar:
         case semicolon:
         case ending:
-            loging("Index in precedenc table: %d", indexDollar);
+            loging("Index in precedence table: %d", indexDollar);
             return indexDollar;
             break;
         case lesserEqOp:
@@ -78,18 +78,18 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case greaterEqOp:
         case eqOp:
         case notEqOp:
-            loging("Index in precedenc is comapring (bool) symbol for, index : %d", indexCmp);
+            loging("Index in precedence is comparing (bool) symbol for, index : %d", indexCmp);
             return indexCmp;
             break;
         default:
-            loging("Index in precedenc table not foung: %d", t);
+            loging("Index in precedence table not found: %d", t);
             break;
     }
 }
 
 
 /**
- * Push precedentTyp to stack
+ * Push precedenceType to stack
  * @param precT
  */
 void pushPrecedencToken(genericStack *sTokens, precendenceType precT) {
@@ -107,7 +107,7 @@ void pushExpNonTerminal(genericStack *sTokens) {
 }
 
 /**
- * Use get token function and allocate memory for it. Wraps to expPraserType.
+ * Use getToken() function and allocate memory for it. Wraps to expPraserType.
  * @return
  */
 expParserType *getTokenP() {
@@ -180,7 +180,7 @@ void expAnal(bool isInIf) {
                 loging("Entering precR case");
                 ruleNum = derivateTopStack(sTokens);
                 pushExpNonTerminal(sTokens);
-                // najde se první < pak se přejde
+                // finds the first instance of < then breaks
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)

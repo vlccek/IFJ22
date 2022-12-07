@@ -11,13 +11,13 @@
 
 typedef struct currentState {
     size_t currentArray;
-    size_t lastUsedArray;          // poslední array, do kterého se zapisoval kód funkce
+    size_t lastUsedArray;          // last array in which was the function code written
     symbol_t *callingFunction;     // todo: this should be nulled somewhere
     symbol_t undefinedVariable;    // variable is floating in the middle of assignment
-    symbol_t newFunction;          // symbol nové funkce, který si pamatujeme
-    lexType lastVarType;           // typ proměnné při definici funkce, kterou si pamatujeme
-    size_t functionCallParamNumber;// kolikátý parametr funkce právě zpracováme
-    genericStack *labelStack;      // stack pro jméne labelů co se pooužívají v ifech a whilech
+    symbol_t newFunction;          // symbol of a new function that is being stored
+    lexType lastVarType;           // type of variable during function definition that is being stored
+    size_t functionCallParamNumber;// which parameter of a function is being processed
+    genericStack *labelStack;      // stack for label names that are used in ifs and whiles
 
     // used by expression parsing
     int ifImmersion;

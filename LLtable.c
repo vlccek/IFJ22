@@ -166,7 +166,7 @@ void InserRules(int terminal,
             // Table[nonTerminal][terminal]->rules[ruleIndex]->to[i] = ((extendedStackMember *) members);
         }
         if (i < MAX_RULE_LEN) {
-            // Poslední se dává na null jen pokud jsem nenaplnil celý
+            // last is null only if not entirely full
             AddToRightSide(terminal, nonTerminal, i, NULL, ruleIndex);
         }
         va_end(members);

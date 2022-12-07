@@ -11,13 +11,13 @@
 #include "common.h"
 
 char *allNonTerminalNames[] = {
-        // S - init stav
+        // S - initial state
          "ProgramBody",
 
         // Command
          "Command",
 
-        // Definice funkcí
+        // Function definition
          "FceDefine",
          "FceHeader",
          "FunctionDeclareParams",
@@ -39,11 +39,11 @@ char *allNonTerminalNames[] = {
         // Data types DataType
          "DataType",
 
-        // Definice proměné
+        // Variable definition
          "DeclareVariable",
          "DefVarAss",
 
-        // Podmínky
+        // Conditions
          "Condition",
          "ElseCond",
 
@@ -54,7 +54,7 @@ char *allNonTerminalNames[] = {
          "Return",
          "ReturnExp",
 
-        // Vnítřek funkce
+        // Function body
          "FunctionBody",
         "nonTerminalCount"
 };

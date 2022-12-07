@@ -10,7 +10,7 @@
 
 #ifndef IFJ22_COMMON_H
 #define IFJ22_COMMON_H
-// includy
+// includes
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,7 +60,7 @@
     if ((p) == NULL) {                        \
         InternalError("Not enough memory. "); \
         exit(ERR_RUNTIME);                    \
-    }// pro malloc
+    }// for malloc
 #define checkNotZeroReturn(Expression) \
     {                                  \
         int err;                       \

@@ -21,13 +21,13 @@
 #define partOfRulesRightSide(name) createPSAStackMember(name, getDataType(#name))
 
 typedef enum {
-    // S - init stav
+    // S - initial state
     ProgramBody,
 
     // Command
     Command,
 
-    // Definice funkcí
+    // Function definitions
     FceDefine,
     FceHeader,
     FunctionDeclareParams,
@@ -49,11 +49,11 @@ typedef enum {
     // Data types DataType
     DataType,
 
-    // Definice proměné
+    // Variable definitions
     DeclareVariable,
     DefVarAss,
 
-    // Podmínky
+    // Conditions
     Condition,
     ElseCond,
 
