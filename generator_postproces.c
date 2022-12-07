@@ -18,7 +18,8 @@ void postProcArrayFunctionParams(i3InstructionArray_t *array, symtable_t *symtab
 symbol_t *callInsToSymb(i3Instruction_t instruction, symtable_t *symtable) {
     symbol_t *funcSymbol = symSearchFunc(symtable, instruction.arg1.identifier);
     if (funcSymbol == NULL) {
-        loging("Calling undefined function!\n");
+        printSymbol(&instruction.arg1);
+        loging("Calling undefined function at!\n");
         PrettyExit(ERR_FUNCTION_IDENTIFIER);
     }
     return funcSymbol;
