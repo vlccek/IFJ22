@@ -430,4 +430,13 @@ void printSymtable(symtable_t *symtable) {
         }
     }
 }
+size_t countDtList(DTList_T *list) {
+    DTListMem_T *param = list->first;
+    size_t count = 0;
+    while (param != NULL) {
+        count++;
+        param = param->next;
+    }
+    return count;
+}
 // endregion
