@@ -348,8 +348,9 @@ void createLLTable() {
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
     insertMember(rightPar, CommaOrEpsParams, 0);
-    insertMember(comma, CommaOrEpsParams, 3,
+    insertMember(comma, CommaOrEpsParams, 4,
                  partOfRulesRightSide(comma),
+                 partOfRulesRightSide(DataType),
                  partOfRulesRightSide(DeclareParam),
                  partOfRulesRightSide(CommaOrEpsParams));
     insertMember(identifierVar, DeclareParam, 1,
