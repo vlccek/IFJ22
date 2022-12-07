@@ -141,7 +141,7 @@ void generateFooter() {
            "RETURN\n"
            "\n"
            "LABEL $substring_nil\n"
-           "MOVE TF@$return\n"
+           "MOVE TF@$return nil@nil\n"
            "RETURN\n"
            "\n"
            "LABEL $END_substring");
