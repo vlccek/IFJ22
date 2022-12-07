@@ -487,7 +487,7 @@ void whilestarts(i3InstructionArray_t *program) {
 }
 
 void checkIfHaveElseBranch(i3InstructionArray_t *program) {
-    // není
+    // no
     if (ifS_expectingElse(currentState.labelStack)) {
         genereateEndOfCondition(program);
     }
@@ -539,6 +539,9 @@ void createLabelIns(i3Table_t program, const char *label) {
 }
 
 void finalGeneration(i3Table_t program) {
+    if (ifS_expectingElse(currentState.labelStack)) {
+        genereateEndOfCondition(program);
+    }
     postprocess(program, symtable);
     generate(program, symtable);
 }
