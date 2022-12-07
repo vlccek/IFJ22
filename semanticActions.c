@@ -101,9 +101,19 @@ void SA_ifKey(semanticActionInfo info) {
     SA_NewSymtableFrame(info);
     ifStart();
 }
+
+void SA_elseKey(semanticActionInfo info) {
+    SA_NewSymtableFrame(info);
+    elseStart();
+}
+
 void SA_Destroy_NULL(semanticActionInfo info) {
     printlog("NULL nelze přiřadit přímo do proměnné!");
     PrettyExit(ERR_TYPES);
+}
+
+void SA_NewCommand() {
+    checkIfHaveElseBranch(program);
 }
 
 void semanticActionsInit() {
@@ -134,14 +144,16 @@ void semanticActionsInit() {
 
     // IF
     setSemanticAction(Condition, ifKey, &SA_ifKey);
+    setSemanticAction(ElseCond, elseKey, &SA_elseKey);
+    setSemanticActionRow(Command, &SA_NewCommand, 0);
 
     // Return
     setSemanticAction(Return, returnKey, &SA_Return);
 
     // Creating new symtable frame
-    setSemanticAction(ElseCond, elseKey, &SA_NewSymtableFrame);
     setSemanticAction(While, whileKey, &SA_NewSymtableFrame);
 }
+
 
 void SA_EndOfCommand() {
     flushCommand(program);

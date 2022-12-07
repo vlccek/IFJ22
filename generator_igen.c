@@ -320,6 +320,12 @@ void flushCommand(i3Table_t program) {
     currentState.callingFunction = NULL;
 }
 
+void genereateEndOfCondition(i3Table_t program) {
+    const char *label = ifS_ending(currentState.ifLabelStack)->string;
+    createLabelIns(program, label);
+    ifS_old(currentState.ifLabelStack);
+}
+
 void exitCodeBlock(i3Table_t program) {
     printSymtable(&symtable);
     if (symDelLocal(&symtable)) {
@@ -327,17 +333,18 @@ void exitCodeBlock(i3Table_t program) {
         exitFunc();
     } else {
         // tady vylezl z nejakeho zanoreni co neni funkce
-        if (currentState.ifImmersion > 0) {
+        if (ifS_inIfbranch(currentState.ifLabelStack)) {
             // je to konec if bloku
-            currentState.ifImmersion--;
             const char *label = ifS_ending(currentState.ifLabelStack)->string;
             createJumpIns(program, label);
             label = ifS_else(currentState.ifLabelStack)->string;
             createLabelIns(program, label);
+
+            // skočil kladná věte očekávám else
+            ifS_SetExpectingElse(currentState.ifLabelStack, true);
+            ifS_SetinIfbranch(currentState.ifLabelStack, false);
         } else {
-            currentState.ifImmersion--;
-            const char *label = ifS_ending(currentState.ifLabelStack)->string;
-            createLabelIns(program, label);
+            genereateEndOfCondition(program);
         }
     }
 }
@@ -452,9 +459,18 @@ void actionGTSEQ(i3InstructionArray_t *program) {
 void ifStart() {
     ifS_new(currentState.ifLabelStack);
     currentState.ifImmersion++;
+    ifS_SetinIfbranch(currentState.ifLabelStack, true);
 }
 void elseStart() {
-    currentState.elseImmersion++;
+    ifS_SetsinElse(currentState.ifLabelStack, true);
+    ifS_SetExpectingElse(currentState.ifLabelStack, false);
+}
+
+void checkIfHaveElseBranch(i3InstructionArray_t *program) {
+    // není
+    if (ifS_expectingElse(currentState.ifLabelStack)) {
+        genereateEndOfCondition(program);
+    }
 }
 
 symbol_t getReturnSymbol() {

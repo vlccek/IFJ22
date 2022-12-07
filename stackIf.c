@@ -27,6 +27,10 @@ void ifS_new(genericStack *stack) {
     dstrAppend(is->elselabel, buff);
     is->endlabel = dstrInitChar(endlabelid);
     dstrAppend(is->endlabel, buff);
+    is->isEndingGenerated = false;
+    is->inElse = false;
+    is->expectinElse = false;
+    is->inIfbranch = false;
 
     gStackPush(stack, is);
 }
@@ -40,4 +44,52 @@ dynStr_t *ifS_ending(genericStack *stack) {
 }
 dynStr_t *ifS_else(genericStack *stack) {
     return ((ifsState *) gStackTop(stack))->elselabel;
+}
+
+bool ifS_isEndingGenerated(genericStack *stack) {
+    if (gStackIsEmpty(stack)) {
+        return true;// znemaná že se negeneruje žádný if
+    }
+    return ((ifsState *) gStackTop(stack))->isEndingGenerated;
+}
+
+void ifS_isSetEndingGenerated(genericStack *stack, bool end) {
+    ((ifsState *) gStackTop(stack))->isEndingGenerated = end;
+}
+
+bool ifS_expectingElse(genericStack *stack) {
+    if (gStackIsEmpty(stack)) {
+        return false;// znemaná že se negeneruje žádný if
+    }
+    return ((ifsState *) gStackTop(stack))->expectinElse;
+}
+
+void ifS_SetExpectingElse(genericStack *stack, bool end) {
+    ((ifsState *) gStackTop(stack))->expectinElse = end;
+}
+
+bool ifS_inElse(genericStack *stack) {
+    if (gStackIsEmpty(stack)) {
+        return true;// znemaná že se negeneruje žádný if
+    }
+    return ((ifsState *) gStackTop(stack))->isEndingGenerated;
+}
+
+void ifS_SetsinElse(genericStack *stack, bool end) {
+    ((ifsState *) gStackTop(stack))->isEndingGenerated = end;
+}
+
+bool ifS_inIfbranch(genericStack *stack) {
+    if (gStackIsEmpty(stack)) {
+        return false;// znemaná že se negeneruje žádný if
+    }
+    return ((ifsState *) gStackTop(stack))->inIfbranch;
+}
+
+void ifS_SetinIfbranch(genericStack *stack, bool end) {
+    ((ifsState *) gStackTop(stack))->inIfbranch = end;
+}
+
+bool ifS_isEmpty(genericStack *stack) {
+    return gStackIsEmpty(stack);
 }
