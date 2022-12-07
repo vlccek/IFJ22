@@ -58,3 +58,12 @@ void insertInstruction(i3InstructionArray_t *array, i3Instruction_t toInsert, si
     memmove(&array->instructions[pos + 1], &array->instructions[pos], sizeof(i3Instruction_t) * copyCount);
     array->instructions[pos] = toInsert;
 }
+
+dynStr_t *functionParamInternalName(size_t number) {
+    dynStr_t *string = dstrInit();
+    dstrAppend(string, "$param");
+    char buf[128];
+    sprintf(buf, "%zu", number);
+    dstrAppend(string, buf);
+    return string;
+}

@@ -7,7 +7,6 @@
  */
 
 #include "generator_igen.h"
-#include "generator_postproces.h"
 
 typedef struct currentState {
     size_t currentArray;
@@ -89,6 +88,7 @@ void createFrame(i3Table_t program) {
 
 void startFunctionCall(i3Table_t program, token_t token) {
     symbol_t *symbol = createSymbolFunction(token.data.valueString->string, function, NULL, undefinedDataType);
+    symbol->token = token;
     currentState.callingFunction = symbol;
     currentState.functionCallParamNumber = 0;
     if (strcmp(currentState.callingFunction->identifier, "write") != 0) {
@@ -167,19 +167,12 @@ void writeSymbol(i3Table_t program, symbol_t symbol) {
     instruction.arg1 = symbol;
     pushToArray(&program[currentState.currentArray], instruction);
 }
-dynStr_t *functionParamInternalName() {
-    dynStr_t *string = dstrInit();
-    dstrAppend(string, "$param");
-    char buf[128];
-    sprintf(buf, "%zu", currentState.functionCallParamNumber++);
-    dstrAppend(string, buf);
-    return string;
-}
+
 
 void functionParamAssignment(i3Table_t program, symbol_t symbol) {
     i3Instruction_t instruction;
     instruction.type = I_DEFVAR;
-    dynStr_t *string = functionParamInternalName();
+    dynStr_t *string = functionParamInternalName(currentState.functionCallParamNumber++);
     char *identifier = dstrGet(string);
     token_t token = symbol.token;
     token.data.valueString = string;

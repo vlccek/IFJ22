@@ -254,6 +254,7 @@ void symNewLocal(symtable_t *symtable) {
 }
 
 bool symDelLocal(symtable_t *symtable) {
+    htDestroy(&(symtable->current[symtable->last]));
     if (symtable->last == 0) {
         if (symtable->isInFunction) {
             loging("INFO: Switching back to main symtable.");
@@ -264,7 +265,6 @@ bool symDelLocal(symtable_t *symtable) {
         InternalError("ERROR: attempted to delete non existent symtable");
         return false;
     }
-    htDestroy(&(symtable->current[symtable->last]));
     symtable->last--;
     return false;
 }

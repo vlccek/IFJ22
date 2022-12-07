@@ -3,23 +3,45 @@
 //
 
 #include "generator_postproces.h"
-#include "generator_3adres.h"
 void postProcArrayFunctionParams(i3InstructionArray_t *array, symtable_t *symtable, symbol_t *symbol) {
     int len = symbol->firstParam->len;
-    printf("# len: %d\n", len);
     DTListMem_T *member = symbol->firstParam->first;
+    int i = 0;
     while (member) {
+        dynStr_t *dynStr = dstrInitChar(member->identifier);
 
+        token_t tokenDefVar = {
+                .type = identifierVar,
+                .data.valueString = dynStr,
+        };
+        symbol_t symb_param = createSymbolVarLit(dstrGet(dynStr), variable, member->type, tokenDefVar);
+        i3Instruction_t instruction_defvar = {
+                .type = I_DEFVAR,
+                .arg1 = symb_param,
+        };
+        insertInstruction(array, instruction_defvar, 0);
+        dynStr_t *name = functionParamInternalName(i++);
+        token_t tokenParam = {
+                .type = identifierVar,
+                .data.valueString = name,
+        };
+        symbol_t symb_name = createSymbolVarLit(dstrGet(name), variable, member->type, tokenParam);
+        i3Instruction_t instruction_move = {
+                .type = I_MOVE,
+                .dest = symb_param,
+                .arg1 = symb_name,
+        };
+        insertInstruction(array, instruction_move, 1);
         member = member->next;
     }
-    // todo vygenerovat $param1 -> $reálný identifikátor
 }
 
 symbol_t *callInsToSymb(i3Instruction_t instruction, symtable_t *symtable) {
     symbol_t *funcSymbol = symSearchFunc(symtable, instruction.arg1.identifier);
     if (funcSymbol == NULL) {
+        loging("Calling undefined function:");
         printSymbol(&instruction.arg1);
-        loging("Calling undefined function at!\n");
+        printlog("\n");
         PrettyExit(ERR_FUNCTION_IDENTIFIER);
     }
     return funcSymbol;

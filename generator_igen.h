@@ -11,6 +11,7 @@
 #include "common.h"
 #include "generator_3adres.h"
 #include "generator_generator.h"
+#include "generator_postproces.h"
 #include "stackIf.h"
 #include "symtable.h"
 
