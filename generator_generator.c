@@ -192,6 +192,7 @@ void generateInstruction(i3Instruction_t instruction) {
             generateLabel(instruction.arg1.identifier);
             break;
         case I_JUMP:
+            generateJump(instruction.arg1.identifier);
             break;
         case I_JUMP_IF_TRUE:
             break;

@@ -16,10 +16,11 @@ typedef struct currentState {
     symbol_t newFunction;          // symbol nové funkce, který si pamatujeme
     lexType lastVarType;           // typ proměnné při definici funkce, kterou si pamatujeme
     size_t functionCallParamNumber;// kolikátý parametr funkce právě zpracováme
-    genericStack *ifLabelStack;     // stack pro jméne labelů co se pooužívají v ifech
+    genericStack *ifLabelStack;    // stack pro jméne labelů co se pooužívají v ifech
 
     // used by expression parsing
-    int immersion;
+    int ifImmersion;
+    int elseImmersion;
     bool generateReturn;
 } currentState_T;
 
@@ -285,13 +286,21 @@ void flushCommand(i3Table_t program) {
     currentState.callingFunction = NULL;
 }
 
-void exitCodeBlock() {
+void exitCodeBlock(i3Table_t program) {
     printSymtable(&symtable);
     if (symDelLocal(&symtable)) {
         // tady vylezl z funkce
         exitFunc();
     } else {
         // tady vylezl z nejakeho zanoreni co neni funkce
+        if (currentState.ifImmersion > 0) {
+            // je to konec if bloku
+            currentState.ifImmersion--;
+            const char * label = ifS_ending(currentState.ifLabelStack)->string;
+            createJumpIns(program, label);
+            label = ifS_else(currentState.ifLabelStack)->string;
+            createLabelIns(program, label);
+        }
     }
 }
 
@@ -360,7 +369,7 @@ void actionGTSEQ(i3InstructionArray_t *program) {
 
 void ifStart() {
     ifS_new(currentState.ifLabelStack);
-    currentState.immersion++;
+    currentState.ifImmersion++;
 }
 
 symbol_t getReturnSymbol() {
@@ -383,4 +392,23 @@ void prepareReturn(i3Table_t program) {
     symbol_t symbol = getReturnSymbol();
     currentState.undefinedVariable = symbol;
     currentState.generateReturn = true;
+}
+
+void createJumpIns(i3Table_t program, const char *label) {
+
+    i3Instruction_t instruction = {
+            .type = I_JUMP,
+            .arg1.identifier = label,
+    };
+
+    pushToArray(&program[currentState.currentArray], instruction);
+}
+void createLabelIns(i3Table_t program, const char *label) {
+
+    i3Instruction_t instruction = {
+            .type = I_LABEL,
+            .arg1.identifier = label,
+    };
+
+    pushToArray(&program[currentState.currentArray], instruction);
 }

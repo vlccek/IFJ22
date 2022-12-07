@@ -143,7 +143,7 @@ void SA_EndOfCommand() {
 }
 
 void SA_EndOfBlock() {
-    exitCodeBlock();
+    exitCodeBlock(program);
 }
 
 void SA_EndOfParsing() {

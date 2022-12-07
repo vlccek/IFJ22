@@ -33,11 +33,13 @@ void actionConcat(i3Table_t program);
 void actionGTS(i3InstructionArray_t *program);
 void actionLTS(i3InstructionArray_t *program);
 void actionEQS(i3InstructionArray_t *program);
-void actionLTSEQ(i3InstructionArray_t *program); // >=
-void actionGTSEQ(i3InstructionArray_t *program); // <=
+void actionLTSEQ(i3InstructionArray_t *program);// >=
+void actionGTSEQ(i3InstructionArray_t *program);// <=
 void ifStart();
+void createJumpIns(i3Table_t program, const char *label);
+void createLabelIns(i3Table_t program, const char *label);
 
-void exitCodeBlock();
+void exitCodeBlock(i3Table_t program);
 void enterFunc(i3InstructionArray_t *program, char *identifier);
 void exitFunc();
 void prepareReturn(i3Table_t program);
