@@ -10,9 +10,9 @@
 #define STACK_SEMANTICACTIONS_H
 
 #include "LLtable.h"
+#include "gen_gen.h"
+#include "gen_igen.h"
 #include "semanticActionInfo.h"
-#include "generator_igen.h"
-#include "generator_generator.h"
 
 // semantic actions
 

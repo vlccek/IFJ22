@@ -1,12 +1,12 @@
 /**
- * @file generator_generator.c
+ * @file gen_gen.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief Generator of final code
  * Implementation IFJ22 compiler
  */
 
-#include "generator_generator.h"
+#include "gen_gen.h"
 
 void generateHeader() {
     printf(".IFJcode22\nDEFVAR GF@type\n");

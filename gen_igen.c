@@ -1,5 +1,5 @@
 /**
- * @file generator_igen.c
+ * @file gen_igen.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
@@ -7,7 +7,7 @@
  * Implementation IFJ22 compiler
  */
 
-#include "generator_igen.h"
+#include "gen_igen.h"
 
 typedef struct currentState {
     size_t currentArray;

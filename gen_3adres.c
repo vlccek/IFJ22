@@ -1,12 +1,12 @@
 /**
- * @file generator_3adres.c
+ * @file gen_3adres.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief Definitions of internal 3 address structures
  * Implementation IFJ22 compiler
  */
 
-#include "generator_3adres.h"
+#include "gen_3adres.h"
 
 
 void initializeProgram(i3Table_t *program) {
