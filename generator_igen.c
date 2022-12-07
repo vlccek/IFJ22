@@ -394,6 +394,10 @@ void prepareReturn(i3Table_t program) {
     currentState.generateReturn = true;
 }
 
+void createNewSymtableFrame() {
+    symNewLocal(&symtable);
+}
+
 void createJumpIns(i3Table_t program, const char *label) {
 
     i3Instruction_t instruction = {

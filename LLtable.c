@@ -10,6 +10,8 @@
 table Table;
 
 void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*semanticAction)(semanticActionInfo)) {
+    if (Table[nonTerminal][terminal]->rules[0]->semanticAction != NULL)
+        InternalError("Prepisujes si semantickou akci");
     Table[nonTerminal][terminal]->rules[0]->semanticAction = semanticAction;
 }
 

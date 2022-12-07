@@ -23,14 +23,6 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
     pravidlo->semanticAction(info);
 }
 
-
-void SA_programBody(semanticActionInfo info) {
-    loging("SA_programBody");
-}
-void SA_Command_identifierVar(semanticActionInfo info) {
-    loging("SA_Command_identifierVar");
-}
-
 void SA_Statement(semanticActionInfo info) {
     newStatement(program, info.lastToken);
 }
@@ -96,20 +88,22 @@ void SA_ExpressionAction(semanticActionInfo info) {
     }
 }
 
-void SA_ifKey(semanticActionInfo info) {
-    ifStart();
-}
-
 void SA_Return(semanticActionInfo info) {
     prepareReturn(program);
+}
+
+void SA_NewSymtableFrame(semanticActionInfo info) {
+    createNewSymtableFrame();
+}
+
+void SA_ifKey(semanticActionInfo info) {
+    SA_NewSymtableFrame(info);
+    ifStart();
 }
 
 void semanticActionsInit() {
     initIgen(program);
     initializeProgram(&program);
-
-    setSemanticAction(ProgramBody, identifierVar, &SA_programBody);
-    setSemanticAction(Command, identifierVar, &SA_Command_identifierVar);
 
     // Function calls
     setSemanticAction(FceCall, identifierFunc, &SA_FceCall);
@@ -136,6 +130,10 @@ void semanticActionsInit() {
 
     // Return
     setSemanticAction(Return, returnKey, &SA_Return);
+
+    // Creating new symtable frame
+    setSemanticAction(ElseCond, elseKey, &SA_NewSymtableFrame);
+    setSemanticAction(While, whileKey, &SA_NewSymtableFrame);
 }
 
 void SA_EndOfCommand() {
