@@ -267,6 +267,12 @@ void generateMoveSpecial(i3Instruction_t instruction, bool param) {
                instruction.arg1.identifier);
     }
 }
+void generateConcats() {
+    printf("POPS GF@j\n"
+           "POPS GF@i\n"
+           "CONCAT GF@strlen GF@i GF@j\n"
+           "PUSHS GF@strlen");
+}
 void generateLabel(const char *label) {
     printf("\nLABEL %s\n", label);
 }
@@ -301,8 +307,8 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_IDIVS:
             generateSimpleIns("IDIVS");
             break;
-        case I_CONCAT:
-            generateSimpleIns("CONCATS");
+        case I_CONCATS:
+            generateConcats();
             break;
         case I_EQ:
             break;
@@ -403,6 +409,10 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_CREATEFRAME:
             generateSimpleIns("CREATEFRAME");
+            break;
+        case I_CONCAT:
+            break;
+        case I_JUMPS_EQ:
             break;
     }
     printf("\n");
