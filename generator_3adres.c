@@ -52,4 +52,9 @@ char *copyString(char *toCopy) {
     return newString;
 }
 
-
+void insertInstruction(i3InstructionArray_t *array, i3Instruction_t toInsert, size_t pos) {
+    pushToArray(array, toInsert);
+    size_t copyCount = array->size - pos - 1;
+    memmove(&array->instructions[pos + 1], &array->instructions[pos], sizeof(i3Instruction_t) * copyCount);
+    array->instructions[pos] = toInsert;
+}

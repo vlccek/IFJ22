@@ -88,5 +88,6 @@ void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, ch
 
 void initializeProgram(i3Table_t *program);
 char *copyString(char *toCopy);
+void insertInstruction(i3InstructionArray_t *array, i3Instruction_t toInsert, size_t pos);
 
 #endif//IFJ22_3ADRES_H
