@@ -457,6 +457,19 @@ void actionLTSEQ(i3InstructionArray_t *program) {
     createPushInstruction(program, data);
     if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
+
+void actionNEQS(i3InstructionArray_t *program) {
+    createStackInstruction(program, I_EQS);
+    const char *label = ifS_else(currentState.labelStack)->string;
+
+    symbol_t data = {
+            .type = literal,
+            .dataType = booltype,
+            .token.data.valueInteger = 1,
+    };
+    createPushInstruction(program, data);
+    if_creatJumpS(program, I_JUMPS_EQ, label);
+}
 void actionGTSEQ(i3InstructionArray_t *program) {
     // todo
     createStackInstruction(program, I_GT_OR_EQ);

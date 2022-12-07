@@ -86,6 +86,9 @@ void SA_ExpressionAction(semanticActionInfo info) {
         case ALowerThenEq:
             actionLTSEQ(program);
             break;
+        case ANotEq:
+            actionNEQS(program);
+            break;
         case ANotAnAction:
             InternalError("Expression action called at very wrong time.");
     }
