@@ -432,7 +432,7 @@ void actionLTS(i3InstructionArray_t *program) {
 }
 void actionEQS(i3InstructionArray_t *program) {
     createStackInstruction(program, I_EQS);
-    const char *label = ifS_start(currentState.labelStack)->string;
+    const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
             .type = literal,
