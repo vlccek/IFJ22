@@ -235,24 +235,21 @@ bool isReturnPop(i3Instruction_t instruction) {
     return false;
 }
 
-void checkFunctionReturnType(i3Instruction_t i2, symbol_t *funcSymb) {
-    bool fail = false;
-    if (funcSymb->returnType == integerNullable) {
-        fail = funcSymb->returnType != integer && funcSymb->returnType != integerNullable;
+bool checkFunctionReturnType(symbolDataType_t dataType1, symbolDataType_t dataType2) {
+    bool success = true;
+    if (dataType2 == integerNullable) {
+        success = dataType1 == integer || dataType1 == integerNullable;
 
-    } else if (funcSymb->returnType == floatingNullable) {
-        fail = funcSymb->returnType != floating && funcSymb->returnType != floatingNullable;
+    } else if (dataType2 == floatingNullable) {
+        success = dataType1 == floating || dataType1 == floatingNullable;
 
-    } else if (funcSymb->returnType == stringNullable) {
-        fail = funcSymb->returnType != string && funcSymb->returnType != stringNullable;
+    } else if (dataType2 == stringNullable) {
+        success = dataType1 == string || dataType1 == stringNullable;
 
     } else {
-        fail = i2.arg1.dataType != funcSymb->returnType;
+        success = dataType1 == dataType2;
     }
-    if (fail) {
-        printSymbol(&i2.arg1);// TODO MBY PRINT DIFFERENT ERROR
-        PrintErrorExit("%s", ERR_FUNC_PARAM_RET_TYPE_OR_QUANTITY, "Wrong return type at token above!");
-    }
+    return success;
 }
 
 void assignTypeToPopsIns(i3InstructionArray_t *array, size_t insAtPos, symtable_t *symtable) {
@@ -260,7 +257,11 @@ void assignTypeToPopsIns(i3InstructionArray_t *array, size_t insAtPos, symtable_
     findTypes(i1, insAtPos - 1, array);
     if (isReturnPop(array->instructions[insAtPos])) {
         symbol_t *funcSymb = symSearchFunc(symtable, array->functionName);
-        checkFunctionReturnType(*i1, funcSymb);
+        if (!checkFunctionReturnType(i1->arg1.dataType, funcSymb->returnType)) {
+            printSymbol(&i1->arg1);// TODO MBY PRINT DIFFERENT ERROR
+            PrintErrorExit("%s", ERR_FUNC_PARAM_RET_TYPE_OR_QUANTITY,
+                           "Wrong return type at token above!");
+        }
     }
     array->instructions[insAtPos].dest.dataType = i1->arg1.dataType;
 }
@@ -336,7 +337,7 @@ void compareParams(struct DTList *paramList, i3Instruction_t *callIns, i3Instruc
             loging("Function params do not match! Expected %zu, got more.", expectedCount);
             exitBadParamsCall(&callIns->arg1);
         }
-        if (param->type != createFrameIns->arg1.dataType) {
+        if (!checkFunctionReturnType(createFrameIns->arg1.dataType, param->type)) {
             loging("Function param types do not match!");
             exitBadParamsCall(&callIns->arg1);
         }
