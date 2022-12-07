@@ -9,7 +9,11 @@
 #include "gen_gen.h"
 
 void generateHeader() {
-    printf(".IFJcode22\nDEFVAR GF@type\n");
+    printf(".IFJcode22\n"
+           "DEFVAR GF@type\n"
+           "DEFVAR GF@strlen\n"
+           "DEFVAR GF@i\n"
+           "DEFVAR GF@j");
 }
 void generateFooter() {
     printf("# zabudované funkce read_\n"
@@ -38,15 +42,15 @@ void generateFooter() {
            "RETURN\n"
            "\n"
            "LABEL $intval_float\n"
-           "FLOAT2INT LF@$return TF@$param0\n"
+           "FLOAT2INT TF@$return TF@$param0\n"
            "RETURN\n"
            "\n"
            "LABEL $intval_int\n"
-           "MOVE LF@$return TF@$param0\n"
+           "MOVE TF@$return TF@$param0\n"
            "RETURN\n"
            "\n"
            "LABEL $intval_nil\n"
-           "MOVE LF@$return int@0\n"
+           "MOVE TF@$return int@0\n"
            "RETURN\n"
            "\n"
            "LABEL $END_intval\n"
@@ -64,15 +68,15 @@ void generateFooter() {
            "RETURN\n"
            "\n"
            "LABEL $floatval_float\n"
-           "MOVE LF@$return TF@$param0\n"
+           "MOVE TF@$return TF@$param0\n"
            "RETURN\n"
            "\n"
            "LABEL $floatval_int\n"
-           "INT2FLOAT LF@$return TF@$param0\n"
+           "INT2FLOAT TF@$return TF@$param0\n"
            "RETURN\n"
            "\n"
            "LABEL $floatval_nil\n"
-           "INT2FLOAT LF@$return int@0\n"
+           "INT2FLOAT TF@$return int@0\n"
            "RETURN\n"
            "\n"
            "LABEL $END_floatval\n"
@@ -87,11 +91,11 @@ void generateFooter() {
            "RETURN\n"
            "\n"
            "LABEL $strval_string\n"
-           "MOVE LF@$return TF@$param0\n"
+           "MOVE TF@$return TF@$param0\n"
            "RETURN\n"
            "\n"
            "LABEL $strval_nil\n"
-           "MOVE LF@$return string@\n"
+           "MOVE TF@$return string@\n"
            "RETURN\n"
            "\n"
            "LABEL $END_strval\n"
@@ -185,7 +189,7 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
         sprintf(buf, "float@%a   # %f", symb.token.data.valueFloat, symb.token.data.valueFloat);
     else if (symb.dataType == nil)
         sprintf(buf, "nil@nil");
-    else if(symb.dataType == booltype){
+    else if (symb.dataType == booltype) {
         sprintf(buf, symb.token.data.valueInteger == 1 ? "bool@true" : "bool@false");
     }
     return buf;
@@ -241,6 +245,15 @@ void generatePops(i3Instruction_t instruction) {
 
 void generateSimpleIns(const char *instructionName) {
     printf("%s", instructionName);
+}
+void generateCompareOrEquals(bool greater) {
+    printf("POPS GF@j\n"
+           "POPS GF@i\n"
+           "EQ GF@type GF@i GF@j\n"
+           "PUSHS GF@type\n");
+    printf("%s GF@type GF@i GF@j\n", greater ? "GT" : "LT");
+    printf("PUSHS GF@type\n"
+           "ORS");
 }
 void generateMoveSpecial(i3Instruction_t instruction, bool param) {
     char buf[2048];
@@ -300,6 +313,12 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_GTS:
             generateSimpleIns("GTS");
+            break;
+        case I_LT_OR_EQ:
+            generateCompareOrEquals(false);
+            break;
+        case I_GT_OR_EQ:
+            generateCompareOrEquals(true);
             break;
         case I_LTS:
             generateSimpleIns("LTS");

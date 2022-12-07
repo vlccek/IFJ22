@@ -45,8 +45,10 @@ typedef enum i3InstructionType {
     I_JUMPS_NEQ,
     I_JUMPS_EQ,
     I_LTS,// mensi
+    I_LT_OR_EQ,
     I_GTS,// vetší
-    I_EQS, // stejné
+    I_GT_OR_EQ,
+    I_EQS,// stejné
     I_CALL,
     I_RETURN,
     I_DEFVAR,

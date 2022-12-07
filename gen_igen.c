@@ -444,7 +444,7 @@ void actionEQS(i3InstructionArray_t *program) {
 }
 void actionLTSEQ(i3InstructionArray_t *program) {
     // todo
-    createStackInstruction(program, I_LTS);
+    createStackInstruction(program, I_LT_OR_EQ);
 
 
     const char *label = ifS_else(currentState.labelStack)->string;
@@ -459,7 +459,7 @@ void actionLTSEQ(i3InstructionArray_t *program) {
 }
 void actionGTSEQ(i3InstructionArray_t *program) {
     // todo
-    createStackInstruction(program, I_GTS);
+    createStackInstruction(program, I_GT_OR_EQ);
     const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
