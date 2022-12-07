@@ -7,6 +7,7 @@
  */
 
 #include "generator_igen.h"
+#include "generator_postproces.h"
 
 typedef struct currentState {
     size_t currentArray;
@@ -474,6 +475,8 @@ void createLabelIns(i3Table_t program, const char *label) {
 
     pushToArray(&program[currentState.currentArray], instruction);
 }
+
 void finalGeneration(i3Table_t program) {
+    postprocess(program, symtable);
     generate(program, symtable);
 }
