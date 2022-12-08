@@ -1,8 +1,8 @@
 /**
  * @file semanticActionInfo.h
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
- * @brief Informace pro semantické akce
- * Implementace překladače jazyka IFJ22
+ * @brief Semantic action structures
+ * Implementation IFJ22 compiler
  */
 
 #ifndef IFJ22_SEMANTICACTIONINFO_H
@@ -20,6 +20,7 @@ typedef enum expressionAction {
     AEq,
     AGreaterThenEq,
     ALowerThenEq,
+    ANotEq,
     ANotAnAction
 } expressionAction_t;
 

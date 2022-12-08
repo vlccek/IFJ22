@@ -2,7 +2,7 @@
  * @file expParse.c
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @brief expression parser
- * Implementace překladače jazyka IFJ22
+ * Implementation IFJ22 compiler
  */
 #include "expParse.h"
 
@@ -13,7 +13,7 @@ int leftparc = 0;
 precendenceType precedenceTable[indexCount][indexCount] = {
         //a
         // +- | */ | ID lit... | . | lpar | rpar  | boolOP |dollar
-        {precR, precL, precL, precR, precL, precR, precR, precR}, // +-             //// top b
+        {precR, precL, precL, precR, precL, precR, precR, precR}, // +-   //// top b
         {precR, precR, precL, precR, precL, precR, precR, precR}, // */
         {precR, precR, precE, precR, precE, precR, precR, precR}, // ID LIT
         {precE, precE, precL, precE, precL, precR, precR, precR}, // .
@@ -37,12 +37,12 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case plusOp:
         case minusOp:
         case concatenationOp:
-            loging("Index in precedenc table: %d", indexOpPlusMinus);
+            loging("Index in precedence table: %d", indexOpPlusMinus);
             return indexOpPlusMinus;
             break;
         case divisionOp:
         case multiplicationOp:
-            loging("Index in precedenc table: %d", indexOpMulDiv);
+            loging("Index in precedence table: %d", indexOpMulDiv);
             return indexOpMulDiv;
             break;
         case identifierVar:
@@ -51,23 +51,25 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case floatLiteral:
         case integerLiteral:
         case nullKey:
-            loging("Index in precedenc table: %d", indexId);
+            loging("Index in precedence table: %d", indexId);
             return indexId;
             break;
         case leftPar:
-            loging("Index in precedenc table: %d", indexLpar);
+            loging("Index in precedence table: %d", indexLpar);
             return indexLpar;
         case rightPar:
-            if (leftparc == 0 &&  isExpInIf ){
-                loging("Found `(` token, i this context is end of exp Index in precedenc table: %d", indexDollar);
+            if (leftparc == 0 &&  isExpInIf ) {
+                loging("Found `(` token, in this context is end of exp "
+                       "Index in precedence table: %d",
+                       indexDollar);
                 return indexDollar;
             }
-            loging("Index in precedenc table: %d", indexRpar);
+            loging("Index in precedence table: %d", indexRpar);
             return indexRpar;
         case dollar:
         case semicolon:
         case ending:
-            loging("Index in precedenc table: %d", indexDollar);
+            loging("Index in precedence table: %d", indexDollar);
             return indexDollar;
             break;
         case lesserEqOp:
@@ -76,18 +78,18 @@ precedenceTableIndex indexInPrecTable(lexType t) {
         case greaterEqOp:
         case eqOp:
         case notEqOp:
-            loging("Index in precedenc is comapring (bool) symbol for, index : %d", indexCmp);
+            loging("Index in precedence is comparing (bool) symbol for, index : %d", indexCmp);
             return indexCmp;
             break;
         default:
-            loging("Index in precedenc table not foung: %d", t);
+            loging("Index in precedence table not found: %d", t);
             break;
     }
 }
 
 
 /**
- * Push precedentTyp to stack
+ * Push precedenceType to stack
  * @param precT
  */
 void pushPrecedencToken(genericStack *sTokens, precendenceType precT) {
@@ -105,7 +107,7 @@ void pushExpNonTerminal(genericStack *sTokens) {
 }
 
 /**
- * Use get token function and allocate memory for it. Wraps to expPraserType.
+ * Use getToken() function and allocate memory for it. Wraps to expPraserType.
  * @return
  */
 expParserType *getTokenP() {
@@ -178,7 +180,7 @@ void expAnal(bool isInIf) {
                 loging("Entering precR case");
                 ruleNum = derivateTopStack(sTokens);
                 pushExpNonTerminal(sTokens);
-                // najde se první < pak se přejde
+                // finds the first instance of < then breaks
                 break;
             case precL:
                 // gStackPush to stack shift symbol before front(<)
@@ -248,6 +250,8 @@ expressionAction_t convertToAction(lexType data) {
             return AGreaterThenEq;
         case eqOp:
             return AEq;
+        case notEqOp:
+            return ANotEq;
         default:
             return ANotAnAction;
     }
@@ -283,7 +287,7 @@ rule *derivateTopStack(genericStack *sTokens) {
     while (indexOfPrec != 0) {
         tmp = gStackPop(sTokens);
         if (tmp->type == exp) {
-            handle[--indexOfPrec] = createPSAStackMember(Exp, nonTerminal);// hovno kod ale couž:)
+            handle[--indexOfPrec] = createPSAStackMember(Exp, nonTerminal);
         } else {
             handle[--indexOfPrec] = createPSAStackMember(tmp->type, terminal);
         }
@@ -294,7 +298,7 @@ rule *derivateTopStack(genericStack *sTokens) {
     rule *r;
     if ((r = findRuleByHandle(handle)) == NULL) {
         //todo exit semntika
-        loging("Nebylo nalezeno pravidlo :(");
+        loging("Nebylo nalezeno pravidlo");
         PrettyExit(ERR_SYNTAX);
     } else if (checkIfHandlerIsTrvial(r->to)){
         semanticActionInfo a;
@@ -306,7 +310,7 @@ rule *derivateTopStack(genericStack *sTokens) {
                 InternalError("This should definitely be terminal!");
             a.action = convertToAction(handle[1]->data);
         }
-        r->semanticAction(a);
+        callSemanticAction(r, a);
         loging("END derivate top Ofstack");
         return r;
     }

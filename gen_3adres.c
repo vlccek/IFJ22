@@ -1,12 +1,12 @@
 /**
- * @file generator_3adres.c
+ * @file gen_3adres.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief definice datových typů pro práci s tříadresným kódem
- * Implementace překladače jazyka IFJ22
+ * @brief Definitions of internal 3 address structures
+ * Implementation IFJ22 compiler
  */
 
-#include "generator_3adres.h"
+#include "gen_3adres.h"
 
 
 void initializeProgram(i3Table_t *program) {
@@ -29,7 +29,8 @@ void initializeInstructionArray(int maxCapacity, i3InstructionArray_t *array, ch
 
 void pushToArray(i3InstructionArray_t *array, i3Instruction_t instruction) {
     if (array->size >= array->capacity) {
-        array->instructions = realloc(array->instructions, sizeof(i3Instruction_t) * array->capacity * 2);
+        array->instructions = realloc(array->instructions,
+                                      sizeof(i3Instruction_t) * array->capacity * 2);
         if (!array->instructions) {
             InternalError("realloc fail!");
         }
@@ -55,7 +56,8 @@ char *copyString(char *toCopy) {
 void insertInstruction(i3InstructionArray_t *array, i3Instruction_t toInsert, size_t pos) {
     pushToArray(array, toInsert);
     size_t copyCount = array->size - pos - 1;
-    memmove(&array->instructions[pos + 1], &array->instructions[pos], sizeof(i3Instruction_t) * copyCount);
+    memmove(&array->instructions[pos + 1], &array->instructions[pos],
+            sizeof(i3Instruction_t) * copyCount);
     array->instructions[pos] = toInsert;
 }
 

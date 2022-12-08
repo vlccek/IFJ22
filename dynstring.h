@@ -1,8 +1,8 @@
 /**
  * @file dynstring.h
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Jednoduchý dynamický string
- * Implementace překladače jazyka IFJ22
+ * @brief Simple dynamic string
+ * Implementation IFJ22 compiler
  */
 
 #include <stdbool.h>

@@ -1,17 +1,18 @@
 /**
- * @file generator_igen.h
+ * @file gen_igen.h
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief generator tříadresného kódu
- * Implementace překladače jazyka IFJ22
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Generator of internal three adress code
+ * Implementation IFJ22 compiler
  */
 
 #ifndef IFJ22_IGEN_H
 #define IFJ22_IGEN_H
 #include "common.h"
-#include "generator_3adres.h"
-#include "generator_generator.h"
-#include "generator_postproces.h"
+#include "gen_3adres.h"
+#include "gen_gen.h"
+#include "gen_postproces.h"
 #include "stackIf.h"
 #include "symtable.h"
 
@@ -38,9 +39,10 @@ void actionLTS(i3InstructionArray_t *program);
 void actionEQS(i3InstructionArray_t *program);
 void actionLTSEQ(i3InstructionArray_t *program);// >=
 void actionGTSEQ(i3InstructionArray_t *program);// <=
+void actionNEQS(i3InstructionArray_t *program); // <=
 void ifStart();
 void elseStart();
-void whilestarts();
+void whilestarts(i3InstructionArray_t *program);
 void checkIfHaveElseBranch(i3InstructionArray_t *program);
 void createNewSymtableFrame();
 

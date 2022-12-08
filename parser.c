@@ -2,8 +2,8 @@
  * @file parser.c
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Analyzátor
- * Implementace překladače jazyka IFJ22
+ * @brief Parser
+ * Implementation IFJ22 compiler
  */
 #include "parser.h"
 
@@ -74,7 +74,8 @@ void exitNoRule(token_t token, nonTerminalType topOfTheStack) {
 
 void exitWrongToken(token_t actualToken, lexType expectedLexType) {
     pErrSyntaxExit(actualToken.type, actualToken.rowNumber, actualToken.rowPosNumber,
-                   "Expected token is: '%s'\nInstead got token: ", getTerminalName(expectedLexType));
+                   "Expected token is: '%s'\nInstead got token: ",
+                   getTerminalName(expectedLexType));
 }
 
 

@@ -1,8 +1,8 @@
 /**
  * @file dynstring.c
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Jednoduchý dynamický string
- * Implementace překladače jazyka IFJ22
+ * @brief Simple dynamic string
+ * Implementation IFJ22 compiler
  */
 
 
@@ -30,13 +30,13 @@ dynStr_t *dstrInit() {
 static int newSize(int actualsize, int necessarySize) {
     int newstringsize = actualsize * 2;// expanding string size by 2
     if (newstringsize < necessarySize) {
-        return newSize(newstringsize, necessarySize);// if it's not enought 2x
+        return newSize(newstringsize, necessarySize);// 2x size if not enough
     } else {
         return newstringsize;
     }
 }
 
-// make string size bigger 2x
+// make string size 2x bigger
 void dstrRealloc(dynStr_t *str, int necessarySize) {
     int newSz = newSize(str->maxSize, necessarySize);
     str->maxSize = newSz;

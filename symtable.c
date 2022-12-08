@@ -4,9 +4,9 @@
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief Tabulka symbolů
- * Implementace překladače jazyka IFJ22
+ * Implementation IFJ22 compiler
  *
- * Při implementaci bylo použito řešení hashtabulky z 2. domacího úkolu IAL 2021/Z
+ * The implementation used the hash table solution from the 2nd homework of IAL 2021/Z
  */
 #include "symtable.h"
 
@@ -93,10 +93,10 @@ htItem_t *htSearch(htTable_t *table, const char *key) {
 void htInsertItem(htTable_t *table, const char *key, symbol_t value) {
     htItem_t *item = htSearch(table, key);
     if (item != NULL) {
-        printHashtable(table, "Original");
+        if (debug) printHashtable(table, "Original");
         item->value = value;
         loging("Symbol %s already exists, overwriting", key);
-        printHashtable(table, "Overwritten");
+        if (debug) printHashtable(table, "Overwritten");
         return;
     }
     size_t hash = ht_get_hash(key);
@@ -151,7 +151,10 @@ void htDestroy(htTable_t *table) {
 // endregion
 // region SymTable
 
-symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_t dataType, token_t token) {
+symbol_t createSymbolVarLit(const char *name,
+                            symbolType_t type,
+                            symbolDataType_t dataType,
+                            token_t token) {
     symbol_t newSymbol;
     newSymbol.identifier = name;
     newSymbol.type = type;
@@ -165,7 +168,10 @@ symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_
 }
 
 
-symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType) {
+symbol_t *createSymbolFunction(const char *name,
+                               symbolType_t type,
+                               DTList_T *paramList,
+                               symbolDataType_t returnType) {
     symbol_t *newSymbol = (symbol_t *) malloc(sizeof(symbol_t));
     if (newSymbol == NULL) {
         InternalError("Malloc failed.");
@@ -400,10 +406,16 @@ void printSymbol(symbol_t *symbol) {
             InternalError("DataType of symbol (%d) is unknown", symbol->dataType);
             break;
     }
-    printlog("(%s, %s, %s, %d:%d)", symbol->identifier, type, dataType, symbol->token.rowNumber, symbol->token.rowPosNumber);
+    printlog("(%s, %s, %s, %d:%d)",
+             symbol->identifier,
+             type,
+             dataType,
+             symbol->token.rowNumber,
+             symbol->token.rowPosNumber);
 }
 
 void printSymtable(symtable_t *symtable) {
+    if (!debug) { return; }
     printHashtable(&(symtable->functions), "functions");
     for (int i = 0; i < MAX_SYMTABLES; i++) {
         char number[128];
@@ -417,5 +429,14 @@ void printSymtable(symtable_t *symtable) {
             printHashtable(&(symtable->infunc[i]), number);
         }
     }
+}
+size_t countDtList(DTList_T *list) {
+    DTListMem_T *param = list->first;
+    size_t count = 0;
+    while (param != NULL) {
+        count++;
+        param = param->next;
+    }
+    return count;
 }
 // endregion

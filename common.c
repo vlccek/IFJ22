@@ -4,20 +4,20 @@
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @author Jindřich Vodák (xvodak06@stud.fit.vutbr.cz)
- * @brief Pomocné funkce a makra
- * Implementace překladače imperativního jazyka IFJ21
+ * @brief Helper functions and marcos
+ * Implementation IFJ22 compiler
  */
 
 #include "common.h"
 
 char *allNonTerminalNames[] = {
-        // S - init stav
+        // S - initial state
          "ProgramBody",
 
         // Command
          "Command",
 
-        // Definice funkcí
+        // Function definition
          "FceDefine",
          "FceHeader",
          "FunctionDeclareParams",
@@ -39,11 +39,11 @@ char *allNonTerminalNames[] = {
         // Data types DataType
          "DataType",
 
-        // Definice proměné
+        // Variable definition
          "DeclareVariable",
          "DefVarAss",
 
-        // Podmínky
+        // Conditions
          "Condition",
          "ElseCond",
 
@@ -54,7 +54,7 @@ char *allNonTerminalNames[] = {
          "Return",
          "ReturnExp",
 
-        // Vnítřek funkce
+        // Function body
          "FunctionBody",
         "nonTerminalCount"
 };

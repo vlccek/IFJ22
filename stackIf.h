@@ -1,8 +1,8 @@
 /**
-* @file generator_igen.h
+* @file stackIf.h
 * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
-* @brief Wrapper pro stack. Generuje unikátní názvy návěští a pamatuje si jejich chiearchci pro pouští v generování skoků
-* Implementace překladače jazyka IFJ22
+* @brief Wrapper pro stack.
+ * Generates unique labels for jumps and memorizes state using stack
 */
 #ifndef IFJ22_STACKIF_H
 #define IFJ22_STACKIF_H
@@ -26,8 +26,9 @@ typedef struct {
     //for while
     bool inWhileBody;
     bool endOfWhile;
-    dynStr_t *endlabel; // ending label for label
-    dynStr_t *elselabel;// label else label
+    dynStr_t *endlabel;  // ending label for label
+    dynStr_t *elselabel; // label else label
+    dynStr_t *startlabel;// label else label
 } ifsState;
 
 genericStack *ifS_Init();
@@ -39,6 +40,8 @@ void ifS_old(genericStack *stack);
 
 dynStr_t *ifS_ending(genericStack *stack);
 dynStr_t *ifS_else(genericStack *stack);
+dynStr_t *ifS_start(genericStack *stack);
+
 bool ifS_isEndingGenerated(genericStack *stack);
 void ifS_isSetEndingGenerated(genericStack *stack, bool end);
 
@@ -52,6 +55,8 @@ bool ifS_inIfbranch(genericStack *stack);
 void ifS_SetinIfbranch(genericStack *stack, bool end);
 
 bool ifS_isEmpty(genericStack *stack);
+
+typeOfIfStackMem ifs_getType(genericStack *stack);
 
 void printifState(void *p);
 

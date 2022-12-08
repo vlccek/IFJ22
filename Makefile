@@ -2,7 +2,7 @@
 ## @file Makefile
 ## @brief Makefile pro kompilaci projektu
 ## @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
-## Implementace překladače jazyka IFJ22
+## Implementation IFJ22 compiler
 ##
 all: prekladac
 .PHONY: prekladac %.o tar clean clean_o
@@ -11,7 +11,7 @@ all: prekladac
 %.o : %.c %.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
-OBJECTS = symtable.o parser.o lex.o main.o LLtable.o dynstring.o expParse.o stack.o common.o queue.o semanticActions.o generator_3adres.o generator_generator.o generator_igen.o stackIf.o generator_postproces.o
+OBJECTS = symtable.o parser.o lex.o main.o LLtable.o dynstring.o expParse.o stack.o common.o queue.o semanticActions.o gen_3adres.o gen_gen.o gen_igen.o stackIf.o gen_postproces.o
 
 prekladac: $(OBJECTS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^

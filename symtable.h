@@ -4,9 +4,9 @@
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief Tabulka symbolů
- * Implementace překladače jazyka IFJ22
+ * Implementation IFJ22 compiler
  *
- * Při implementaci bylo použito řešení hashtabulky z 2. domacího úkolu IAL 2021/Z
+ * The implementation used the hash table solution from the 2nd homework of IAL 2021/Z
  */
 #ifndef IFJ22_SYMTABLE_H
 #define IFJ22_SYMTABLE_H
@@ -117,9 +117,16 @@ void symSwitch(symtable_t *symtable);
 void symSwitchBack(symtable_t *symtable);
 
 DTList_T *createDTL(int count, ...);
-symbol_t createSymbolVarLit(const char *name, symbolType_t type, symbolDataType_t dataType, token_t token);
-symbol_t *createSymbolFunction(const char *name, symbolType_t type, DTList_T *paramList, symbolDataType_t returnType);
+symbol_t createSymbolVarLit(const char *name,
+                            symbolType_t type,
+                            symbolDataType_t dataType,
+                            token_t token);
+symbol_t *createSymbolFunction(const char *name,
+                               symbolType_t type,
+                               DTList_T *paramList,
+                               symbolDataType_t returnType);
 void saveBuildInFunctions(symtable_t *symtable);
 void initDTList(DTList_T *list);
 void insDTList(DTList_T *list, symbolDataType_t typ, char *identifier);
+size_t countDtList(DTList_T *list);
 #endif//IFJ22_SYMTABLE_H

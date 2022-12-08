@@ -2,7 +2,7 @@
  * @file expParse.h
  * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
  * @brief expression parser
- * Implementace překladače jazyka IFJ22
+ * Implementation IFJ22 compiler
  */
 #ifndef STACK_EXPPARSE_H
 #define STACK_EXPPARSE_H
@@ -10,6 +10,7 @@
 #include "LLtable.h"
 #include "common.h"
 #include "lex.h"
+#include "semanticActions.h"
 #include "stack.h"
 
 

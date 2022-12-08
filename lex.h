@@ -1,8 +1,8 @@
 /**
  * @file lex.h
  * @author Jindřich Vodák (xvodak06@stud.fit.vutbr.cz)
- * @brief Hlavičkový soubor pro lexikální analyzátor
- * Implementace překladače jazyka IFJ22
+ * @brief Hlavičkový soubor pro Lexical analyzator
+ * Implementation IFJ22 compiler
  */
 
 #include "dynstring.h"

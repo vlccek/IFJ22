@@ -27,9 +27,9 @@ add_executable(main
         common.c
         dynstring.c
         expParse.c
-        generator_3adres.c
-        generator_generator.c
-        generator_igen.c
+        gen_3adres.c
+        gen_gen.c
+        gen_igen.c
         lex.c
         main.c
         parser.c
@@ -42,9 +42,9 @@ add_executable(main
         common.h
         dynstring.h
         expParse.h
-        generator_3adres.h
-        generator_generator.h
-        generator_igen.h
+        gen_3adres.h
+        gen_gen.h
+        gen_igen.h
         lex.h
         parser.h
         queue.h
@@ -54,8 +54,8 @@ add_executable(main
         symtable.h
         stackIf.c
         stackIf.h
-        generator_postproces.c
-        generator_postproces.h
+        gen_postproces.c
+        gen_postproces.h
         )
 
 
@@ -77,20 +77,20 @@ add_library(parser
         parser.h)
 
 add_library(generator
-        generator_3adres.c
-        generator_3adres.h
-        generator_generator.c
-        generator_generator.h
-        generator_igen.c
-        generator_igen.h)
+        gen_3adres.c
+        gen_3adres.h
+        gen_gen.c
+        gen_gen.h
+        gen_igen.c
+        gen_igen.h)
 
 add_library(semanticActions
-        generator_3adres.c
-        generator_3adres.h
-        generator_generator.c
-        generator_generator.h
-        generator_igen.c
-        generator_igen.h
+        gen_3adres.c
+        gen_3adres.h
+        gen_gen.c
+        gen_gen.h
+        gen_igen.c
+        gen_igen.h
         semanticActions.c
         semanticActions.h semanticActionInfo.c semanticActionInfo.h)
 

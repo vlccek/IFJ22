@@ -1,9 +1,9 @@
 /**
- * @file generator_3adres.h
+ * @file gen_3adres.h
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
  * @brief definice datových typů pro práci s tříadresným kódem
- * Implementace překladače jazyka IFJ22
+ * Implementation IFJ22 compiler
  */
 #ifndef IFJ22_3ADRES_H
 #define IFJ22_3ADRES_H
@@ -19,6 +19,7 @@ typedef enum i3InstructionType {
     I_DIVS,
     I_IDIVS,
     I_CONCAT,
+    I_CONCATS,//SPECIAL
     I_EQ,
     I_NEQ,
     I_LT,
@@ -44,9 +45,11 @@ typedef enum i3InstructionType {
     I_JUMP_IF_FALSE,
     I_JUMPS_NEQ,
     I_JUMPS_EQ,
-    I_LTS,// mensi
-    I_GTS,// vetší
-    I_EQS, // stejné
+    I_LTS,// lesser
+    I_LT_OR_EQ,
+    I_GTS,// greater
+    I_GT_OR_EQ,
+    I_EQS,// equal
     I_CALL,
     I_RETURN,
     I_DEFVAR,
@@ -59,7 +62,7 @@ typedef enum i3InstructionType {
 } i3InstructionType_t;
 
 /**
- * @brief tříadresná instrukce
+ * @brief three-address instruction
  * 
  */
 typedef struct i3Instruction {
@@ -67,10 +70,12 @@ typedef struct i3Instruction {
     symbol_t dest;
     symbol_t arg1;
     symbol_t arg2;
+
+    bool checkedType;
 } i3Instruction_t;
 
 /**
- * @brief seznam tříadresných instrukcí
+ * @brief list of three-address instructions
  * 
  */
 typedef struct i3InstructionArray {

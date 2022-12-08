@@ -1,22 +1,23 @@
 /**
- * @file generator_igen.c
+ * @file gen_igen.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief generator tříadresného kódu
- * Implementace překladače jazyka IFJ22
+ * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+ * @brief Generator of internal three adress code
+ * Implementation IFJ22 compiler
  */
 
-#include "generator_igen.h"
+#include "gen_igen.h"
 
 typedef struct currentState {
     size_t currentArray;
-    size_t lastUsedArray;          // poslední array, do kterého se zapisoval kód funkce
+    size_t lastUsedArray;          // last array in which was the function code written
     symbol_t *callingFunction;     // todo: this should be nulled somewhere
     symbol_t undefinedVariable;    // variable is floating in the middle of assignment
-    symbol_t newFunction;          // symbol nové funkce, který si pamatujeme
-    lexType lastVarType;           // typ proměnné při definici funkce, kterou si pamatujeme
-    size_t functionCallParamNumber;// kolikátý parametr funkce právě zpracováme
-    genericStack *labelStack;      // stack pro jméne labelů co se pooužívají v ifech a whilech
+    symbol_t newFunction;          // symbol of a new function that is being stored
+    lexType lastVarType;           // type of variable during function definition that is being stored
+    size_t functionCallParamNumber;// which parameter of a function is being processed
+    genericStack *labelStack;      // stack for label names that are used in ifs and whiles
 
     // used by expression parsing
     int ifImmersion;
@@ -42,11 +43,16 @@ void initIgen(i3Table_t program) {
 
 void functionDefBegin(char *identifier) {
     symSwitch(&symtable);
-    currentState.newFunction = *createSymbolFunction(identifier, function, NULL, undefinedDataType);
+    currentState.newFunction = *createSymbolFunction(identifier,
+                                                     function,
+                                                     NULL,
+                                                     undefinedDataType);
 }
 void functionDefParam(char *identifier, token_t token) {
-    insDTList(currentState.newFunction.firstParam, tokenTypeToSymbolType(currentState.lastVarType), identifier);
-    symbol_t symbol = createSymbolVarLit(identifier, variable, tokenTypeToSymbolType(currentState.lastVarType), token);
+    insDTList(currentState.newFunction.firstParam,
+              tokenTypeToSymbolType(currentState.lastVarType), identifier);
+    symbol_t symbol = createSymbolVarLit(identifier, variable,
+                                         tokenTypeToSymbolType(currentState.lastVarType), token);
     symInsert(&symtable, symbol);
 }
 void functionDefParamRememberType(lexType type) {
@@ -87,7 +93,10 @@ void createFrame(i3Table_t program) {
 }
 
 void startFunctionCall(i3Table_t program, token_t token) {
-    symbol_t *symbol = createSymbolFunction(token.data.valueString->string, function, NULL, undefinedDataType);
+    symbol_t *symbol = createSymbolFunction(token.data.valueString->string,
+                                            function,
+                                            NULL,
+                                            undefinedDataType);
     symbol->token = token;
     currentState.callingFunction = symbol;
     currentState.functionCallParamNumber = 0;
@@ -290,9 +299,9 @@ void newVariable(i3InstructionArray_t *program, token_t token) {
     symbol_t *found;
     if ((found = symSearchVar(&symtable, token.data.valueString->string)) == NULL) {
         currentState.undefinedVariable = createSymbolVarLit(token.data.valueString->string,
-                                                            variable,         // we do not know variable type by now
-                                                            undefinedDataType,// variable does not have param list
-                                                            token);           // variable does not have return value
+                                                            variable,
+                                                            undefinedDataType,
+                                                            token);
         i3Instruction_t instruction = {
                 .type = I_DEFVAR,
                 .arg1 = currentState.undefinedVariable};
@@ -344,6 +353,10 @@ void exitCodeBlock(i3Table_t program) {
             ifS_SetExpectingElse(currentState.labelStack, true);
             ifS_SetinIfbranch(currentState.labelStack, false);
         } else {
+            if (ifs_getType(currentState.labelStack) == while_type) {
+                const char *label = ifS_start(currentState.labelStack)->string;
+                createJumpIns(program, label);
+            }
             genereateEndOfCondition(program);
         }
     }
@@ -364,7 +377,8 @@ void exitFunc() {
 void createStackInstruction(i3Table_t program, i3InstructionType_t type) {
     i3Instruction_t instruction = {
             .type = type,
-    };
+            .arg1 = {
+                    .dataType = undefinedDataType}};
     pushToArray(&program[currentState.currentArray], instruction);
 }
 
@@ -386,7 +400,7 @@ void actionMultiplication(i3Table_t program) {
     createStackInstruction(program, I_MULS);
 }
 void actionConcat(i3Table_t program) {
-    createStackInstruction(program, I_MULS);
+    createStackInstruction(program, I_CONCATS);
 }
 void actionDivision(i3Table_t program) {
     createStackInstruction(program, I_DIVS);
@@ -430,7 +444,7 @@ void actionEQS(i3InstructionArray_t *program) {
 }
 void actionLTSEQ(i3InstructionArray_t *program) {
     // todo
-    createStackInstruction(program, I_LTS);
+    createStackInstruction(program, I_LT_OR_EQ);
 
 
     const char *label = ifS_else(currentState.labelStack)->string;
@@ -443,9 +457,22 @@ void actionLTSEQ(i3InstructionArray_t *program) {
     createPushInstruction(program, data);
     if_creatJumpS(program, I_JUMPS_NEQ, label);
 }
+
+void actionNEQS(i3InstructionArray_t *program) {
+    createStackInstruction(program, I_EQS);
+    const char *label = ifS_else(currentState.labelStack)->string;
+
+    symbol_t data = {
+            .type = literal,
+            .dataType = booltype,
+            .token.data.valueInteger = 1,
+    };
+    createPushInstruction(program, data);
+    if_creatJumpS(program, I_JUMPS_EQ, label);
+}
 void actionGTSEQ(i3InstructionArray_t *program) {
     // todo
-    createStackInstruction(program, I_GTS);
+    createStackInstruction(program, I_GT_OR_EQ);
     const char *label = ifS_else(currentState.labelStack)->string;
 
     symbol_t data = {
@@ -467,12 +494,13 @@ void elseStart() {
     ifS_SetExpectingElse(currentState.labelStack, false);
 }
 
-void whilestarts() {
+void whilestarts(i3InstructionArray_t *program) {
     ifS_newWhile(currentState.labelStack);
+    createLabelIns(program, ifS_start(currentState.labelStack)->string);
 }
 
 void checkIfHaveElseBranch(i3InstructionArray_t *program) {
-    // není
+    // no
     if (ifS_expectingElse(currentState.labelStack)) {
         genereateEndOfCondition(program);
     }
@@ -524,6 +552,9 @@ void createLabelIns(i3Table_t program, const char *label) {
 }
 
 void finalGeneration(i3Table_t program) {
+    if (ifS_expectingElse(currentState.labelStack)) {
+        genereateEndOfCondition(program);
+    }
     postprocess(program, symtable);
     generate(program, symtable);
 }

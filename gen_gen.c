@@ -1,15 +1,155 @@
 /**
- * @file generator_generator.c
+ * @file gen_gen.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief generátor výsledného kódu
- * Implementace překladače jazyka IFJ22
+ * @brief Generator of final code
+ * Implementation IFJ22 compiler
  */
 
-#include "generator_generator.h"
+#include "gen_gen.h"
 
 void generateHeader() {
-    printf(".IFJcode22\n");
+    printf(".IFJcode22\n"
+           "DEFVAR GF@type\n"
+           "DEFVAR GF@strlen\n"
+           "DEFVAR GF@i\n"
+           "DEFVAR GF@j");
+}
+void generateFooter() {
+    printf("# zabudované funkce read_\n"
+           "LABEL $BEGIN_readi\n"
+           "READ TF@$return int\n"
+           "RETURN\n"
+           "LABEL $END_readi\n"
+           "LABEL $BEGIN_reads\n"
+           "READ TF@$return string\n"
+           "RETURN\n"
+           "LABEL $END_reads\n"
+           "LABEL $BEGIN_readf\n"
+           "READ TF@$return float\n"
+           "RETURN\n"
+           "LABEL $END_readf\n"
+           "\n"
+           "#zabudované funkce převod typů\n"
+           "\n"
+           "LABEL $BEGIN_intval\n"
+           "TYPE GF@type TF@$param0\n"
+           "JUMPIFEQ $intval_float GF@type string@float\n"
+           "JUMPIFEQ $intval_int GF@type string@int\n"
+           "JUMPIFEQ $intval_nil GF@type string@nil\n"
+           "# nelze převést\n"
+           "EXIT int@7\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $intval_float\n"
+           "FLOAT2INT TF@$return TF@$param0\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $intval_int\n"
+           "MOVE TF@$return TF@$param0\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $intval_nil\n"
+           "MOVE TF@$return int@0\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $END_intval\n"
+           "\n"
+           "\n"
+           "\n"
+           "# převod na float\n"
+           "LABEL $BEGIN_floatval\n"
+           "TYPE GF@type TF@$param0\n"
+           "JUMPIFEQ $floatval_float GF@type string@float\n"
+           "JUMPIFEQ $floatval_int GF@type string@int\n"
+           "JUMPIFEQ $floatval_nil GF@type string@nil\n"
+           "# nelze převést\n"
+           "EXIT int@7\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $floatval_float\n"
+           "MOVE TF@$return TF@$param0\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $floatval_int\n"
+           "INT2FLOAT TF@$return TF@$param0\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $floatval_nil\n"
+           "INT2FLOAT TF@$return int@0\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $END_floatval\n"
+           "\n"
+           "# převod na string\n"
+           "LABEL $BEGIN_strval\n"
+           "TYPE GF@type TF@$param0\n"
+           "JUMPIFEQ $strval_string GF@type string@string\n"
+           "JUMPIFEQ $strval_nil GF@type string@nil\n"
+           "# nelze převést\n"
+           "EXIT int@7\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $strval_string\n"
+           "MOVE TF@$return TF@$param0\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $strval_nil\n"
+           "MOVE TF@$return string@\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $END_strval\n"
+           "\n"
+           "# zabudovaná funkce strlen\n"
+           "LABEL $BEGIN_strlen\n"
+           "STRLEN TF@$return TF@$param0\n"
+           "RETURN\n"
+           "LABEL $END_strlen\n"
+           "\n"
+           "# zabudovaná funkce chr\n"
+           "LABEL $BEGIN_chr\n"
+           "INT2CHAR TF@$return TF@$param0\n"
+           "RETURN\n"
+           "LABEL $END_chr\n"
+           "\n"
+           "\n"
+           "# zabudovaná funkce ord\n"
+           "LABEL $BEGIN_ord\n"
+           "STRI2INT TF@$return TF@$param0 int@0\n"
+           "RETURN\n"
+           "LABEL $END_ord\n"
+           "# zabudovaná funkce substring\n"
+           "LABEL $BEGIN_substring\n"
+           "# GF@strlen obsahuje délku stringu\n"
+           "STRLEN GF@strlen TF@$param0\n"
+           "MOVE GF@i TF@$param1\n"
+           "MOVE GF@j TF@$param2\n"
+           "JUMPIFEQ $substring_nil GF@i GF@strlen\n"
+           "GT GF@type GF@i GF@j\n"
+           "JUMPIFEQ $substring_nil GF@type bool@true\n"
+           "LT GF@type GF@i int@0\n"
+           "JUMPIFEQ $substring_nil GF@type bool@true\n"
+           "LT GF@type GF@i int@0\n"
+           "JUMPIFEQ $substring_nil GF@type bool@true\n"
+           "GT GF@type GF@i GF@strlen\n"
+           "JUMPIFEQ $substring_nil GF@type bool@true\n"
+           "GT GF@type GF@j GF@strlen\n"
+           "JUMPIFEQ $substring_nil GF@type bool@true\n"
+           "MOVE TF@$return string@\n"
+           "SUB GF@j GF@j int@1\n"
+           "LABEL $substring_loop\n"
+           "GETCHAR GF@strlen TF@$param0 GF@i\n"
+           "CONCAT TF@$return TF@$return GF@strlen\n"
+           "ADD GF@i GF@i int@1\n"
+           "GT GF@strlen GF@i GF@j\n"
+           "JUMPIFNEQ $substring_loop GF@strlen bool@true\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $substring_nil\n"
+           "MOVE TF@$return nil@nil\n"
+           "RETURN\n"
+           "\n"
+           "LABEL $END_substring");
 }
 
 const char *convertChar(char c, char convBuffer[51]) {
@@ -50,7 +190,7 @@ char *generateArgSymbol(symbol_t symb, char *buf) {
         sprintf(buf, "float@%a   # %f", symb.token.data.valueFloat, symb.token.data.valueFloat);
     else if (symb.dataType == nil)
         sprintf(buf, "nil@nil");
-    else if(symb.dataType == booltype){
+    else if (symb.dataType == booltype) {
         sprintf(buf, symb.token.data.valueInteger == 1 ? "bool@true" : "bool@false");
     }
     return buf;
@@ -107,6 +247,15 @@ void generatePops(i3Instruction_t instruction) {
 void generateSimpleIns(const char *instructionName) {
     printf("%s", instructionName);
 }
+void generateCompareOrEquals(bool greater) {
+    printf("POPS GF@j\n"
+           "POPS GF@i\n"
+           "EQ GF@type GF@i GF@j\n"
+           "PUSHS GF@type\n");
+    printf("%s GF@type GF@i GF@j\n", greater ? "GT" : "LT");
+    printf("PUSHS GF@type\n"
+           "ORS");
+}
 void generateMoveSpecial(i3Instruction_t instruction, bool param) {
     char buf[2048];
     if (param) {
@@ -118,6 +267,12 @@ void generateMoveSpecial(i3Instruction_t instruction, bool param) {
                generateArgSymVarLF(instruction.dest, buf),
                instruction.arg1.identifier);
     }
+}
+void generateConcats() {
+    printf("POPS GF@j\n"
+           "POPS GF@i\n"
+           "CONCAT GF@strlen GF@i GF@j\n"
+           "PUSHS GF@strlen");
 }
 void generateLabel(const char *label) {
     printf("\nLABEL %s\n", label);
@@ -136,7 +291,7 @@ void generateJumps(i3Instruction_t instruction) {
 void generateInstruction(i3Instruction_t instruction) {
     switch (instruction.type) {
         case I_NOOP:
-            printlog("noop");
+            loging("noop");
             break;
         case I_ADDS:
             generateSimpleIns("ADDS");
@@ -153,7 +308,8 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_IDIVS:
             generateSimpleIns("IDIVS");
             break;
-        case I_CONCAT:
+        case I_CONCATS:
+            generateConcats();
             break;
         case I_EQ:
             break;
@@ -165,6 +321,12 @@ void generateInstruction(i3Instruction_t instruction) {
             break;
         case I_GTS:
             generateSimpleIns("GTS");
+            break;
+        case I_LT_OR_EQ:
+            generateCompareOrEquals(false);
+            break;
+        case I_GT_OR_EQ:
+            generateCompareOrEquals(true);
             break;
         case I_LTS:
             generateSimpleIns("LTS");
@@ -249,6 +411,10 @@ void generateInstruction(i3Instruction_t instruction) {
         case I_CREATEFRAME:
             generateSimpleIns("CREATEFRAME");
             break;
+        case I_CONCAT:
+            break;
+        case I_JUMPS_EQ:
+            break;
     }
     printf("\n");
 }
@@ -292,4 +458,5 @@ void generate(i3Table_t program, symtable_t symtable) {
         generateInstructionArray(program[i], &symtable);
     }
     generateLabel("$PROGRAM_END");
+    generateFooter();
 }

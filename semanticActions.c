@@ -2,8 +2,8 @@
  * @file semanticActions.c
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief Semantické akce
- * Implementace překladače jazyka IFJ22
+ * @brief Semantic action definitions
+ * Implementation IFJ22 compiler
  */
 
 #include "semanticActions.h"
@@ -17,7 +17,9 @@ void callSemanticAction(rule *pravidlo, semanticActionInfo info) {
         return;
     }
     if (pravidlo->semanticAction == NULL) {
-        loging("Pravidlo nema semantickou akci. ID: %2d, nt: %s", pravidlo->id, getNonTerminalName(pravidlo->from));
+        loging("Pravidlo nema semantickou akci. nt: %s, t: %s",
+               getNonTerminalName(pravidlo->from),
+               getTerminalName(info.lastToken.type));
         return;
     }
     pravidlo->semanticAction(info);
@@ -84,6 +86,9 @@ void SA_ExpressionAction(semanticActionInfo info) {
         case ALowerThenEq:
             actionLTSEQ(program);
             break;
+        case ANotEq:
+            actionNEQS(program);
+            break;
         case ANotAnAction:
             InternalError("Expression action called at very wrong time.");
     }
@@ -116,8 +121,9 @@ void SA_NewCommand() {
     checkIfHaveElseBranch(program);
 }
 
-void SA_whileKey() {
-    whilestarts();
+void SA_whileKey(semanticActionInfo info) {
+    SA_NewSymtableFrame(info);
+    whilestarts(program);
 }
 
 void semanticActionsInit() {

@@ -2,17 +2,17 @@
  * @file semanticActions.h
  * @author Jan Brudný (xbrudn02@stud.fit.vutbr.cz)
  * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @brief Semantické akce
- * Implementace překladače jazyka IFJ22
+ * @brief Semantic action definitions
+ * Implementation IFJ22 compiler
  */
 
 #ifndef STACK_SEMANTICACTIONS_H
 #define STACK_SEMANTICACTIONS_H
 
 #include "LLtable.h"
+#include "gen_gen.h"
+#include "gen_igen.h"
 #include "semanticActionInfo.h"
-#include "generator_igen.h"
-#include "generator_generator.h"
 
 // semantic actions
 

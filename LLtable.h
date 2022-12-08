@@ -1,10 +1,10 @@
 /**
- * @file LLTable.c
- * @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
- * @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
- * @brief Hlavičkový soubor tabulky
- * Implementace překladače jazyka IFJ22
- */
+* @file LLTable.c
+* @author Antonín Jarolím (xjarol06@stud.fit.vutbr.cz)
+* @author Jakub Vlk (xvlkja07@stud.fit.vutbr.cz)
+* @brief Table containing all rules
+* Implementation IFJ22 compiler
+*/
 
 #ifndef LUAINTERPRET_LLTABLE_H
 #define LUAINTERPRET_LLTABLE_H
@@ -16,17 +16,18 @@
 #define MAX_RULE_LEN 15
 #define MAX_RULES_IN_CELL 15
 
-#define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) Table[nonTerminal][terminal]->rules[ruleIndex]->to[countOfRule] = member;
+#define AddToRightSide(terminal, nonterminal, countOfRule, member, ruleIndex) \
+    Table[nonTerminal][terminal]->rules[ruleIndex]->to[countOfRule] = member;
 #define partOfRulesRightSide(name) createPSAStackMember(name, getDataType(#name))
 
 typedef enum {
-    // S - init stav
+    // S - initial state
     ProgramBody,
 
     // Command
     Command,
 
-    // Definice funkcí
+    // Function definitions
     FceDefine,
     FceHeader,
     FunctionDeclareParams,
@@ -48,11 +49,11 @@ typedef enum {
     // Data types DataType
     DataType,
 
-    // Definice proměné
+    // Variable definitions
     DeclareVariable,
     DefVarAss,
 
-    // Podmínky
+    // Conditions
     Condition,
     ElseCond,
 
@@ -70,7 +71,7 @@ typedef enum {
 
 // Ll table
 typedef enum PSADataType {
-    endOfFile, // special token to detect end of stack
+    endOfFile,// special token to detect end of stack
     terminal,
     nonTerminal
 } PSADataType;
@@ -88,13 +89,13 @@ typedef struct rule {
 
     nonTerminalType from;
     PSAStackMember *to[MAX_RULE_LEN];
-}rule;
+} rule;
 
-typedef struct tableMember{
+typedef struct tableMember {
     rule *rules[MAX_RULES_IN_CELL];
     nonTerminalType nonTerminal;
     lexType terminal;
-}tableMember;
+} tableMember;
 
 
 typedef tableMember *table[(int) nonTerminalCount][(int) lexTypeCount];
@@ -109,8 +110,16 @@ PSAStackMember *createPSAStackMember(int value, PSADataType type);
 
 char *getStringPSAMember(PSAStackMember m);
 
-void setSemanticActionAllRules(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo));
-void setSemanticAction(nonTerminalType nonTerminal, lexType terminal, void (*semanticAction)(semanticActionInfo));
-void setSemanticActionRow(nonTerminalType nonTerminal, void (*semanticAction)(semanticActionInfo), size_t except, ...);
+void setSemanticActionAllRules(nonTerminalType nonTerminal,
+                               void (*semanticAction)(semanticActionInfo));
 
-#endif //LUAINTERPRET_LLTABLE_H
+void setSemanticAction(nonTerminalType nonTerminal,
+                       lexType terminal,
+                       void (*semanticAction)(semanticActionInfo));
+
+void setSemanticActionRow(nonTerminalType nonTerminal,
+                          void (*semanticAction)(semanticActionInfo),
+                          size_t except,
+                          ...);
+
+#endif//LUAINTERPRET_LLTABLE_H
